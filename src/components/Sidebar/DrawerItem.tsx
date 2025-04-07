@@ -171,7 +171,7 @@ export const navigationItems = [
             <AssignmentInd />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/list",
+        path: "/super_admin/list",
       },
       {
         title: "Assign Subjects ",
