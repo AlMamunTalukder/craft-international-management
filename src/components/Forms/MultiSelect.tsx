@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { Theme, useTheme } from "@mui/material/styles";
+import {  useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -47,11 +47,11 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
   label,
   items,
   size = "small",
-  required,
+  
   fullWidth = true,
   sx,
 }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const { control, setValue, getValues, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
 

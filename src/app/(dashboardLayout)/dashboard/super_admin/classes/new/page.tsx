@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useRef } from "react"
@@ -8,10 +9,9 @@ import {
   TextField,
   Button,
   Paper,
-  AppBar,
-  Toolbar,
+  
   IconButton,
-  Avatar,
+
   Card,
   CardContent,
   Grid,
@@ -22,13 +22,9 @@ import {
   Add as AddIcon,
   Save as SaveIcon,
   Delete as DeleteIcon,
-  Home as HomeIcon,
-  Notifications as NotificationsIcon,
-  School as SchoolIcon,
-  Dashboard as DashboardIcon,
-  AccountTree as BranchIcon,
+ 
 } from "@mui/icons-material"
-import { ThemeProvider, createTheme } from "@mui/material/styles"
+import {  createTheme } from "@mui/material/styles"
 import { Roboto } from "next/font/google"
 import { Editor } from "@tinymce/tinymce-react"
 

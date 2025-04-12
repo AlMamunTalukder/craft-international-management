@@ -41,7 +41,7 @@ const DocUploader = ({
     <Controller
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({  }) => (
         <Box
           sx={{
             padding: "20px",

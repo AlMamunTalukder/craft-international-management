@@ -38,6 +38,7 @@ import {
   alpha,
   createTheme,
   ThemeProvider,
+  Checkbox,
 } from "@mui/material"
 import {
   Add as AddIcon,
@@ -60,6 +61,7 @@ import {
   Download as DownloadIcon,
   Print as PrintIcon,
   Refresh as RefreshIcon,
+  ArrowBack,
 } from "@mui/icons-material"
 import { Roboto } from "next/font/google"
 import Link from "next/link"
@@ -248,18 +250,18 @@ export default function ClassesListPage() {
     }, 1000)
   }, [refreshKey])
 
-  const handleRefresh = () => {
-    setRefreshKey((prev) => prev + 1)
-  }
+  // const handleRefresh = () => {
+  //   setRefreshKey((prev) => prev + 1)
+  // }
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage)
+  // }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(Number.parseInt(event.target.value, 10))
-    setPage(0)
-  }
+  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRowsPerPage(Number.parseInt(event.target.value, 10))
+  //   setPage(0)
+  // }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value)
@@ -286,10 +288,10 @@ export default function ClassesListPage() {
     setOrderBy(property)
   }
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, classItem: any) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedClass(classItem)
-  }
+  // const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, classItem: any) => {
+  //   setAnchorEl(event.currentTarget)
+  //   setSelectedClass(classItem)
+  // }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
@@ -345,34 +347,34 @@ export default function ClassesListPage() {
   const paginatedClasses = filteredClasses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
 
-  const getStatusChipProps = (status: string) => {
-    switch (status) {
-      case "Active":
-        return {
-          color: "success" as const,
-          icon: <CheckCircleIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.success.main, 0.1) },
-        }
-      case "Inactive":
-        return {
-          color: "error" as const,
-          icon: <CancelIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.error.main, 0.1) },
-        }
-      case "Pending":
-        return {
-          color: "warning" as const,
-          icon: <AccessTimeIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.warning.main, 0.1) },
-        }
-      default:
-        return {
-          color: "default" as const,
-          icon: undefined,
-          sx: {},
-        }
-    }
-  }
+  // const getStatusChipProps = (status: string) => {
+  //   switch (status) {
+  //     case "Active":
+  //       return {
+  //         color: "success" as const,
+  //         icon: <CheckCircleIcon fontSize="small" />,
+  //         sx: { bgcolor: alpha(theme.palette.success.main, 0.1) },
+  //       }
+  //     case "Inactive":
+  //       return {
+  //         color: "error" as const,
+  //         icon: <CancelIcon fontSize="small" />,
+  //         sx: { bgcolor: alpha(theme.palette.error.main, 0.1) },
+  //       }
+  //     case "Pending":
+  //       return {
+  //         color: "warning" as const,
+  //         icon: <AccessTimeIcon fontSize="small" />,
+  //         sx: { bgcolor: alpha(theme.palette.warning.main, 0.1) },
+  //       }
+  //     default:
+  //       return {
+  //         color: "default" as const,
+  //         icon: undefined,
+  //         sx: {},
+  //       }
+  //   }
+  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -394,29 +396,29 @@ export default function ClassesListPage() {
                 }}
               >
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  Classes
+                  + Add New Report
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     startIcon={<RefreshIcon />}
                     onClick={handleRefresh}
                     sx={{ borderRadius: 2 }}
                   >
                     Refresh
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<AddIcon />}
+                    startIcon={<ArrowBack />}
                     component={Link}
-                    href="/dashboard/super_admin/classes/new"
+                    href="/dashboard/super_admin/report"
                     sx={{
                       borderRadius: 2,
                       boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
                     }}
                   >
-                    Add New Class
+                     Back
                   </Button>
                 </Box>
               </Box>
@@ -468,7 +470,7 @@ export default function ClassesListPage() {
                             }),
                           }}
                         >
-                          {statusFilter || "Filter by Status"}
+                          {statusFilter || "Filter by Class"}
                         </Button>
                         <Menu
                           anchorEl={filterAnchorEl}
@@ -494,7 +496,7 @@ export default function ClassesListPage() {
                               }),
                             }}
                           >
-                            All Statuses
+                            All Classes
                           </MenuItem>
                           <MenuItem
                             onClick={() => handleFilterSelect("Active")}
@@ -506,10 +508,59 @@ export default function ClassesListPage() {
                               }),
                             }}
                           >
-                            <CheckCircleIcon fontSize="small" color="success" sx={{ mr: 1 }} />
-                            Active
+                            {/* <CheckCircleIcon fontSize="small" color="success" sx={{ mr: 1 }} /> */}
+                            One
                           </MenuItem>
                           <MenuItem
+                            onClick={() => handleFilterSelect("Active")}
+                            sx={{
+                              py: 1.5,
+                              ...(statusFilter === "Active" && {
+                                bgcolor: "rgba(99, 102, 241, 0.08)",
+                                color: "primary.main",
+                              }),
+                            }}
+                          >
+                            Two
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => handleFilterSelect("Active")}
+                            sx={{
+                              py: 1.5,
+                              ...(statusFilter === "Active" && {
+                                bgcolor: "rgba(99, 102, 241, 0.08)",
+                                color: "primary.main",
+                              }),
+                            }}
+                          >
+                            Three
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => handleFilterSelect("Active")}
+                            sx={{
+                              py: 1.5,
+                              ...(statusFilter === "Active" && {
+                                bgcolor: "rgba(99, 102, 241, 0.08)",
+                                color: "primary.main",
+                              }),
+                            }}
+                          >
+                            Four
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => handleFilterSelect("Active")}
+                            sx={{
+                              py: 1.5,
+                              ...(statusFilter === "Active" && {
+                                bgcolor: "rgba(99, 102, 241, 0.08)",
+                                color: "primary.main",
+                              }),
+                            }}
+                          >
+                            Five
+                          </MenuItem>
+                          
+                          {/* <MenuItem
                             onClick={() => handleFilterSelect("Inactive")}
                             sx={{
                               py: 1.5,
@@ -534,8 +585,11 @@ export default function ClassesListPage() {
                           >
                             <AccessTimeIcon fontSize="small" color="warning" sx={{ mr: 1 }} />
                             Pending
-                          </MenuItem>
+                          </MenuItem> */}
                         </Menu>
+
+
+                       
 
                         {!isMobile && (
                           <>
@@ -595,7 +649,7 @@ export default function ClassesListPage() {
                 ) : (
                   <>
                     <TableContainer>
-                      <Table sx={{ minWidth: 650 }}>
+                      {/* <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                           <TableRow>
                             <TableCell>
@@ -870,9 +924,366 @@ export default function ClassesListPage() {
                             </TableRow>
                           )}
                         </TableBody>
-                      </Table>
+                      </Table> */}
+                      <Table sx={{ minWidth: 650 }}>
+  <TableHead>
+    <TableRow>
+      <TableCell>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            color: orderBy === "name" ? "primary.main" : "inherit",
+          }}
+          onClick={() => handleSort("name")}
+        >
+          Student Name
+          {orderBy === "name" && (
+            <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+              {order === "asc" ? (
+                <ArrowUpwardIcon fontSize="small" />
+              ) : (
+                <ArrowDownwardIcon fontSize="small" />
+              )}
+            </Box>
+          )}
+        </Box>
+      </TableCell>
+      <TableCell>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            color: orderBy === "class" ? "primary.main" : "inherit",
+          }}
+          onClick={() => handleSort("class")}
+        >
+          Class
+          {orderBy === "class" && (
+            <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+              {order === "asc" ? (
+                <ArrowUpwardIcon fontSize="small" />
+              ) : (
+                <ArrowDownwardIcon fontSize="small" />
+              )}
+            </Box>
+          )}
+        </Box>
+      </TableCell>
+      <TableCell>Teacher</TableCell>
+      <TableCell>Syllabus</TableCell>
+      {/* <TableCell>Note</TableCell> */}
+      <TableCell>Dairy Fill-up</TableCell>
+      <TableCell>Parents Signature</TableCell>
+      <TableCell>Task Status</TableCell>
+      <TableCell>Handwriting</TableCell>
+      <TableCell>Materials</TableCell>
+      <TableCell>Comments</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    {paginatedClasses.length > 0 ? (
+      paginatedClasses.map((student) => (
+        <TableRow key={student.id} sx={{ transition: "all 0.2s" }}>
+          <TableCell component="th" scope="row">
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {student.name}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.class || "One"} {/* Default to "One" if no class specified */}
+            </Typography>
+          </TableCell>
+          {/* <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              select
+              SelectProps={{ native: true }}
+              value={student.class || ""}
+            >
+              <option value=""></option>
+              <option value="One">One</option>
+              <option value="Two">Two</option>
+              <option value="Three">Three</option>
+              <option value="Four">Four</option>
+            </TextField>
+          </TableCell> */}
+          <TableCell>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  mr: 1.5,
+                  bgcolor: "primary.main",
+                  fontSize: "0.875rem",
+                }}
+              >
+                {student.teacher.avatar}
+              </Avatar>
+              <Typography variant="body2">{student.teacher.name}</Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              placeholder="Syllabus"
+            />
+          </TableCell>
+          <TableCell align="center">
+            <Checkbox
+              color="primary"
+              checked={student.note || false}
+            />
+          </TableCell>
+          <TableCell align="center">
+            <Checkbox
+              color="primary"
+              checked={student.dairyFillUp || false}
+            />
+          </TableCell>
+          {/* <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              placeholder="Parents Signature"
+            />
+          </TableCell> */}
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              placeholder="Task Status"
+              select
+              SelectProps={{ native: true }}
+            >
+              <option value=""></option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="Not Started">Not Started</option>
+            </TextField>
+          </TableCell>
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              placeholder="Handwriting"
+              select
+              SelectProps={{ native: true }}
+            >
+              <option value=""></option>
+              <option value="Excellent">Excellent</option>
+              <option value="Good">Good</option>
+              <option value="Average">Average</option>
+              <option value="Poor">Poor</option>
+            </TextField>
+          </TableCell>
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              placeholder="Materials"
+              select
+              SelectProps={{ native: true }}
+            >
+              <option value=""></option>
+              <option value="Complete">Complete</option>
+              <option value="Incomplete">Incomplete</option>
+            </TextField>
+          </TableCell>
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={2}
+              placeholder="Enter comments..."
+            />
+          </TableCell>
+        </TableRow>
+      ))
+    ) : (
+      <TableRow>
+        <TableCell colSpan={10} align="center" sx={{ py: 8 }}>
+          <Box sx={{ textAlign: "center" }}>
+            <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
+            <Typography variant="h6" gutterBottom>
+              No students found
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Try adjusting your search or filter to find what you&apos;re looking for.
+            </Typography>
+          </Box>
+        </TableCell>
+      </TableRow>
+    )}
+  </TableBody>
+</Table>
+{/* <Table sx={{ minWidth: 650 }}>
+  <TableHead>
+    <TableRow>
+      <TableCell>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            color: orderBy === "name" ? "primary.main" : "inherit",
+          }}
+          onClick={() => handleSort("name")}
+        >
+          Student Name
+          {orderBy === "name" && (
+            <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+              {order === "asc" ? (
+                <ArrowUpwardIcon fontSize="small" />
+              ) : (
+                <ArrowDownwardIcon fontSize="small" />
+              )}
+            </Box>
+          )}
+        </Box>
+      </TableCell>
+      <TableCell>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            color: orderBy === "class" ? "primary.main" : "inherit",
+          }}
+          onClick={() => handleSort("class")}
+        >
+          Class
+          {orderBy === "class" && (
+            <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+              {order === "asc" ? (
+                <ArrowUpwardIcon fontSize="small" />
+              ) : (
+                <ArrowDownwardIcon fontSize="small" />
+              )}
+            </Box>
+          )}
+        </Box>
+      </TableCell>
+      <TableCell>Teacher</TableCell>
+      <TableCell>Syllabus</TableCell>
+      <TableCell>Dairy Fill-up</TableCell>
+      <TableCell>Parents Signature</TableCell>
+      <TableCell>Task Status</TableCell>
+      <TableCell>Handwriting</TableCell>
+      <TableCell>Materials</TableCell>
+      <TableCell>Comments</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    {paginatedClasses.length > 0 ? (
+      paginatedClasses.map((student) => (
+        <TableRow key={student.id} sx={{ transition: "all 0.2s" }}>
+          <TableCell component="th" scope="row">
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {student.name}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.class || "One"} 
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  mr: 1.5,
+                  bgcolor: "primary.main",
+                  fontSize: "0.875rem",
+                }}
+              >
+                {student.teacher.avatar}
+              </Avatar>
+              <Typography variant="body2">{student.teacher.name}</Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.syllabus || "-"}
+            </Typography>
+          </TableCell>
+          <TableCell align="center">
+            <Checkbox
+              color="primary"
+              checked={student.dairyFillUp || false}
+            />
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.parentsSignature || "-"}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.taskStatus || "-"}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.handwriting || "-"}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">
+              {student.materials || "-"}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <TextField
+              size="small"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={2}
+              placeholder="Enter comments..."
+            />
+          </TableCell>
+        </TableRow>
+      ))
+    ) : (
+      <TableRow>
+        <TableCell colSpan={10} align="center" sx={{ py: 8 }}>
+          <Box sx={{ textAlign: "center" }}>
+            <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
+            <Typography variant="h6" gutterBottom>
+              No students found
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Try adjusting your search or filter to find what you&apos;re looking for.
+            </Typography>
+          </Box>
+        </TableCell>
+      </TableRow>
+    )}
+  </TableBody>
+</Table> */}
                     </TableContainer>
-                    <TablePagination
+                    {/* <TablePagination
                       rowsPerPageOptions={[5, 10, 25, 50]}
                       component="div"
                       count={filteredClasses.length}
@@ -883,7 +1294,7 @@ export default function ClassesListPage() {
                       sx={{
                         borderTop: "1px solid rgba(0, 0, 0, 0.06)",
                       }}
-                    />
+                    /> */}
                   </>
                 )}
               </Paper>

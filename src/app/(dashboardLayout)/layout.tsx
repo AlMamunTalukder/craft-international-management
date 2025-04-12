@@ -141,8 +141,8 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     ));
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <Box sx={{ display: "flex", }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor:"#4F0187" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -165,7 +165,7 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               fontWeight: 'bold',
             }}
           >
-            craft-international-institute
+            Craft International Institute
           </Typography>
 
           <Box sx={{
@@ -177,8 +177,8 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               padding: .5,
               position: "relative",
               borderRadius: 1,
-              bgcolor: "rgba(255,255,255,0.15)",
-              '&:hover': { bgcolor: "rgba(255,255,255,0.25)" },
+              bgcolor: "white",
+              // '&:hover': { bgcolor: "rgba(255,255,255,0.25)" },
               width: "100%",
               maxWidth: "300px"
             }}>
@@ -190,9 +190,9 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 alignItems: "center",
                 justifyContent: "center"
               }}>
-                <SearchIcon />
+                <SearchIcon sx={{color: "black",}}/>
               </Box>
-              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "inherit" }} placeholder="Search…" />
+              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "black" }} placeholder="Search…" />
             </Box>
           </Box>
           <IconButton onClick={handleProfileMenuOpen} color="inherit"><Avatar /></IconButton>

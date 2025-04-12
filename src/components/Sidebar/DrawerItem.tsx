@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dashboard,
   School,
@@ -93,10 +94,11 @@ import {
   Tune,
   LiveHelp,
   VideoSettings,
+  Addchart,
 } from "@mui/icons-material"
 
 // Colorful icon wrapper component
-const ColorfulIcon = ({ children, color }) => {
+const ColorfulIcon = ({ children, color }:any) => {
   return <div style={{ color: color, display: "flex", alignItems: "center", justifyContent: "center" }}>{children}</div>
 }
 
@@ -112,7 +114,7 @@ export const navigationItems = [
     path: "/",
   },
   {
-    title: "Class",
+    title: "Classes",
     icon: (
       <ColorfulIcon color="#0F9D58">
         <School />
@@ -153,7 +155,7 @@ export const navigationItems = [
             <Group />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/add",
+        path: "/dashboard/super_admin/about/add",
       },
       {
         title: "Curriculum",
@@ -162,7 +164,7 @@ export const navigationItems = [
             <Curriculum />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/add",
+        path: "/dashboard/super_admin/about/add",
       },
       {
         title: "Assign Teachers ",
@@ -171,7 +173,7 @@ export const navigationItems = [
             <AssignmentInd />
           </ColorfulIcon>
         ),
-        path: "/super_admin/list",
+        path: "/dashboard/super_admin/list",
       },
       {
         title: "Assign Subjects ",
@@ -180,7 +182,7 @@ export const navigationItems = [
             <Subject />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/list",
+        path: "/dashboard/super_admin/about/list",
       },
       {
         title: "Assign Routines ",
@@ -189,16 +191,16 @@ export const navigationItems = [
             <Schedule />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/list",
+        path: "/dashboard/super_admin/about/list",
       },
       {
         title: "New Report ",
         icon: (
           <ColorfulIcon color="#0F9D58">
-            <Assessment />
+            <Addchart />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/list",
+        path: "/dashboard/super_admin/report/new",
       },
       {
         title: "Class Report List ",
@@ -207,7 +209,7 @@ export const navigationItems = [
             <BarChart />
           </ColorfulIcon>
         ),
-        path: "/super_admin/about/list",
+        path: "/dashboard/super_admin/report",
       },
     ],
   },
@@ -220,7 +222,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/shop/add",
+        path: "/dashboard/super_admin/shop/add",
         title: "Students",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -229,7 +231,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/shop/list",
+        path: "/dashboard/super_admin/shop/list",
         title: "Upload Student",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -238,7 +240,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/shop/list",
+        path: "/dashboard/super_admin/shop/list",
         title: "Upload Student Image",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -247,7 +249,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/shop/list",
+        path: "/dashboard/super_admin/shop/list",
         title: "Migrate Student",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -256,7 +258,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/shop/list",
+        path: "/dashboard/super_admin/shop/list",
         title: "Migrate Status ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -265,7 +267,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/shop/list",
+        path: "/dashboard/super_admin/shop/list",
         title: "Migrate Branch ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -285,7 +287,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/contact/add",
+        path: "/dashboard/super_admin/contact/add",
         title: "Fine Types  ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -294,7 +296,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Fees Types ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -303,7 +305,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Discount",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -312,7 +314,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Assign Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -321,7 +323,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Assign Discount ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -330,7 +332,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Assign Fines ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -339,7 +341,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Collect Fee Setting ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -348,7 +350,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Collect Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -357,7 +359,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Collected Fees Statement",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -366,7 +368,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Send Late Fee SMS ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -375,7 +377,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/contact/list",
+        path: "/dashboard/super_admin/contact/list",
         title: "Deleted Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -395,7 +397,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/blog/add",
+        path: "/dashboard/super_admin/blog/add",
         title: "ID Cards ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -404,7 +406,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Teacher ID Cards ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -413,7 +415,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Admission Token  ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -422,7 +424,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Admit Cards ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -431,7 +433,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Tabular Result",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -440,7 +442,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Income Statement ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -449,7 +451,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Summary Income Statement ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -458,7 +460,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Monthly Income Statement ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -467,7 +469,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Student List",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -476,7 +478,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Salary Sheet ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -485,7 +487,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Teacher Salary Repo ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -494,7 +496,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Employee Salary Repo ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -503,7 +505,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/blog/list",
+        path: "/dashboard/super_admin/blog/list",
         title: "Forms & Certificate ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -522,7 +524,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/topbar/list",
+        path: "/dashboard/super_admin/topbar/list",
         title: "List Top Bar",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -542,7 +544,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/review/add",
+        path: "/dashboard/super_admin/review/add",
         title: "New Account ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -551,7 +553,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Account List ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -560,7 +562,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Instant Donation ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -569,7 +571,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Donar Category List ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -578,7 +580,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Donar List ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -587,7 +589,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Receive Donations List ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -596,7 +598,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/review/list",
+        path: "/dashboard/super_admin/review/list",
         title: "Donation Project List ",
         icon: (
           <ColorfulIcon color="#EA4335">
@@ -615,7 +617,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Setup ",
         icon: (
           <ColorfulIcon color="#34A853">
@@ -624,7 +626,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/folder",
+        path: "/dashboard/super_admin/stock/folder",
         title: "Income / Expense ",
         icon: (
           <ColorfulIcon color="#34A853">
@@ -643,7 +645,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Home Works ",
         icon: (
           <ColorfulIcon color="#FBBC05">
@@ -662,7 +664,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Setup ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -671,7 +673,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/folder",
+        path: "/dashboard/super_admin/stock/folder",
         title: "Attendance Report ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -680,7 +682,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/folder",
+        path: "/dashboard/super_admin/stock/folder",
         title: "Leave ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -699,7 +701,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exam Halls ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -708,7 +710,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exam Duration ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -717,7 +719,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Seat Plans ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -726,7 +728,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Download Seat Plans",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -745,7 +747,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Gradings ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -754,7 +756,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exam Category ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -763,7 +765,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exam Group ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -772,7 +774,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exams",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -781,7 +783,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Exam Routines ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -800,7 +802,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Result",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -809,7 +811,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "combined Result ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -818,7 +820,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Upload Result Sheet",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -827,7 +829,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Subject wise Mark Input ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -836,7 +838,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Excel Mark Input ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -845,7 +847,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Download Marksheet ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -854,7 +856,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Send Result SMS",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -873,7 +875,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Send Instant Message ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -882,7 +884,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "SMS Balance ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -891,7 +893,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "All SMS",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -900,7 +902,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Send SMS ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -909,7 +911,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Send Late Fee SMS ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -918,7 +920,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "SMS Report ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -937,7 +939,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Teachers / Staffs",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -946,7 +948,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Salary Report",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -965,7 +967,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Document Category",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -974,7 +976,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Documents",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -993,7 +995,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Institute Messages ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1002,7 +1004,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Contacts",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1011,7 +1013,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Facilities",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1020,7 +1022,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Governing Body ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1029,7 +1031,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Jobs ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1048,7 +1050,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Notices ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1057,7 +1059,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Events ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1066,7 +1068,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Gallery ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1075,7 +1077,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Authors ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1084,7 +1086,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Blog Category ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1093,7 +1095,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Blogs ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1102,7 +1104,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Menu ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1111,7 +1113,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Page ",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1130,7 +1132,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Admission Info",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -1139,7 +1141,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Online Applications",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -1158,7 +1160,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "New Faculty",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -1167,7 +1169,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Faculty List",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -1176,7 +1178,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "New Department",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -1185,7 +1187,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Department List",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -1204,7 +1206,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "New Media ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1213,7 +1215,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Media List",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1222,7 +1224,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "New Video",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1231,7 +1233,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Video List",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1250,7 +1252,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Staffs Users",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1259,7 +1261,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Teachers",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1268,7 +1270,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Students",
         icon: (
           <ColorfulIcon color="#4285F4">
@@ -1287,7 +1289,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/stock/allimg",
         title: "Default Settings",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -1306,7 +1308,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/super_admin/stock/help",
+        path: "/dashboard/super_admin/stock/help",
         title: "Help",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -1315,7 +1317,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/super_admin/stock/help",
+        path: "/dashboard/super_admin/stock/help",
         title: "Tutorials",
         icon: (
           <ColorfulIcon color="#0F9D58">
