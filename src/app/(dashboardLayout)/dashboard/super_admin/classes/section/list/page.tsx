@@ -10,8 +10,6 @@ import {
   TextField,
   Button,
   Paper,
-  AppBar,
-  Toolbar,
   IconButton,
   Avatar,
   Grid,
@@ -28,7 +26,6 @@ import {
   Divider,
   InputAdornment,
   Tooltip,
-  Badge,
   Dialog,
   DialogActions,
   DialogContent,
@@ -585,14 +582,10 @@ export default function SectionsListPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
-        
-
-        {/* Main Content */}
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 8 }}>
+      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
+        <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
           <Fade in={true} timeout={800}>
             <Box>
-              {/* Header */}
               <Box
                 sx={{
                   display: "flex",
@@ -601,6 +594,7 @@ export default function SectionsListPage() {
                   mb: 3,
                   flexWrap: "wrap",
                   gap: 2,
+                  paddingTop: 2
                 }}
               >
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
@@ -916,10 +910,10 @@ export default function SectionsListPage() {
                             },
                             ...(statusFilter || classFilter || typeFilter
                               ? {
-                                  borderColor: "primary.main",
-                                  color: "primary.main",
-                                  bgcolor: "rgba(99, 102, 241, 0.04)",
-                                }
+                                borderColor: "primary.main",
+                                color: "primary.main",
+                                bgcolor: "rgba(99, 102, 241, 0.04)",
+                              }
                               : {}),
                           }}
                         >
@@ -1222,6 +1216,8 @@ export default function SectionsListPage() {
                                         />
                                       </TableCell>
                                       <TableCell>
+                                                                                                                 
+                                                                            
                                         <Chip
                                           icon={statusChipProps.icon}
                                           label={section.status}
@@ -1304,7 +1300,7 @@ export default function SectionsListPage() {
                                         No sections found
                                       </Typography>
                                       <Typography variant="body2" color="text.secondary">
-                                        Try adjusting your search or filter to find what you're looking for.
+                                        Try adjusting your search or filter to find what you&apos;re looking for.
                                       </Typography>
                                     </Box>
                                   </TableCell>
@@ -1333,11 +1329,11 @@ export default function SectionsListPage() {
                                       transition: "all 0.2s",
                                       ...(isSelected
                                         ? {
-                                            bgcolor: alpha(theme.palette.primary.main, 0.05),
-                                            borderColor: theme.palette.primary.main,
-                                            borderWidth: 1,
-                                            borderStyle: "solid",
-                                          }
+                                          bgcolor: alpha(theme.palette.primary.main, 0.05),
+                                          borderColor: theme.palette.primary.main,
+                                          borderWidth: 1,
+                                          borderStyle: "solid",
+                                        }
                                         : {}),
                                       position: "relative",
                                       overflow: "visible",

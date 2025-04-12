@@ -220,7 +220,7 @@ const generateClassesData = () => {
   }))
 }
 
-export default function ClassesListPage() {
+export default function BatchListPage() {
   const [classes, setClasses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
@@ -377,7 +377,6 @@ export default function ClassesListPage() {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius:2 }}>
-
         <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius:2 }}>
           <Fade in={true} timeout={800}>
             <Box>
@@ -385,16 +384,15 @@ export default function ClassesListPage() {
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
-               
+                  alignItems: "center",               
                   mb: 3,
                   flexWrap: "wrap",
                   gap: 2,
-                  paddingTop:2
+                  paddingTop:2 
                 }}
               >
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  Classes
+                  Batches
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <Button
@@ -416,7 +414,7 @@ export default function ClassesListPage() {
                       boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
                     }}
                   >
-                    Add New Class
+                    Add New Batch
                   </Button>
                 </Box>
               </Box>

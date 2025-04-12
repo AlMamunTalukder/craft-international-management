@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import {  useTheme } from "@mui/material/styles";
+// import {  useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -47,7 +47,7 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
   label,
   items,
   size = "small",
-  
+
   fullWidth = true,
   sx,
 }) => {
@@ -55,16 +55,16 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
   const { control, setValue, getValues, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
 
-  const [expanded, setExpanded] = useState<string[]>([]); 
+  const [expanded, setExpanded] = useState<string[]>([]);
 
   const handleCategoryClick = (category: string) => {
     const currentIndex = expanded.indexOf(category);
     const newExpanded = [...expanded];
 
     if (currentIndex === -1) {
-      newExpanded.push(category); 
+      newExpanded.push(category);
     } else {
-      newExpanded.splice(currentIndex, 1); 
+      newExpanded.splice(currentIndex, 1);
     }
 
     setExpanded(newExpanded);
@@ -76,7 +76,7 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
       ? currentValues.filter((value: string) => value !== subCategory)
       : [...currentValues, subCategory];
 
-    setValue(name, updatedValues); 
+    setValue(name, updatedValues);
   };
 
 
@@ -132,19 +132,20 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
                     {item.subcategories?.map((sub) => (
                       <ListItem
                         key={sub}
-                        button
+                        component="li"
                         sx={{
-                          pl: 4, 
+                          pl: 4,
                           backgroundColor: isSubcategorySelected(sub)
                             ? "#F5F5F5"
                             : "transparent",
                           color: isSubcategorySelected(sub) ? "#1591A3" : "black",
                           marginBottom: isSubcategorySelected(sub) ? "3px" : "",
+                          cursor: "pointer", // Add pointer cursor to indicate clickable
                         }}
                         onClick={() => handleSubcategoryChange(sub)}
                       >
                         <ListItemIcon>
-                          <ArrowRight /> 
+                          <ArrowRight />
                         </ListItemIcon>
                         <ListItemText primary={sub} />
                       </ListItem>
