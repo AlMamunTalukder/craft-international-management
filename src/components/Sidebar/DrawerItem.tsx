@@ -128,7 +128,7 @@ export const navigationItems = [
             <AccessTime />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/session",
+        path: "/dashboard/super_admin/classes/session",
       },
       {
         title: "Sections",
@@ -137,7 +137,7 @@ export const navigationItems = [
             <AccessTime />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/section/list",
+        path: "/dashboard/super_admin/classes/section/list",
       },
       {
         title: "Classes",
@@ -146,7 +146,7 @@ export const navigationItems = [
             <Class />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/classes",
+        path: "/dashboard/super_admin/classes/class",
       },
       {
         title: "Batches",
@@ -155,7 +155,7 @@ export const navigationItems = [
             <Group />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/about/add",
+        path: "/dashboard/super_admin/classes/batches",
       },
       {
         title: "Curriculum",
@@ -164,7 +164,7 @@ export const navigationItems = [
             <Curriculum />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/about/add",
+        path: "/dashboard/super_admin/classes/curriculum",
       },
       {
         title: "Assign Teachers ",
@@ -173,7 +173,7 @@ export const navigationItems = [
             <AssignmentInd />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/list",
+        path: "/dashboard/super_admin/classes/assign-teacher",
       },
       {
         title: "Assign Subjects ",
@@ -182,7 +182,7 @@ export const navigationItems = [
             <Subject />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/about/list",
+        path: "/dashboard/super_admin/classes/assign-subjects",
       },
       {
         title: "Assign Routines ",
@@ -191,7 +191,7 @@ export const navigationItems = [
             <Schedule />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/about/list",
+        path: "/dashboard/super_admin/classes/assign-routines",
       },
       {
         title: "New Report ",
@@ -200,7 +200,7 @@ export const navigationItems = [
             <Addchart />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/report/new",
+        path: "/dashboard/super_admin/classes/report/new",
       },
       {
         title: "Class Report List ",
@@ -209,7 +209,7 @@ export const navigationItems = [
             <BarChart />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/report",
+        path: "/dashboard/super_admin/classes/report",
       },
     ],
   },
