@@ -2,7 +2,13 @@
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
+
+const siliguri = Hind_Siliguri({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 
 const geistSans = Geist({
@@ -28,12 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${siliguri.className} antialiased`}
       >
-      
-      
         {children}
-
       </body>
     </html>
   );
