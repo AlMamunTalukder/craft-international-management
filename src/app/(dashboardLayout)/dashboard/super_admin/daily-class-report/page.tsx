@@ -12,34 +12,24 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Divider,
   AppBar,
   Toolbar,
   IconButton,
   Avatar,
   Breadcrumbs,
   Link,
-  Card,
-  CardContent,
-  CardHeader,
-  FormControlLabel,
-  Switch,
-  Tooltip,
-  Snackbar,
-  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
   CircularProgress,
   useTheme,
-  alpha,
-  Stepper,
-  Step,
-  StepLabel,
-  Badge,
 } from "@mui/material"
 import {
-  ArrowBack as ArrowBackIcon,
-  Save as SaveIcon,
   School as SchoolIcon,
-  Person as PersonIcon,
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
   Help as HelpIcon,
@@ -47,187 +37,113 @@ import {
   Home as HomeIcon,
   NavigateNext as NavigateNextIcon,
   Add as AddIcon,
-  Cancel as CancelIcon,
-  Book as BookIcon,
-  Assignment as AssignmentIcon,
-  Quiz as QuizIcon,
-  Class as ClassIcon,
+  FilterList as FilterListIcon,
+  Print as PrintIcon,
+  GetApp as GetAppIcon,
 } from "@mui/icons-material"
 
-export default function DailyClassReportAdd() {
-  const theme = useTheme()
-  const [loading, setLoading] = useState(false)
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
-  const [activeStep, setActiveStep] = useState(0)
+// Mock data for the table
+const generateMockData = () => {
+  const subjects = [
+    "MATHEMATICS",
+    "SCIENCE",
+    "ENGLISH",
+    "HISTORY",
+    "GEOGRAPHY",
+    "PHYSICS",
+    "CHEMISTRY",
+    "BIOLOGY",
+    "COMPUTER SCIENCE",
+  ]
 
-  // Form data state
-  const [formData, setFormData] = useState({
-    date: formatDateForInput(new Date()),
-    classId: "",
+  const teachers = ["John Doe", "Jane Smith", "Robert Johnson", "Emily Davis", "Michael Wilson"]
+
+  const statuses = ["Present", "Absent", "Late", "Substitute"]
+
+  const data = []
+
+  for (let i = 1; i <= 100; i++) {
+    const subjectIndex = Math.floor(Math.random() * subjects.length)
+    const teacherIndex = Math.floor(Math.random() * teachers.length)
+    const statusIndex = Math.floor(Math.random() * statuses.length)
+
+    data.push({
+      id: i,
+      subject: subjects[subjectIndex],
+      teacher: teachers[teacherIndex],
+      status: statuses[statusIndex],
+      date: `2023-${String(Math.floor(Math.random() * 12) + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
+      startTime: `${String(Math.floor(Math.random() * 12) + 8).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
+      endTime: `${String(Math.floor(Math.random() * 12) + 9).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
+      classWork: Math.random() > 0.5 ? "Completed" : "Partially Completed",
+      homework: Math.random() > 0.5 ? "Assigned" : "None",
+      test: Math.random() > 0.7,
+    })
+  }
+
+  return data
+}
+
+export default function DailyClassReportList() {
+  const theme = useTheme()
+  const [loading, setLoading] = useState(true)
+  const [reports, setReports] = useState([])
+  const [selectedReports, setSelectedReports] = useState([])
+  const [filter, setFilter] = useState({
+    class: "",
     section: "",
     subject: "",
-    teacher: "",
-    status: "Present",
-    startTime: "09:00",
-    endTime: "10:00",
-    classWorkStatus: "Completed",
-    classWorkDetails: "",
-    homeworkStatus: "Assigned",
-    homeworkDetails: "",
-    homeworkDueDate: formatDateForInput(addDays(new Date(), 1)),
-    testConducted: false,
-    testType: "",
-    testTopic: "",
-    attendanceTotal: 30,
-    attendancePresent: 28,
-    attendanceAbsent: 2,
-    notes: "",
+    date: "",
   })
 
-  // Mock data for dropdowns
-  const [classes, setClasses] = useState([])
-  const [sections, setSections] = useState([])
-  const [subjects, setSubjects] = useState([])
-  const [teachers, setTeachers] = useState([])
-
-  // Helper function to format date for input
-  function formatDateForInput(date) {
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, "0")
-    const day = String(d.getDate()).padStart(2, "0")
-    return `${year}-${month}-${day}`
-  }
-
-  // Helper function to add days to a date
-  function addDays(date, days) {
-    const result = new Date(date)
-    result.setDate(result.getDate() + days)
-    return result
-  }
-
-  // Fetch mock data
+  // Load mock data
   useEffect(() => {
-    // Simulate API calls
-    setClasses([
-      { id: "1", name: "Class 1" },
-      { id: "2", name: "Class 2" },
-      { id: "3", name: "Class 3" },
-      { id: "4", name: "Class 4" },
-      { id: "5", name: "Class 5" },
-    ])
-
-    setSections([
-      { id: "A", name: "Section A" },
-      { id: "B", name: "Section B" },
-      { id: "C", name: "Section C" },
-    ])
-
-    setSubjects([
-      { id: "1", name: "MATHEMATICS" },
-      { id: "2", name: "SCIENCE" },
-      { id: "3", name: "ENGLISH" },
-      { id: "4", name: "HISTORY" },
-      { id: "5", name: "GEOGRAPHY" },
-      { id: "6", name: "PHYSICS" },
-      { id: "7", name: "CHEMISTRY" },
-      { id: "8", name: "BIOLOGY" },
-      { id: "9", name: "COMPUTER SCIENCE" },
-    ])
-
-    setTeachers([
-      { id: "1", name: "John Doe" },
-      { id: "2", name: "Jane Smith" },
-      { id: "3", name: "Robert Johnson" },
-      { id: "4", name: "Emily Davis" },
-      { id: "5", name: "Michael Wilson" },
-    ])
-  }, [])
-
-  // Handle form field changes
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-
-    // Update attendance calculations
-    if (name === "attendanceTotal" || name === "attendancePresent") {
-      const total = name === "attendanceTotal" ? Number.parseInt(value) || 0 : formData.attendanceTotal
-      const present = name === "attendancePresent" ? Number.parseInt(value) || 0 : formData.attendancePresent
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        attendanceAbsent: Math.max(0, total - present),
-      }))
-    }
-
-    if (name === "attendanceAbsent") {
-      const absent = Number.parseInt(value) || 0
-      setFormData((prev) => ({
-        ...prev,
-        attendanceAbsent: absent,
-        attendancePresent: Math.max(0, prev.attendanceTotal - absent),
-      }))
-    }
-  }
-
-  // Handle switch changes
-  const handleSwitchChange = (e) => {
-    const { name, checked } = e.target
-    setFormData({
-      ...formData,
-      [name]: checked,
-    })
-  }
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
+    const fetchData = async () => {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      setSnackbar({
-        open: true,
-        message: "Daily class report added successfully!",
-        severity: "success",
-      })
-
-      // Reset form or redirect
-      console.log("Form submitted:", formData)
-    } catch (err) {
-      setSnackbar({
-        open: true,
-        message: "Failed to add report. Please try again.",
-        severity: "error",
-      })
-    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setReports(generateMockData())
       setLoading(false)
     }
+
+    fetchData()
+  }, [])
+
+  // Handle checkbox selection
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedReports(reports.map((report) => report.id))
+    } else {
+      setSelectedReports([])
+    }
   }
 
-  // Handle snackbar close
-  const handleSnackbarClose = () => {
-    setSnackbar({ ...snackbar, open: false })
+  const handleSelectOne = (event, id) => {
+    const selectedIndex = selectedReports.indexOf(id)
+    let newSelected = []
+
+    if (selectedIndex === -1) {
+      newSelected = [...selectedReports, id]
+    } else {
+      newSelected = selectedReports.filter((reportId) => reportId !== id)
+    }
+
+    setSelectedReports(newSelected)
   }
 
-  // Handle stepper next
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  // Handle filter changes
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target
+    setFilter({
+      ...filter,
+      [name]: value,
+    })
   }
 
-  // Handle stepper back
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  // Handle save changes
+  const handleSaveChanges = () => {
+    console.log("Saving changes for reports:", selectedReports)
+    // Implement save logic here
   }
-
-  // Steps for the stepper
-  const steps = ["Basic Information", "Class Activities", "Attendance & Notes"]
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", bgcolor: "#f5f7fa" }}>
@@ -249,25 +165,17 @@ export default function DailyClassReportAdd() {
             দৈনিক শ্রেণী প্রতিবেদন
           </Typography>
 
-          <Tooltip title="Notifications">
-            <IconButton>
-              <Badge badgeContent={4} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          <IconButton>
+            <NotificationsIcon />
+          </IconButton>
 
-          <Tooltip title="Help">
-            <IconButton>
-              <HelpIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton>
+            <HelpIcon />
+          </IconButton>
 
-          <Tooltip title="Settings">
-            <IconButton>
-              <SettingsIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton>
+            <SettingsIcon />
+          </IconButton>
 
           <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
             <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 32, height: 32 }}>A</Avatar>
@@ -288,559 +196,160 @@ export default function DailyClassReportAdd() {
             <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
             Dashboard
           </Link>
-          <Link underline="hover" color="inherit" href="#" sx={{ display: "flex", alignItems: "center" }}>
-            <ClassIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-            Daily Class Reports
-          </Link>
           <Typography color="text.primary" sx={{ display: "flex", alignItems: "center" }}>
-            <AddIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-            Add New Report
+            <SchoolIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+            Daily Class Reports
           </Typography>
         </Breadcrumbs>
       </Box>
 
-      {/* Page Title */}
-      <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-        <IconButton sx={{ mr: 1 }} component={Link} href="#">
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
-          Add New Daily Class Report
-        </Typography>
-      </Box>
-
-      {/* Stepper */}
-      <Box sx={{ width: "100%", p: 2 }}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
-
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, p: 2 }}>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            {/* Step 1: Basic Information */}
-            {activeStep === 0 && (
-              <>
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Class Details"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <ClassIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            name="date"
-                            label="Date"
-                            type="date"
-                            value={formData.date}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Class</InputLabel>
-                            <Select name="classId" value={formData.classId} label="Class" onChange={handleChange}>
-                              {classes.map((cls) => (
-                                <MenuItem key={cls.id} value={cls.id}>
-                                  {cls.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Section</InputLabel>
-                            <Select name="section" value={formData.section} label="Section" onChange={handleChange}>
-                              {sections.map((section) => (
-                                <MenuItem key={section.id} value={section.id}>
-                                  {section.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Subject</InputLabel>
-                            <Select name="subject" value={formData.subject} label="Subject" onChange={handleChange}>
-                              {subjects.map((subject) => (
-                                <MenuItem key={subject.id} value={subject.id}>
-                                  {subject.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Teacher & Schedule"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <PersonIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Teacher</InputLabel>
-                            <Select name="teacher" value={formData.teacher} label="Teacher" onChange={handleChange}>
-                              {teachers.map((teacher) => (
-                                <MenuItem key={teacher.id} value={teacher.id}>
-                                  {teacher.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Status</InputLabel>
-                            <Select name="status" value={formData.status} label="Status" onChange={handleChange}>
-                              <MenuItem value="Present">Present</MenuItem>
-                              <MenuItem value="Absent">Absent</MenuItem>
-                              <MenuItem value="Late">Late</MenuItem>
-                              <MenuItem value="Substitute">Substitute</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            name="startTime"
-                            label="Start Time"
-                            type="time"
-                            value={formData.startTime}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            name="endTime"
-                            label="End Time"
-                            type="time"
-                            value={formData.endTime}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </>
-            )}
-
-            {/* Step 2: Class Activities */}
-            {activeStep === 1 && (
-              <>
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Class Work"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <BookIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Class Work Status</InputLabel>
-                            <Select
-                              name="classWorkStatus"
-                              value={formData.classWorkStatus}
-                              label="Class Work Status"
-                              onChange={handleChange}
-                            >
-                              <MenuItem value="Completed">Completed</MenuItem>
-                              <MenuItem value="Partially Completed">Partially Completed</MenuItem>
-                              <MenuItem value="Not Completed">Not Completed</MenuItem>
-                              <MenuItem value="Not Applicable">Not Applicable</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            name="classWorkDetails"
-                            label="Class Work Details"
-                            multiline
-                            rows={3}
-                            value={formData.classWorkDetails}
-                            onChange={handleChange}
-                            fullWidth
-                            placeholder="Enter topics covered, activities conducted, etc."
-                          />
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Homework"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <AssignmentIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth required>
-                            <InputLabel>Homework Status</InputLabel>
-                            <Select
-                              name="homeworkStatus"
-                              value={formData.homeworkStatus}
-                              label="Homework Status"
-                              onChange={handleChange}
-                            >
-                              <MenuItem value="Assigned">Assigned</MenuItem>
-                              <MenuItem value="None">None</MenuItem>
-                              <MenuItem value="Collected">Collected</MenuItem>
-                              <MenuItem value="Reviewed">Reviewed</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            name="homeworkDueDate"
-                            label="Due Date"
-                            type="date"
-                            value={formData.homeworkDueDate}
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            name="homeworkDetails"
-                            label="Homework Details"
-                            multiline
-                            rows={3}
-                            value={formData.homeworkDetails}
-                            onChange={handleChange}
-                            fullWidth
-                            placeholder="Enter homework assignment details"
-                          />
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Class Test"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <QuizIcon />
-                        </Avatar>
-                      }
-                      action={
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={formData.testConducted}
-                              onChange={handleSwitchChange}
-                              name="testConducted"
-                              color="primary"
-                            />
-                          }
-                          label="Test Conducted"
-                        />
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      {formData.testConducted ? (
-                        <Grid container spacing={2}>
-                          <Grid item xs={12} md={6}>
-                            <FormControl fullWidth>
-                              <InputLabel>Test Type</InputLabel>
-                              <Select
-                                name="testType"
-                                value={formData.testType}
-                                label="Test Type"
-                                onChange={handleChange}
-                              >
-                                <MenuItem value="Quiz">Quiz</MenuItem>
-                                <MenuItem value="Unit Test">Unit Test</MenuItem>
-                                <MenuItem value="Chapter Test">Chapter Test</MenuItem>
-                                <MenuItem value="Mid-Term">Mid-Term</MenuItem>
-                                <MenuItem value="Final">Final</MenuItem>
-                              </Select>
-                            </FormControl>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <TextField
-                              name="testTopic"
-                              label="Test Topic/Details"
-                              value={formData.testTopic}
-                              onChange={handleChange}
-                              fullWidth
-                              placeholder="Enter test topic or details"
-                            />
-                          </Grid>
-                        </Grid>
-                      ) : (
-                        <Typography variant="body2" color="textSecondary" sx={{ py: 2 }}>
-                          No test was conducted for this class.
-                        </Typography>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </>
-            )}
-
-            {/* Step 3: Attendance & Notes */}
-            {activeStep === 2 && (
-              <>
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Attendance"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <PersonIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
-                          <TextField
-                            name="attendanceTotal"
-                            label="Total Students"
-                            type="number"
-                            value={formData.attendanceTotal}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputProps={{ inputProps: { min: 0 } }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <TextField
-                            name="attendancePresent"
-                            label="Present Students"
-                            type="number"
-                            value={formData.attendancePresent}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputProps={{ inputProps: { min: 0 } }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <TextField
-                            name="attendanceAbsent"
-                            label="Absent Students"
-                            type="number"
-                            value={formData.attendanceAbsent}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            InputProps={{ inputProps: { min: 0 } }}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              p: 2,
-                              mt: 1,
-                              bgcolor: alpha(theme.palette.primary.main, 0.1),
-                              borderRadius: 2,
-                              display: "flex",
-                              justifyContent: "space-around",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Box sx={{ textAlign: "center" }}>
-                              <Typography variant="body2" color="textSecondary">
-                                Total
-                              </Typography>
-                              <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
-                                {formData.attendanceTotal}
-                              </Typography>
-                            </Box>
-                            <Divider orientation="vertical" flexItem />
-                            <Box sx={{ textAlign: "center" }}>
-                              <Typography variant="body2" color="textSecondary">
-                                Present
-                              </Typography>
-                              <Typography variant="h4" color="success.main" sx={{ fontWeight: 600 }}>
-                                {formData.attendancePresent}
-                              </Typography>
-                            </Box>
-                            <Divider orientation="vertical" flexItem />
-                            <Box sx={{ textAlign: "center" }}>
-                              <Typography variant="body2" color="textSecondary">
-                                Absent
-                              </Typography>
-                              <Typography variant="h4" color="error.main" sx={{ fontWeight: 600 }}>
-                                {formData.attendanceAbsent}
-                              </Typography>
-                            </Box>
-                            <Divider orientation="vertical" flexItem />
-                            <Box sx={{ textAlign: "center" }}>
-                              <Typography variant="body2" color="textSecondary">
-                                Attendance Rate
-                              </Typography>
-                              <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                                {formData.attendanceTotal > 0
-                                  ? Math.round((formData.attendancePresent / formData.attendanceTotal) * 100)
-                                  : 0}
-                                %
-                              </Typography>
-                            </Box>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Card elevation={0} sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
-                    <CardHeader
-                      title="Additional Notes"
-                      titleTypographyProps={{ variant: "h6" }}
-                      avatar={
-                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-                          <AssignmentIcon />
-                        </Avatar>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <TextField
-                        name="notes"
-                        label="Notes"
-                        multiline
-                        rows={4}
-                        value={formData.notes}
-                        onChange={handleChange}
-                        fullWidth
-                        placeholder="Enter any additional notes, observations, or issues that need to be addressed"
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </>
-            )}
+      {/* Filters */}
+      <Box sx={{ p: 2 }}>
+        <Paper sx={{ p: 2, mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Filters
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Class</InputLabel>
+                <Select name="class" value={filter.class} label="Class" onChange={handleFilterChange}>
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="1">Class 1</MenuItem>
+                  <MenuItem value="2">Class 2</MenuItem>
+                  <MenuItem value="3">Class 3</MenuItem>
+                  <MenuItem value="4">Class 4</MenuItem>
+                  <MenuItem value="5">Class 5</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Section</InputLabel>
+                <Select name="section" value={filter.section} label="Section" onChange={handleFilterChange}>
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="A">Section A</MenuItem>
+                  <MenuItem value="B">Section B</MenuItem>
+                  <MenuItem value="C">Section C</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Subject</InputLabel>
+                <Select name="subject" value={filter.subject} label="Subject" onChange={handleFilterChange}>
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="MATHEMATICS">MATHEMATICS</MenuItem>
+                  <MenuItem value="SCIENCE">SCIENCE</MenuItem>
+                  <MenuItem value="ENGLISH">ENGLISH</MenuItem>
+                  <MenuItem value="HISTORY">HISTORY</MenuItem>
+                  <MenuItem value="GEOGRAPHY">GEOGRAPHY</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                name="date"
+                label="Date"
+                type="date"
+                value={filter.date}
+                onChange={handleFilterChange}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+              />
+            </Grid>
           </Grid>
-        </form>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+            <Button variant="outlined" startIcon={<FilterListIcon />}>
+              More Filters
+            </Button>
+            <Box>
+              <Button variant="outlined" startIcon={<PrintIcon />} sx={{ mr: 1 }}>
+                Print
+              </Button>
+              <Button variant="outlined" startIcon={<GetAppIcon />} sx={{ mr: 1 }}>
+                Export
+              </Button>
+              <Button component={Link} href='/dashboard/super_admin/daily-class-report/add' variant="contained" color="primary" startIcon={<AddIcon />}>
+                Add New
+              </Button>
+            </Box>
+          </Box>
+        </Paper>
       </Box>
 
-      {/* Footer with Navigation Buttons */}
+      {/* Table */}
+      <Box sx={{ p: 2, flexGrow: 1 }}>
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 400 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
+              <Table stickyHeader aria-label="daily class reports table" size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        indeterminate={selectedReports.length > 0 && selectedReports.length < reports.length}
+                        checked={reports.length > 0 && selectedReports.length === reports.length}
+                        onChange={handleSelectAll}
+                      />
+                    </TableCell>
+                    <TableCell>Subject</TableCell>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Teacher</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>End Time</TableCell>
+                    <TableCell>Class Work</TableCell>
+                    <TableCell>Homework</TableCell>
+                    <TableCell>Test</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {reports.map((report) => (
+                    <TableRow hover key={report.id} selected={selectedReports.indexOf(report.id) !== -1}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedReports.indexOf(report.id) !== -1}
+                          onChange={(event) => handleSelectOne(event, report.id)}
+                        />
+                      </TableCell>
+                      <TableCell>{report.subject}</TableCell>
+                      <TableCell>{report.date}</TableCell>
+                      <TableCell>{report.teacher}</TableCell>
+                      <TableCell>{report.status}</TableCell>
+                      <TableCell>{report.startTime}</TableCell>
+                      <TableCell>{report.endTime}</TableCell>
+                      <TableCell>{report.classWork}</TableCell>
+                      <TableCell>{report.homework}</TableCell>
+                      <TableCell>{report.test ? "Yes" : "No"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Paper>
+      </Box>
+
+      {/* Footer with Save Button */}
       <Box
         sx={{
           p: 2,
           borderTop: "1px solid #e0e0e0",
           bgcolor: "#fff",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
         }}
       >
-        <Button
-          variant="outlined"
-          color="inherit"
-          onClick={handleBack}
-          disabled={activeStep === 0}
-          startIcon={<ArrowBackIcon />}
-        >
-          Back
+        <Button variant="contained" color="success" disabled={selectedReports.length === 0} onClick={handleSaveChanges}>
+          Save Changes
         </Button>
-
-        <Box>
-          <Button
-            variant="outlined"
-            color="secondary"
-            sx={{ mr: 2 }}
-            startIcon={<CancelIcon />}
-            component={Link}
-            href="#"
-          >
-            Cancel
-          </Button>
-
-          {activeStep === steps.length - 1 ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
-            >
-              {loading ? "Saving..." : "Save Report"}
-            </Button>
-          ) : (
-            <Button variant="contained" color="primary" onClick={handleNext} endIcon={<NavigateNextIcon />}>
-              Next
-            </Button>
-          )}
-        </Box>
       </Box>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} variant="filled" sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   )
 }

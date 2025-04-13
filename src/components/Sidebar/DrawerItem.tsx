@@ -6,7 +6,6 @@ import {
   Payments,
   Print,
   Description,
-  // Volunteer,
   AccountBalance,
   Assignment,
   EventNote,
@@ -95,10 +94,19 @@ import {
   LiveHelp,
   VideoSettings,
   Addchart,
+  RestaurantMenu,
+  ListAlt,
+  AddCircle,
+  AssessmentOutlined,
+  ClassOutlined,
+  NoteAdd,
+  PostAdd,
+  StickyNote2,
+  Summarize,
 } from "@mui/icons-material"
 
 // Colorful icon wrapper component
-const ColorfulIcon = ({ children, color }:any) => {
+const ColorfulIcon = ({ children, color }: any) => {
   return <div style={{ color: color, display: "flex", alignItems: "center", justifyContent: "center" }}>{children}</div>
 }
 
@@ -134,7 +142,7 @@ export const navigationItems = [
         title: "Sections",
         icon: (
           <ColorfulIcon color="#0F9D58">
-            <AccessTime />
+            <ClassOutlined />
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/section/list",
@@ -272,6 +280,90 @@ export const navigationItems = [
         icon: (
           <ColorfulIcon color="#DB4437">
             <CompareArrows />
+          </ColorfulIcon>
+        ),
+      },
+    ],
+  },
+  {
+    title: "Meal Report",
+    icon: (
+      <ColorfulIcon color="#DB4437">
+        <RestaurantMenu />
+      </ColorfulIcon>
+    ),
+    children: [
+      {
+        path: "/dashboard/super_admin/daily-meal-report",
+        title: "Meal Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <ListAlt />
+          </ColorfulIcon>
+        ),
+      },
+      {
+        path: "/dashboard/super_admin/daily-meal-report/add",
+        title: "Add Meal Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <AddCircle />
+          </ColorfulIcon>
+        ),
+      },
+    ],
+  },
+  {
+    title: "Student Report",
+    icon: (
+      <ColorfulIcon color="#DB4437">
+        <AssessmentOutlined />
+      </ColorfulIcon>
+    ),
+    children: [
+      {
+        path: "/dashboard/super_admin/daily-student-report/add",
+        title: "Add Student Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <PostAdd />
+          </ColorfulIcon>
+        ),
+      },
+      {
+        path: "/dashboard/super_admin/daily-student-report",
+        title: "Student Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <ListAlt />
+          </ColorfulIcon>
+        ),
+      },
+    ],
+  },
+  {
+    title: "Class Report",
+    icon: (
+      <ColorfulIcon color="#DB4437">
+        <StickyNote2 />
+      </ColorfulIcon>
+    ),
+    children: [
+      {
+        path: "/dashboard/super_admin/daily-class-report/add",
+        title: "Add Class Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <NoteAdd />
+          </ColorfulIcon>
+        ),
+      },
+      {
+        path: "/dashboard/super_admin/daily-class-report",
+        title: "Class Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <Summarize />
           </ColorfulIcon>
         ),
       },
@@ -1247,7 +1339,7 @@ export const navigationItems = [
     title: "Administration",
     icon: (
       <ColorfulIcon color="#4285F4">
-        <Business />
+        <AdminPanelSettings />
       </ColorfulIcon>
     ),
     children: [
@@ -1328,4 +1420,3 @@ export const navigationItems = [
     ],
   },
 ]
-
