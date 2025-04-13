@@ -222,7 +222,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/dashboard/super_admin/shop/add",
+        path: "/dashboard/super_admin/student/list",
         title: "Students",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -469,8 +469,8 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/blog/list",
-        title: "Student List",
+        path: "/dashboard/super_admin/student",
+        title: "students",
         icon: (
           <ColorfulIcon color="#4285F4">
             <FormatListNumbered />
