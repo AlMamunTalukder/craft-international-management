@@ -247,17 +247,9 @@ export const navigationItems = [
           </ColorfulIcon>
         ),
       },
+      
       {
-        path: "/dashboard/super_admin/shop/list",
-        title: "Upload Student Image",
-        icon: (
-          <ColorfulIcon color="#DB4437">
-            <Image />
-          </ColorfulIcon>
-        ),
-      },
-      {
-        path: "/dashboard/super_admin/shop/list",
+        path: "/dashboard/super_admin/student-migrate",
         title: "Migrate Student",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -266,7 +258,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/shop/list",
+        path: "/dashboard/super_admin/student-status-migrate",
         title: "Migrate Status ",
         icon: (
           <ColorfulIcon color="#DB4437">
@@ -379,7 +371,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/dashboard/super_admin/contact/add",
+        path: "/dashboard/super_admin/fine-type/list",
         title: "Fine Types  ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -388,7 +380,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/fee-type/list",
         title: "Fees Types ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -737,7 +729,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/dashboard/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/home-work",
         title: "Home Works ",
         icon: (
           <ColorfulIcon color="#FBBC05">

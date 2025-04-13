@@ -48,6 +48,7 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  Badge,
 } from "@mui/material"
 import {
   Search,
@@ -56,213 +57,311 @@ import {
   Edit,
   Delete,
   Visibility,
-  Download,
-  Send,
-  CheckCircle,
-  Warning,
-  CalendarMonth,
-  Class,
-  Assignment,
   Add,
   Refresh,
   ArrowUpward,
   ArrowDownward,
-  Bookmark,
-  Print,
-  Archive,
-  ViewList,
-  ViewModule,
   Close,
   Check,
   Help,
+  AttachMoney,
+  Percent,
+  CheckCircle,
+  Block,
+  ContentCopy,
+  Download,
+  Archive,
+  Notifications,
+  ViewList,
+  ViewModule,
+  Receipt,
+  LocalAtm,
+  Bookmark,
+  BookmarkBorder,
 } from "@mui/icons-material"
 
-// Sample data for homework list
-const homeworkData = [
+// Sample data for fine types
+const fineTypesData = [
   {
     id: 1,
-    title: "Mathematics Assignment - Quadratic Equations",
-    subject: { id: 1, name: "Mathematics", icon: "📐" },
-    class: { id: 9, name: "Class 9" },
-    section: { id: 2, name: "Section B" },
-    assignedDate: new Date(2023, 3, 15),
-    dueDate: new Date(2023, 3, 20),
-    status: "active",
-    priority: "high",
-    submissionCount: 28,
-    totalStudents: 35,
+    name: "Late Fee Payment",
+    category: { id: 1, name: "Late Payment" },
+    description: "Fine for late payment of school fees",
+    isPercentage: true,
+    amount: "5",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 7,
+    isRecurring: true,
+    recurringFrequency: "monthly",
+    isActive: true,
+    applyToAll: true,
+    selectedClasses: [],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: true,
+    fineIncreaseRate: 2,
+    fineIncreaseFrequency: "weekly",
+    maxFineAmount: "15",
+    fineApplicationMethod: "immediate",
+    createdBy: { id: 1, name: "Admin User", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 2, 15),
     isImportant: true,
-    description: "Solve the quadratic equations from Chapter 4, Exercise 4.2, Questions 1-15.",
-    attachments: 2,
-    maxMarks: 20,
-    createdBy: { id: 1, name: "Mr. Ahmed Khan", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 245,
   },
   {
     id: 2,
-    title: "Science Project - Ecosystem Model",
-    subject: { id: 2, name: "Science", icon: "🔬" },
-    class: { id: 8, name: "Class 8" },
-    section: { id: 1, name: "Section A" },
-    assignedDate: new Date(2023, 3, 10),
-    dueDate: new Date(2023, 3, 25),
-    status: "active",
-    priority: "medium",
-    submissionCount: 15,
-    totalStudents: 32,
+    name: "Library Book Late Return",
+    category: { id: 4, name: "Library" },
+    description: "Fine for late return of library books",
+    isPercentage: false,
+    amount: "10",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 0,
+    isRecurring: true,
+    recurringFrequency: "daily",
+    isActive: true,
+    applyToAll: true,
+    selectedClasses: [],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "next_bill",
+    createdBy: { id: 2, name: "Library Manager", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 1, 20),
     isImportant: false,
-    description: "Create a model of an ecosystem showing different trophic levels and energy flow.",
-    attachments: 3,
-    maxMarks: 50,
-    createdBy: { id: 2, name: "Mrs. Fatima Ali", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 178,
   },
   {
     id: 3,
-    title: "English Essay - My Favorite Book",
-    subject: { id: 3, name: "English", icon: "📚" },
-    class: { id: 7, name: "Class 7" },
-    section: { id: 3, name: "Section C" },
-    assignedDate: new Date(2023, 3, 5),
-    dueDate: new Date(2023, 3, 12),
-    status: "completed",
-    priority: "low",
-    submissionCount: 30,
-    totalStudents: 30,
-    isImportant: false,
-    description: "Write a 500-word essay about your favorite book and why you like it.",
-    attachments: 1,
-    maxMarks: 25,
-    createdBy: { id: 3, name: "Mr. Ibrahim Ahmed", avatar: "/placeholder.svg?height=40&width=40" },
+    name: "Absence Fine",
+    category: { id: 2, name: "Absence" },
+    description: "Fine for unauthorized absence from school",
+    isPercentage: false,
+    amount: "50",
+    isAbsentFine: true,
+    hasDueDate: false,
+    gracePeriod: 0,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: false,
+    selectedClasses: [9, 10],
+    selectedSections: [1, 2, 3],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "immediate",
+    createdBy: { id: 3, name: "Discipline Officer", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 0, 10),
+    isImportant: true,
+    usageCount: 320,
   },
   {
     id: 4,
-    title: "History Assignment - Ancient Civilizations",
-    subject: { id: 4, name: "History", icon: "🏛️" },
-    class: { id: 10, name: "Class 10" },
-    section: { id: 2, name: "Section B" },
-    assignedDate: new Date(2023, 3, 8),
-    dueDate: new Date(2023, 3, 18),
-    status: "overdue",
-    priority: "high",
-    submissionCount: 20,
-    totalStudents: 38,
-    isImportant: true,
-    description: "Research and write about one ancient civilization from Chapter 2.",
-    attachments: 4,
-    maxMarks: 30,
-    createdBy: { id: 4, name: "Mrs. Aisha Begum", avatar: "/placeholder.svg?height=40&width=40" },
+    name: "Damaged Property Fine",
+    category: { id: 5, name: "Damage" },
+    description: "Fine for damaging school property",
+    isPercentage: false,
+    amount: "500",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 14,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: true,
+    selectedClasses: [],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: true,
+    fineIncreaseRate: 10,
+    fineIncreaseFrequency: "monthly",
+    maxFineAmount: "1000",
+    fineApplicationMethod: "manual",
+    createdBy: { id: 1, name: "Admin User", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 3, 5),
+    isImportant: false,
+    usageCount: 42,
   },
   {
     id: 5,
-    title: "Computer Science - HTML Basics",
-    subject: { id: 6, name: "Computer Science", icon: "💻" },
-    class: { id: 9, name: "Class 9" },
-    section: { id: 1, name: "Section A" },
-    assignedDate: new Date(2023, 3, 12),
-    dueDate: new Date(2023, 3, 22),
-    status: "active",
-    priority: "medium",
-    submissionCount: 18,
-    totalStudents: 36,
+    name: "Improper Uniform Fine",
+    category: { id: 6, name: "Uniform" },
+    description: "Fine for not wearing proper school uniform",
+    isPercentage: false,
+    amount: "100",
+    isAbsentFine: false,
+    hasDueDate: false,
+    gracePeriod: 0,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: false,
+    selectedClasses: [6, 7, 8, 9, 10],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "immediate",
+    createdBy: { id: 3, name: "Discipline Officer", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 2, 25),
     isImportant: false,
-    description: "Create a simple webpage using HTML with at least 5 different elements.",
-    attachments: 2,
-    maxMarks: 15,
-    createdBy: { id: 5, name: "Mr. Omar Farooq", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 156,
   },
   {
     id: 6,
-    title: "Geography - Map Reading Exercise",
-    subject: { id: 5, name: "Geography", icon: "🌍" },
-    class: { id: 8, name: "Class 8" },
-    section: { id: 3, name: "Section C" },
-    assignedDate: new Date(2023, 3, 7),
-    dueDate: new Date(2023, 3, 14),
-    status: "completed",
-    priority: "low",
-    submissionCount: 33,
-    totalStudents: 33,
+    name: "Late Assignment Submission",
+    category: { id: 3, name: "Discipline" },
+    description: "Fine for late submission of assignments",
+    isPercentage: true,
+    amount: "2",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 3,
+    isRecurring: true,
+    recurringFrequency: "daily",
+    isActive: false,
+    applyToAll: false,
+    selectedClasses: [8, 9, 10],
+    selectedSections: [1, 2],
+    notificationEnabled: true,
+    fineIncreaseEnabled: true,
+    fineIncreaseRate: 1,
+    fineIncreaseFrequency: "daily",
+    maxFineAmount: "10",
+    fineApplicationMethod: "next_bill",
+    createdBy: { id: 4, name: "Academic Coordinator", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 1, 15),
     isImportant: false,
-    description: "Complete the map reading exercises from pages 45-48 in your textbook.",
-    attachments: 1,
-    maxMarks: 20,
-    createdBy: { id: 6, name: "Mrs. Zainab Malik", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 0,
   },
   {
     id: 7,
-    title: "Physics - Newton's Laws of Motion",
-    subject: { id: 7, name: "Physics", icon: "⚛️" },
-    class: { id: 10, name: "Class 10" },
-    section: { id: 1, name: "Section A" },
-    assignedDate: new Date(2023, 3, 14),
-    dueDate: new Date(2023, 3, 21),
-    status: "active",
-    priority: "high",
-    submissionCount: 25,
-    totalStudents: 40,
+    name: "Exam Registration Late Fee",
+    category: { id: 1, name: "Late Payment" },
+    description: "Fine for late registration for exams",
+    isPercentage: true,
+    amount: "10",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 0,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: true,
+    selectedClasses: [],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "immediate",
+    createdBy: { id: 4, name: "Academic Coordinator", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 3, 10),
     isImportant: true,
-    description: "Solve the numerical problems related to Newton's Laws of Motion from Chapter 5.",
-    attachments: 3,
-    maxMarks: 25,
-    createdBy: { id: 1, name: "Mr. Ahmed Khan", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 89,
   },
   {
     id: 8,
-    title: "Chemistry - Periodic Table Quiz",
-    subject: { id: 8, name: "Chemistry", icon: "🧪" },
-    class: { id: 9, name: "Class 9" },
-    section: { id: 2, name: "Section B" },
-    assignedDate: new Date(2023, 3, 9),
-    dueDate: new Date(2023, 3, 16),
-    status: "completed",
-    priority: "medium",
-    submissionCount: 34,
-    totalStudents: 35,
+    name: "ID Card Replacement Fee",
+    category: { id: 7, name: "Other" },
+    description: "Fee for replacing lost or damaged ID cards",
+    isPercentage: false,
+    amount: "150",
+    isAbsentFine: false,
+    hasDueDate: false,
+    gracePeriod: 0,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: true,
+    selectedClasses: [],
+    selectedSections: [],
+    notificationEnabled: false,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "immediate",
+    createdBy: { id: 1, name: "Admin User", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 0, 5),
     isImportant: false,
-    description: "Prepare for a quiz on the periodic table and element properties.",
-    attachments: 2,
-    maxMarks: 15,
-    createdBy: { id: 2, name: "Mrs. Fatima Ali", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 67,
   },
   {
     id: 9,
-    title: "Biology - Plant Cell Diagram",
-    subject: { id: 9, name: "Biology", icon: "🧬" },
-    class: { id: 8, name: "Class 8" },
-    section: { id: 3, name: "Section C" },
-    assignedDate: new Date(2023, 3, 11),
-    dueDate: new Date(2023, 3, 19),
-    status: "overdue",
-    priority: "high",
-    submissionCount: 20,
-    totalStudents: 32,
-    isImportant: true,
-    description: "Draw and label a plant cell diagram with all organelles and their functions.",
-    attachments: 1,
-    maxMarks: 20,
-    createdBy: { id: 3, name: "Mr. Ibrahim Ahmed", avatar: "/placeholder.svg?height=40&width=40" },
+    name: "Sports Equipment Damage",
+    category: { id: 5, name: "Damage" },
+    description: "Fine for damaging sports equipment",
+    isPercentage: false,
+    amount: "300",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 7,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: false,
+    selectedClasses: [6, 7, 8, 9, 10],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "manual",
+    createdBy: { id: 5, name: "Sports Teacher", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 2, 20),
+    isImportant: false,
+    usageCount: 28,
   },
   {
     id: 10,
-    title: "Art - Color Theory Project",
-    subject: { id: 10, name: "Art", icon: "🎨" },
-    class: { id: 7, name: "Class 7" },
-    section: { id: 1, name: "Section A" },
-    assignedDate: new Date(2023, 3, 13),
-    dueDate: new Date(2023, 3, 23),
-    status: "active",
-    priority: "low",
-    submissionCount: 22,
-    totalStudents: 30,
+    name: "Laboratory Equipment Damage",
+    category: { id: 5, name: "Damage" },
+    description: "Fine for damaging laboratory equipment",
+    isPercentage: false,
+    amount: "500",
+    isAbsentFine: false,
+    hasDueDate: true,
+    gracePeriod: 7,
+    isRecurring: false,
+    recurringFrequency: "",
+    isActive: true,
+    applyToAll: false,
+    selectedClasses: [8, 9, 10],
+    selectedSections: [],
+    notificationEnabled: true,
+    fineIncreaseEnabled: false,
+    fineIncreaseRate: 0,
+    fineIncreaseFrequency: "",
+    maxFineAmount: "",
+    fineApplicationMethod: "manual",
+    createdBy: { id: 6, name: "Science Teacher", avatar: "/placeholder.svg?height=40&width=40" },
+    createdAt: new Date(2023, 1, 28),
     isImportant: false,
-    description: "Create a color wheel and demonstrate primary, secondary, and tertiary colors.",
-    attachments: 2,
-    maxMarks: 15,
-    createdBy: { id: 4, name: "Mrs. Aisha Begum", avatar: "/placeholder.svg?height=40&width=40" },
+    usageCount: 15,
   },
 ]
 
-// Sample data for classes, sections, and subjects
+// Sample data for classes and sections
 const classes = [
+  { id: 1, name: "Class 1" },
+  { id: 2, name: "Class 2" },
+  { id: 3, name: "Class 3" },
+  { id: 4, name: "Class 4" },
+  { id: 5, name: "Class 5" },
+  { id: 6, name: "Class 6" },
   { id: 7, name: "Class 7" },
   { id: 8, name: "Class 8" },
   { id: 9, name: "Class 9" },
@@ -275,160 +374,123 @@ const sections = [
   { id: 3, name: "Section C" },
 ]
 
-const subjects = [
-  { id: 1, name: "Mathematics", icon: "📐" },
-  { id: 2, name: "Science", icon: "🔬" },
-  { id: 3, name: "English", icon: "📚" },
-  { id: 4, name: "History", icon: "🏛️" },
-  { id: 5, name: "Geography", icon: "🌍" },
-  { id: 6, name: "Computer Science", icon: "💻" },
-  { id: 7, name: "Physics", icon: "⚛️" },
-  { id: 8, name: "Chemistry", icon: "🧪" },
-  { id: 9, name: "Biology", icon: "🧬" },
-  { id: 10, name: "Art", icon: "🎨" },
+// Sample fine categories
+const fineCategories = [
+  { id: 1, name: "Late Payment", color: "#4caf50" },
+  { id: 2, name: "Absence", color: "#f44336" },
+  { id: 3, name: "Discipline", color: "#ff9800" },
+  { id: 4, name: "Library", color: "#2196f3" },
+  { id: 5, name: "Damage", color: "#9c27b0" },
+  { id: 6, name: "Uniform", color: "#3f51b5" },
+  { id: 7, name: "Other", color: "#607d8b" },
 ]
 
-// Status options
-const statusOptions = [
-  { value: "all", label: "All Status", color: "#757575" },
-  { value: "active", label: "Active", color: "#4caf50" },
-  { value: "completed", label: "Completed", color: "#2196f3" },
-  { value: "overdue", label: "Overdue", color: "#f44336" },
-]
-
-// Priority options
-const priorityOptions = [
-  { value: "all", label: "All Priorities", color: "#757575" },
-  { value: "low", label: "Low", color: "#4caf50" },
-  { value: "medium", label: "Medium", color: "#ff9800" },
-  { value: "high", label: "High", color: "#f44336" },
-]
-
-export default function HomeworkList() {
+export default function FineTypeList() {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const isTablet = useMediaQuery(theme.breakpoints.down("lg"))
 
   // State for filters
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedClass, setSelectedClass] = useState<number | string>("all")
-  const [selectedSection, setSelectedSection] = useState<number | string>("all")
-  const [selectedSubject, setSelectedSubject] = useState<number | string>("all")
+  const [selectedCategory, setSelectedCategory] = useState<number | string>("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
-  const [selectedPriority, setSelectedPriority] = useState("all")
+  const [selectedCalculationType, setSelectedCalculationType] = useState("all")
+  const [showImportantOnly, setShowImportantOnly] = useState(false)
+  const [showActiveOnly, setShowActiveOnly] = useState(true)
   const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({
     start: null,
     end: null,
   })
-  const [showImportantOnly, setShowImportantOnly] = useState(false)
-  const [showMyHomeworkOnly, setShowMyHomeworkOnly] = useState(false)
 
   // State for table
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [order, setOrder] = useState<"asc" | "desc">("desc")
-  const [orderBy, setOrderBy] = useState<string>("dueDate")
+  const [orderBy, setOrderBy] = useState<string>("createdAt")
   const [selected, setSelected] = useState<number[]>([])
-  const [viewMode, setViewMode] = useState<"list" | "grid" | "calendar">("list")
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list")
   const [tabValue, setTabValue] = useState(0)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [homeworkToDelete, setHomeworkToDelete] = useState<number | null>(null)
+  const [fineTypeToDelete, setFineTypeToDelete] = useState<number | null>(null)
 
   // State for more menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [menuHomeworkId, setMenuHomeworkId] = useState<number | null>(null)
+  const [menuFineTypeId, setMenuFineTypeId] = useState<number | null>(null)
 
-  // Filter homework data based on filters
-  const filteredHomework = homeworkData.filter((homework) => {
+  // Filter fine types data based on filters
+  const filteredFineTypes = fineTypesData.filter((fineType) => {
     // Search query filter
     if (
       searchQuery &&
-      !homework.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !homework.description.toLowerCase().includes(searchQuery.toLowerCase())
+      !fineType.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !fineType.description.toLowerCase().includes(searchQuery.toLowerCase())
     ) {
       return false
     }
 
-    // Class filter
-    if (selectedClass !== "all" && homework.class.id !== selectedClass) {
-      return false
-    }
-
-    // Section filter
-    if (selectedSection !== "all" && homework.section.id !== selectedSection) {
-      return false
-    }
-
-    // Subject filter
-    if (selectedSubject !== "all" && homework.subject.id !== selectedSubject) {
+    // Category filter
+    if (selectedCategory !== "all" && fineType.category.id !== selectedCategory) {
       return false
     }
 
     // Status filter
-    if (selectedStatus !== "all" && homework.status !== selectedStatus) {
+    if (selectedStatus !== "all") {
+      if (selectedStatus === "active" && !fineType.isActive) return false
+      if (selectedStatus === "inactive" && fineType.isActive) return false
+    }
+
+    // Calculation type filter
+    if (selectedCalculationType !== "all") {
+      if (selectedCalculationType === "percentage" && !fineType.isPercentage) return false
+      if (selectedCalculationType === "fixed" && fineType.isPercentage) return false
+    }
+
+    // Active only filter
+    if (showActiveOnly && !fineType.isActive) {
       return false
     }
 
-    // Priority filter
-    if (selectedPriority !== "all" && homework.priority !== selectedPriority) {
+    // Important only filter
+    if (showImportantOnly && !fineType.isImportant) {
       return false
     }
 
     // Date range filter
     if (dateRange.start && dateRange.end) {
-      const homeworkDate = new Date(homework.dueDate)
-      if (homeworkDate < dateRange.start || homeworkDate > dateRange.end) {
+      const fineTypeDate = new Date(fineType.createdAt)
+      if (fineTypeDate < dateRange.start || fineTypeDate > dateRange.end) {
         return false
       }
-    }
-
-    // Important only filter
-    if (showImportantOnly && !homework.isImportant) {
-      return false
-    }
-
-    // My homework only filter (simplified for demo)
-    if (showMyHomeworkOnly && homework.createdBy.id !== 1) {
-      return false
     }
 
     return true
   })
 
-  // Sort homework data
-  const sortedHomework = [...filteredHomework].sort((a, b) => {
+  // Sort fine types data
+  const sortedFineTypes = [...filteredFineTypes].sort((a, b) => {
     let comparison = 0
 
-    if (orderBy === "title") {
-      comparison = a.title.localeCompare(b.title)
-    } else if (orderBy === "subject") {
-      comparison = a.subject.name.localeCompare(b.subject.name)
-    } else if (orderBy === "class") {
-      comparison = a.class.name.localeCompare(b.class.name)
-    } else if (orderBy === "assignedDate") {
-      comparison = new Date(a.assignedDate).getTime() - new Date(b.assignedDate).getTime()
-    } else if (orderBy === "dueDate") {
-      comparison = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-    } else if (orderBy === "status") {
-      comparison = a.status.localeCompare(b.status)
-    } else if (orderBy === "priority") {
-      const priorityOrder = { low: 1, medium: 2, high: 3 }
-      comparison =
-        priorityOrder[a.priority as keyof typeof priorityOrder] -
-        priorityOrder[b.priority as keyof typeof priorityOrder]
-    } else if (orderBy === "submissionCount") {
-      comparison = a.submissionCount - b.submissionCount
+    if (orderBy === "name") {
+      comparison = a.name.localeCompare(b.name)
+    } else if (orderBy === "category") {
+      comparison = a.category.name.localeCompare(b.category.name)
+    } else if (orderBy === "amount") {
+      comparison = Number.parseFloat(a.amount) - Number.parseFloat(b.amount)
+    } else if (orderBy === "createdAt") {
+      comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    } else if (orderBy === "usageCount") {
+      comparison = a.usageCount - b.usageCount
     }
 
     return order === "asc" ? comparison : -comparison
   })
 
   // Pagination
-  const paginatedHomework = sortedHomework.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  const paginatedFineTypes = sortedFineTypes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   // Handle sort request
   const handleRequestSort = (property: string) => {
@@ -451,7 +513,7 @@ export default function HomeworkList() {
   // Handle select all click
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = filteredHomework.map((homework) => homework.id)
+      const newSelected = filteredFineTypes.map((fineType) => fineType.id)
       setSelected(newSelected)
       return
     }
@@ -472,19 +534,19 @@ export default function HomeworkList() {
     setSelected(newSelected)
   }
 
-  // Check if homework is selected
+  // Check if fine type is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1
 
   // Handle more menu open
   const handleMoreMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
     setAnchorEl(event.currentTarget)
-    setMenuHomeworkId(id)
+    setMenuFineTypeId(id)
   }
 
   // Handle more menu close
   const handleMoreMenuClose = () => {
     setAnchorEl(null)
-    setMenuHomeworkId(null)
+    setMenuFineTypeId(null)
   }
 
   // Handle tab change
@@ -492,12 +554,11 @@ export default function HomeworkList() {
     setTabValue(newValue)
     if (newValue === 0) setSelectedStatus("all")
     if (newValue === 1) setSelectedStatus("active")
-    if (newValue === 2) setSelectedStatus("completed")
-    if (newValue === 3) setSelectedStatus("overdue")
+    if (newValue === 2) setSelectedStatus("inactive")
   }
 
   // Handle view mode change
-  const handleViewModeChange = (mode: "list" | "grid" | "calendar") => {
+  const handleViewModeChange = (mode: "list" | "grid") => {
     setViewMode(mode)
   }
 
@@ -507,7 +568,7 @@ export default function HomeworkList() {
     // Simulate API call
     setTimeout(() => {
       setLoading(false)
-      setSuccessMessage("Homework list refreshed successfully")
+      setSuccessMessage("Fine type list refreshed successfully")
       setSuccess(true)
     }, 1000)
   }
@@ -518,7 +579,7 @@ export default function HomeworkList() {
     // Simulate API call
     setTimeout(() => {
       setLoading(false)
-      setSuccessMessage(`${selected.length} homework ${action} successfully`)
+      setSuccessMessage(`${selected.length} fine type(s) ${action} successfully`)
       setSuccess(true)
       setSelected([])
     }, 1000)
@@ -526,7 +587,7 @@ export default function HomeworkList() {
 
   // Handle delete dialog
   const handleDeleteDialogOpen = (id: number) => {
-    setHomeworkToDelete(id)
+    setFineTypeToDelete(id)
     setDeleteDialogOpen(true)
     handleMoreMenuClose()
   }
@@ -537,10 +598,10 @@ export default function HomeworkList() {
     // Simulate API call
     setTimeout(() => {
       setLoading(false)
-      setSuccessMessage("Homework deleted successfully")
+      setSuccessMessage("Fine type deleted successfully")
       setSuccess(true)
       setDeleteDialogOpen(false)
-      setHomeworkToDelete(null)
+      setFineTypeToDelete(null)
     }, 1000)
   }
 
@@ -552,14 +613,12 @@ export default function HomeworkList() {
   // Reset filters
   const resetFilters = () => {
     setSearchQuery("")
-    setSelectedClass("all")
-    setSelectedSection("all")
-    setSelectedSubject("all")
+    setSelectedCategory("all")
     setSelectedStatus("all")
-    setSelectedPriority("all")
-    setDateRange({ start: null, end: null })
+    setSelectedCalculationType("all")
     setShowImportantOnly(false)
-    setShowMyHomeworkOnly(false)
+    setShowActiveOnly(true)
+    setDateRange({ start: null, end: null })
     setTabValue(0)
   }
 
@@ -572,46 +631,37 @@ export default function HomeworkList() {
     })
   }
 
-  // Get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "#4caf50"
-      case "completed":
-        return "#2196f3"
-      case "overdue":
-        return "#f44336"
-      default:
-        return "#757575"
-    }
-  }
-
-  // Get priority color
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "low":
-        return "#4caf50"
-      case "medium":
-        return "#ff9800"
-      case "high":
-        return "#f44336"
-      default:
-        return "#757575"
-    }
+  // Get category color
+  const getCategoryColor = (categoryId: number) => {
+    const category = fineCategories.find((cat) => cat.id === categoryId)
+    return category ? category.color : "#757575"
   }
 
   // Calculate statistics
   const stats = {
-    total: homeworkData.length,
-    active: homeworkData.filter((hw) => hw.status === "active").length,
-    completed: homeworkData.filter((hw) => hw.status === "completed").length,
-    overdue: homeworkData.filter((hw) => hw.status === "overdue").length,
-    important: homeworkData.filter((hw) => hw.isImportant).length,
+    total: fineTypesData.length,
+    active: fineTypesData.filter((ft) => ft.isActive).length,
+    inactive: fineTypesData.filter((ft) => !ft.isActive).length,
+    percentage: fineTypesData.filter((ft) => ft.isPercentage).length,
+    fixed: fineTypesData.filter((ft) => !ft.isPercentage).length,
+    important: fineTypesData.filter((ft) => ft.isImportant).length,
+    totalCollected: 125850, // Sample data for demonstration
   }
 
-  // Calculate submission rate
-  const calculateSubmissionRate = (homework: (typeof homeworkData)[0]) => {
-    return (homework.submissionCount / homework.totalStudents) * 100
+  // Toggle important status
+  const handleToggleImportant = (id: number) => {
+    // In a real application, this would update the database
+    console.log(`Toggling important status for fine type ${id}`)
+    setSuccessMessage("Fine type importance status updated")
+    setSuccess(true)
+  }
+
+  // Toggle active status
+  const handleToggleActive = (id: number) => {
+    // In a real application, this would update the database
+    console.log(`Toggling active status for fine type ${id}`)
+    setSuccessMessage("Fine type active status updated")
+    setSuccess(true)
   }
 
   return (
@@ -630,16 +680,16 @@ export default function HomeworkList() {
               <Typography variant="h4" fontWeight="bold">
                 Craft International Institute
               </Typography>
-              <Typography variant="subtitle1">Homework Management</Typography>
+              <Typography variant="subtitle1">Fine Types Management</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant="contained"
                 startIcon={<Add />}
                 sx={{ bgcolor: "rgba(255,255,255,0.2)", "&:hover": { bgcolor: "rgba(255,255,255,0.3)" } }}
-                href="/dashboard/super_admin/home-work/add"
+                href="/dashboard/super_admin/fine-type/add"
               >
-                Add New Homework
+                Add New Fine Type
               </Button>
             </Grid>
           </Grid>
@@ -662,17 +712,17 @@ export default function HomeworkList() {
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="h6" color="text.secondary">
-                  Active
+                  Active Fine Types
                 </Typography>
                 <Avatar sx={{ bgcolor: "#4caf50" }}>
-                  <Assignment />
+                  <CheckCircle />
                 </Avatar>
               </Box>
               <Typography variant="h3" sx={{ my: 2, fontWeight: "bold", color: "#2e7d32" }}>
                 {stats.active}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {((stats.active / stats.total) * 100).toFixed(0)}% of total homework
+                {((stats.active / stats.total) * 100).toFixed(0)}% of total fine types
               </Typography>
             </CardContent>
           </Card>
@@ -691,47 +741,40 @@ export default function HomeworkList() {
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="h6" color="text.secondary">
-                  Completed
+                  Calculation Types
                 </Typography>
-                <Avatar sx={{ bgcolor: "#2196f3" }}>
-                  <CheckCircle />
-                </Avatar>
+                <Box sx={{ display: "flex" }}>
+                  <Avatar sx={{ bgcolor: "#2196f3", mr: 1 }}>
+                    <Percent />
+                  </Avatar>
+                  <Avatar sx={{ bgcolor: "#1976d2" }}>
+                    <AttachMoney />
+                  </Avatar>
+                </Box>
               </Box>
-              <Typography variant="h3" sx={{ my: 2, fontWeight: "bold", color: "#1565c0" }}>
-                {stats.completed}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {((stats.completed / stats.total) * 100).toFixed(0)}% of total homework
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            elevation={2}
-            sx={{
-              borderRadius: 2,
-              bgcolor: "#ffebee",
-              height: "100%",
-              transition: "transform 0.3s",
-              "&:hover": { transform: "translateY(-5px)" },
-            }}
-          >
-            <CardContent>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Typography variant="h6" color="text.secondary">
-                  Overdue
-                </Typography>
-                <Avatar sx={{ bgcolor: "#f44336" }}>
-                  <Warning />
-                </Avatar>
+              <Box sx={{ display: "flex", justifyContent: "space-between", my: 2 }}>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                    {stats.percentage}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Percentage
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                    {stats.fixed}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Fixed
+                  </Typography>
+                </Box>
               </Box>
-              <Typography variant="h3" sx={{ my: 2, fontWeight: "bold", color: "#c62828" }}>
-                {stats.overdue}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {((stats.overdue / stats.total) * 100).toFixed(0)}% of total homework
-              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={(stats.percentage / stats.total) * 100}
+                sx={{ height: 8, borderRadius: 4 }}
+              />
             </CardContent>
           </Card>
         </Grid>
@@ -749,7 +792,7 @@ export default function HomeworkList() {
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="h6" color="text.secondary">
-                  Important
+                  Important Types
                 </Typography>
                 <Avatar sx={{ bgcolor: "#ffc107" }}>
                   <Bookmark />
@@ -759,7 +802,36 @@ export default function HomeworkList() {
                 {stats.important}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {((stats.important / stats.total) * 100).toFixed(0)}% of total homework
+                {((stats.important / stats.total) * 100).toFixed(0)}% of total fine types
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={2}
+            sx={{
+              borderRadius: 2,
+              bgcolor: "#f3e5f5",
+              height: "100%",
+              transition: "transform 0.3s",
+              "&:hover": { transform: "translateY(-5px)" },
+            }}
+          >
+            <CardContent>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Typography variant="h6" color="text.secondary">
+                  Total Collected
+                </Typography>
+                <Avatar sx={{ bgcolor: "#9c27b0" }}>
+                  <LocalAtm />
+                </Avatar>
+              </Box>
+              <Typography variant="h3" sx={{ my: 2, fontWeight: "bold", color: "#6a1b9a" }}>
+                ₹{stats.totalCollected.toLocaleString()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Total amount collected from fines
               </Typography>
             </CardContent>
           </Card>
@@ -780,24 +852,18 @@ export default function HomeworkList() {
               scrollButtons={isMobile ? "auto" : undefined}
               sx={{ flexGrow: 1, borderBottom: 1, borderColor: "divider" }}
             >
-              <Tab label="All" icon={<ViewList />} iconPosition="start" />
+              <Tab label="All Fine Types" icon={<ViewList />} iconPosition="start" />
               <Tab
                 label="Active"
-                icon={<Assignment />}
+                icon={<CheckCircle />}
                 iconPosition="start"
                 sx={{ color: tabValue === 1 ? "#4caf50" : "inherit" }}
               />
               <Tab
-                label="Completed"
-                icon={<CheckCircle />}
+                label="Inactive"
+                icon={<Block />}
                 iconPosition="start"
-                sx={{ color: tabValue === 2 ? "#2196f3" : "inherit" }}
-              />
-              <Tab
-                label="Overdue"
-                icon={<Warning />}
-                iconPosition="start"
-                sx={{ color: tabValue === 3 ? "#f44336" : "inherit" }}
+                sx={{ color: tabValue === 2 ? "#f44336" : "inherit" }}
               />
             </Tabs>
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -827,14 +893,6 @@ export default function HomeworkList() {
                   <ViewModule />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Calendar View">
-                <IconButton
-                  onClick={() => handleViewModeChange("calendar")}
-                  color={viewMode === "calendar" ? "primary" : "default"}
-                >
-                  <CalendarMonth />
-                </IconButton>
-              </Tooltip>
             </Box>
           </Box>
 
@@ -843,7 +901,7 @@ export default function HomeworkList() {
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
-                placeholder="Search homework by title or description..."
+                placeholder="Search fine types by name or description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
@@ -868,33 +926,26 @@ export default function HomeworkList() {
               <>
                 <Grid item xs={12} md={2}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>Class</InputLabel>
-                    <Select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} label="Class">
-                      <MenuItem value="all">All Classes</MenuItem>
-                      {classes.map((cls) => (
-                        <MenuItem key={cls.id} value={cls.id}>
-                          {cls.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={2}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Subject</InputLabel>
+                    <InputLabel>Category</InputLabel>
                     <Select
-                      value={selectedSubject}
-                      onChange={(e) => setSelectedSubject(e.target.value)}
-                      label="Subject"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      label="Category"
                     >
-                      <MenuItem value="all">All Subjects</MenuItem>
-                      {subjects.map((subject) => (
-                        <MenuItem key={subject.id} value={subject.id}>
+                      <MenuItem value="all">All Categories</MenuItem>
+                      {fineCategories.map((category) => (
+                        <MenuItem key={category.id} value={category.id}>
                           <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Typography variant="body2" sx={{ mr: 1 }}>
-                              {subject.icon}
-                            </Typography>
-                            {subject.name}
+                            <Box
+                              sx={{
+                                width: 12,
+                                height: 12,
+                                borderRadius: "50%",
+                                bgcolor: category.color,
+                                mr: 1,
+                              }}
+                            />
+                            {category.name}
                           </Box>
                         </MenuItem>
                       ))}
@@ -903,46 +954,41 @@ export default function HomeworkList() {
                 </Grid>
                 <Grid item xs={12} md={2}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>Priority</InputLabel>
+                    <InputLabel>Calculation Type</InputLabel>
                     <Select
-                      value={selectedPriority}
-                      onChange={(e) => setSelectedPriority(e.target.value as string)}
-                      label="Priority"
+                      value={selectedCalculationType}
+                      onChange={(e) => setSelectedCalculationType(e.target.value)}
+                      label="Calculation Type"
                     >
-                      {priorityOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {option.value !== "all" && (
-                              <Box
-                                sx={{
-                                  width: 12,
-                                  height: 12,
-                                  borderRadius: "50%",
-                                  bgcolor: option.color,
-                                  mr: 1,
-                                }}
-                              />
-                            )}
-                            {option.label}
-                          </Box>
-                        </MenuItem>
-                      ))}
+                      <MenuItem value="all">All Types</MenuItem>
+                      <MenuItem value="percentage">Percentage Based</MenuItem>
+                      <MenuItem value="fixed">Fixed Amount</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} md={2}>
-                  <Box sx={{ display: "flex", gap: 1 }}>
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={showActiveOnly}
+                          onChange={(e) => setShowActiveOnly(e.target.checked)}
+                          color="primary"
+                          size="small"
+                        />
+                      }
+                      label="Active Only"
+                    />
                     <FormControlLabel
                       control={
                         <Switch
                           checked={showImportantOnly}
                           onChange={(e) => setShowImportantOnly(e.target.checked)}
-                          color="primary"
+                          color="warning"
                           size="small"
                         />
                       }
-                      label="Important"
-                      sx={{ mr: 1 }}
+                      label="Important Only"
                     />
                   </Box>
                 </Grid>
@@ -966,7 +1012,7 @@ export default function HomeworkList() {
               }}
             >
               <Typography variant="subtitle1">
-                {selected.length} {selected.length === 1 ? "homework" : "homeworks"} selected
+                {selected.length} {selected.length === 1 ? "fine type" : "fine types"} selected
               </Typography>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Button
@@ -981,11 +1027,11 @@ export default function HomeworkList() {
                 <Button
                   size="small"
                   variant="contained"
-                  startIcon={<Print />}
-                  onClick={() => handleBatchAction("printed")}
+                  startIcon={<Download />}
+                  onClick={() => handleBatchAction("exported")}
                   sx={{ bgcolor: "rgba(255,255,255,0.2)", "&:hover": { bgcolor: "rgba(255,255,255,0.3)" } }}
                 >
-                  Print
+                  Export
                 </Button>
                 <Button
                   size="small"
@@ -1013,19 +1059,19 @@ export default function HomeworkList() {
                     <TableRow>
                       <TableCell padding="checkbox">
                         <Checkbox
-                          indeterminate={selected.length > 0 && selected.length < filteredHomework.length}
-                          checked={filteredHomework.length > 0 && selected.length === filteredHomework.length}
+                          indeterminate={selected.length > 0 && selected.length < filteredFineTypes.length}
+                          checked={filteredFineTypes.length > 0 && selected.length === filteredFineTypes.length}
                           onChange={handleSelectAllClick}
                         />
                       </TableCell>
                       <TableCell
-                        sortDirection={orderBy === "title" ? order : false}
+                        sortDirection={orderBy === "name" ? order : false}
                         sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("title")}
+                        onClick={() => handleRequestSort("name")}
                       >
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Title
-                          {orderBy === "title" ? (
+                          Fine Type
+                          {orderBy === "name" ? (
                             <Box component="span" sx={{ ml: 1 }}>
                               {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
                             </Box>
@@ -1033,13 +1079,13 @@ export default function HomeworkList() {
                         </Box>
                       </TableCell>
                       <TableCell
-                        sortDirection={orderBy === "subject" ? order : false}
+                        sortDirection={orderBy === "category" ? order : false}
                         sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("subject")}
+                        onClick={() => handleRequestSort("category")}
                       >
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Subject
-                          {orderBy === "subject" ? (
+                          Category
+                          {orderBy === "category" ? (
                             <Box component="span" sx={{ ml: 1 }}>
                               {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
                             </Box>
@@ -1047,55 +1093,29 @@ export default function HomeworkList() {
                         </Box>
                       </TableCell>
                       <TableCell
-                        sortDirection={orderBy === "class" ? order : false}
+                        sortDirection={orderBy === "amount" ? order : false}
                         sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("class")}
+                        onClick={() => handleRequestSort("amount")}
                       >
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Class
-                          {orderBy === "class" ? (
+                          Amount
+                          {orderBy === "amount" ? (
                             <Box component="span" sx={{ ml: 1 }}>
                               {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
                             </Box>
                           ) : null}
                         </Box>
                       </TableCell>
+                      <TableCell>Calculation</TableCell>
+                      <TableCell>Status</TableCell>
                       <TableCell
-                        sortDirection={orderBy === "dueDate" ? order : false}
+                        sortDirection={orderBy === "usageCount" ? order : false}
                         sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("dueDate")}
+                        onClick={() => handleRequestSort("usageCount")}
                       >
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Due Date
-                          {orderBy === "dueDate" ? (
-                            <Box component="span" sx={{ ml: 1 }}>
-                              {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
-                            </Box>
-                          ) : null}
-                        </Box>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={orderBy === "status" ? order : false}
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("status")}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Status
-                          {orderBy === "status" ? (
-                            <Box component="span" sx={{ ml: 1 }}>
-                              {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
-                            </Box>
-                          ) : null}
-                        </Box>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={orderBy === "submissionCount" ? order : false}
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => handleRequestSort("submissionCount")}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          Submissions
-                          {orderBy === "submissionCount" ? (
+                          Usage
+                          {orderBy === "usageCount" ? (
                             <Box component="span" sx={{ ml: 1 }}>
                               {order === "desc" ? <ArrowDownward fontSize="small" /> : <ArrowUpward fontSize="small" />}
                             </Box>
@@ -1106,13 +1126,13 @@ export default function HomeworkList() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {paginatedHomework.length > 0 ? (
-                      paginatedHomework.map((homework) => {
-                        const isItemSelected = isSelected(homework.id)
+                    {paginatedFineTypes.length > 0 ? (
+                      paginatedFineTypes.map((fineType) => {
+                        const isItemSelected = isSelected(fineType.id)
                         return (
                           <TableRow
                             hover
-                            key={homework.id}
+                            key={fineType.id}
                             selected={isItemSelected}
                             sx={{
                               "&.Mui-selected": {
@@ -1121,87 +1141,102 @@ export default function HomeworkList() {
                             }}
                           >
                             <TableCell padding="checkbox">
-                              <Checkbox checked={isItemSelected} onClick={() => handleClick(homework.id)} />
+                              <Checkbox checked={isItemSelected} onClick={() => handleClick(fineType.id)} />
                             </TableCell>
                             <TableCell>
                               <Box sx={{ display: "flex", alignItems: "center" }}>
-                                {homework.isImportant && (
+                                {fineType.isImportant ? (
                                   <Tooltip title="Important">
-                                    <Bookmark sx={{ mr: 1, color: "#ffc107" }} />
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleToggleImportant(fineType.id)}
+                                      sx={{ mr: 1, color: "#ffc107" }}
+                                    >
+                                      <Bookmark fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                ) : (
+                                  <Tooltip title="Mark as Important">
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleToggleImportant(fineType.id)}
+                                      sx={{ mr: 1, color: "text.secondary" }}
+                                    >
+                                      <BookmarkBorder fontSize="small" />
+                                    </IconButton>
                                   </Tooltip>
                                 )}
-                                <Typography
-                                  variant="body1"
-                                  sx={{ fontWeight: homework.isImportant ? "bold" : "normal" }}
-                                >
-                                  {homework.title}
-                                </Typography>
+                                <Box>
+                                  <Typography
+                                    variant="body1"
+                                    sx={{ fontWeight: fineType.isImportant ? "bold" : "normal" }}
+                                  >
+                                    {fineType.name}
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    Created: {formatDate(fineType.createdAt)}
+                                  </Typography>
+                                </Box>
                               </Box>
                             </TableCell>
                             <TableCell>
                               <Chip
-                                label={
-                                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography variant="body2" sx={{ mr: 0.5 }}>
-                                      {homework.subject.icon}
-                                    </Typography>
-                                    {homework.subject.name}
-                                  </Box>
-                                }
-                                size="small"
-                                variant="outlined"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="body2">
-                                {homework.class.name}, {homework.section.name}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Box sx={{ display: "flex", alignItems: "center" }}>
-                                <CalendarMonth sx={{ mr: 0.5, fontSize: 16, color: "text.secondary" }} />
-                                <Typography variant="body2">{formatDate(homework.dueDate)}</Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Chip
-                                label={homework.status.charAt(0).toUpperCase() + homework.status.slice(1)}
+                                label={fineType.category.name}
                                 size="small"
                                 sx={{
-                                  bgcolor: `${getStatusColor(homework.status)}20`,
-                                  color: getStatusColor(homework.status),
-                                  fontWeight: "bold",
+                                  bgcolor: `${getCategoryColor(fineType.category.id)}20`,
+                                  color: getCategoryColor(fineType.category.id),
+                                  fontWeight: "medium",
                                 }}
                               />
                             </TableCell>
                             <TableCell>
-                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <Typography variant="body2">
-                                  {homework.submissionCount}/{homework.totalStudents}
+                              <Typography variant="body2" fontWeight="medium">
+                                {fineType.isPercentage ? `${fineType.amount}%` : `₹${fineType.amount}`}
+                              </Typography>
+                              {fineType.fineIncreaseEnabled && (
+                                <Typography variant="caption" color="text.secondary" display="block">
+                                  +{fineType.fineIncreaseRate}% {fineType.fineIncreaseFrequency}
                                 </Typography>
-                                <LinearProgress
-                                  variant="determinate"
-                                  value={calculateSubmissionRate(homework)}
-                                  sx={{
-                                    width: 60,
-                                    height: 6,
-                                    borderRadius: 3,
-                                    bgcolor: "rgba(0,0,0,0.1)",
-                                    "& .MuiLinearProgress-bar": {
-                                      bgcolor:
-                                        calculateSubmissionRate(homework) < 50
-                                          ? "#f44336"
-                                          : calculateSubmissionRate(homework) < 80
-                                            ? "#ff9800"
-                                            : "#4caf50",
-                                    },
-                                  }}
-                                />
-                              </Box>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                icon={
+                                  fineType.isPercentage ? (
+                                    <Percent fontSize="small" />
+                                  ) : (
+                                    <AttachMoney fontSize="small" />
+                                  )
+                                }
+                                label={fineType.isPercentage ? "Percentage" : "Fixed"}
+                                size="small"
+                                variant="outlined"
+                                color={fineType.isPercentage ? "info" : "primary"}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Switch
+                                checked={fineType.isActive}
+                                onChange={() => handleToggleActive(fineType.id)}
+                                size="small"
+                                color="success"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                badgeContent={fineType.usageCount}
+                                color={fineType.usageCount > 100 ? "success" : "primary"}
+                                showZero
+                                max={999}
+                                sx={{ "& .MuiBadge-badge": { fontSize: "0.7rem", height: "18px", minWidth: "18px" } }}
+                              >
+                                <Receipt sx={{ color: "text.secondary" }} />
+                              </Badge>
                             </TableCell>
                             <TableCell>
                               <Box sx={{ display: "flex" }}>
-                                <Tooltip title="View">
+                                <Tooltip title="View Details">
                                   <IconButton size="small" color="primary">
                                     <Visibility fontSize="small" />
                                   </IconButton>
@@ -1212,7 +1247,7 @@ export default function HomeworkList() {
                                   </IconButton>
                                 </Tooltip>
                                 <Tooltip title="More">
-                                  <IconButton size="small" onClick={(e) => handleMoreMenuOpen(e, homework.id)}>
+                                  <IconButton size="small" onClick={(e) => handleMoreMenuOpen(e, fineType.id)}>
                                     <MoreVert fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
@@ -1225,9 +1260,9 @@ export default function HomeworkList() {
                       <TableRow>
                         <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
                           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                            <Assignment sx={{ fontSize: 48, color: "text.disabled" }} />
+                            <AttachMoney sx={{ fontSize: 48, color: "text.disabled" }} />
                             <Typography variant="h6" color="text.secondary">
-                              No homework found
+                              No fine types found
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               Try adjusting your filters or search query
@@ -1251,7 +1286,7 @@ export default function HomeworkList() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={filteredHomework.length}
+                count={filteredFineTypes.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -1264,9 +1299,9 @@ export default function HomeworkList() {
           {viewMode === "grid" && (
             <>
               <Grid container spacing={3}>
-                {paginatedHomework.length > 0 ? (
-                  paginatedHomework.map((homework) => (
-                    <Grid item xs={12} sm={6} md={4} key={homework.id}>
+                {paginatedFineTypes.length > 0 ? (
+                  paginatedFineTypes.map((fineType) => (
+                    <Grid item xs={12} sm={6} md={4} key={fineType.id}>
                       <Card
                         variant="outlined"
                         sx={{
@@ -1279,7 +1314,7 @@ export default function HomeworkList() {
                             transform: "translateY(-4px)",
                             boxShadow: 3,
                           },
-                          ...(isSelected(homework.id) && {
+                          ...(isSelected(fineType.id) && {
                             border: "2px solid",
                             borderColor: "primary.main",
                           }),
@@ -1296,11 +1331,11 @@ export default function HomeworkList() {
                           }}
                         >
                           <Checkbox
-                            checked={isSelected(homework.id)}
-                            onChange={() => handleClick(homework.id)}
+                            checked={isSelected(fineType.id)}
+                            onChange={() => handleClick(fineType.id)}
                             size="small"
                           />
-                          <IconButton size="small" onClick={(e) => handleMoreMenuOpen(e, homework.id)}>
+                          <IconButton size="small" onClick={(e) => handleMoreMenuOpen(e, fineType.id)}>
                             <MoreVert fontSize="small" />
                           </IconButton>
                         </Box>
@@ -1313,38 +1348,60 @@ export default function HomeworkList() {
                           }}
                         >
                           <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                            {homework.isImportant && <Bookmark sx={{ mr: 1, color: "#ffc107" }} />}
+                            {fineType.isImportant ? (
+                              <Tooltip title="Important">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleToggleImportant(fineType.id)}
+                                  sx={{ mr: 1, color: "#ffc107", p: 0 }}
+                                >
+                                  <Bookmark fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            ) : (
+                              <Tooltip title="Mark as Important">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleToggleImportant(fineType.id)}
+                                  sx={{ mr: 1, color: "text.secondary", p: 0 }}
+                                >
+                                  <BookmarkBorder fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            )}
                             <Typography
                               variant="h6"
                               sx={{
-                                fontWeight: homework.isImportant ? "bold" : "medium",
+                                fontWeight: fineType.isImportant ? "bold" : "medium",
                                 fontSize: "1rem",
                                 lineHeight: 1.2,
-                                mb: 1,
                               }}
                             >
-                              {homework.title}
+                              {fineType.name}
                             </Typography>
                           </Box>
                           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 2 }}>
                             <Chip
-                              label={
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                  <Typography variant="body2" sx={{ mr: 0.5 }}>
-                                    {homework.subject.icon}
-                                  </Typography>
-                                  {homework.subject.name}
-                                </Box>
-                              }
+                              label={fineType.category.name}
                               size="small"
-                              variant="outlined"
+                              sx={{
+                                bgcolor: `${getCategoryColor(fineType.category.id)}20`,
+                                color: getCategoryColor(fineType.category.id),
+                                fontWeight: "medium",
+                              }}
                             />
                             <Chip
-                              label={`${homework.class.name}, ${homework.section.name}`}
+                              icon={
+                                fineType.isPercentage ? <Percent fontSize="small" /> : <AttachMoney fontSize="small" />
+                              }
+                              label={fineType.isPercentage ? "Percentage" : "Fixed"}
                               size="small"
                               variant="outlined"
-                              icon={<Class fontSize="small" />}
+                              color={fineType.isPercentage ? "info" : "primary"}
                             />
+                            {fineType.isAbsentFine && (
+                              <Chip label="Absence Related" size="small" color="warning" variant="outlined" />
+                            )}
                           </Box>
                           <Typography
                             variant="body2"
@@ -1358,57 +1415,54 @@ export default function HomeworkList() {
                               WebkitBoxOrient: "vertical",
                             }}
                           >
-                            {homework.description}
+                            {fineType.description}
                           </Typography>
                           <Box sx={{ mt: "auto" }}>
                             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                              <Box sx={{ display: "flex", alignItems: "center" }}>
-                                <CalendarMonth sx={{ mr: 0.5, fontSize: 16, color: "text.secondary" }} />
-                                <Typography variant="body2">{formatDate(homework.dueDate)}</Typography>
-                              </Box>
-                              <Chip
-                                label={homework.status.charAt(0).toUpperCase() + homework.status.slice(1)}
-                                size="small"
-                                sx={{
-                                  bgcolor: `${getStatusColor(homework.status)}20`,
-                                  color: getStatusColor(homework.status),
-                                  fontWeight: "bold",
-                                }}
+                              <Typography variant="body1" fontWeight="bold">
+                                {fineType.isPercentage ? `${fineType.amount}%` : `₹${fineType.amount}`}
+                              </Typography>
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={fineType.isActive}
+                                    onChange={() => handleToggleActive(fineType.id)}
+                                    size="small"
+                                    color="success"
+                                  />
+                                }
+                                label={
+                                  <Typography variant="caption">{fineType.isActive ? "Active" : "Inactive"}</Typography>
+                                }
+                                sx={{ m: 0 }}
                               />
                             </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                              <Typography variant="body2">
-                                Submissions: {homework.submissionCount}/{homework.totalStudents}
+                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <Typography variant="caption" color="text.secondary">
+                                Created: {formatDate(fineType.createdAt)}
                               </Typography>
-                              <LinearProgress
-                                variant="determinate"
-                                value={calculateSubmissionRate(homework)}
-                                sx={{
-                                  width: 60,
-                                  height: 6,
-                                  borderRadius: 3,
-                                  bgcolor: "rgba(0,0,0,0.1)",
-                                  "& .MuiLinearProgress-bar": {
-                                    bgcolor:
-                                      calculateSubmissionRate(homework) < 50
-                                        ? "#f44336"
-                                        : calculateSubmissionRate(homework) < 80
-                                          ? "#ff9800"
-                                          : "#4caf50",
-                                  },
-                                }}
-                              />
+                              <Badge
+                                badgeContent={fineType.usageCount}
+                                color={fineType.usageCount > 100 ? "success" : "primary"}
+                                showZero
+                                max={999}
+                                sx={{ "& .MuiBadge-badge": { fontSize: "0.7rem", height: "18px", minWidth: "18px" } }}
+                              >
+                                <Tooltip title="Usage Count">
+                                  <Receipt sx={{ color: "text.secondary" }} />
+                                </Tooltip>
+                              </Badge>
                             </Box>
                           </Box>
                         </Box>
                         <Divider />
                         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
                           <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Avatar src={homework.createdBy.avatar} sx={{ width: 24, height: 24, mr: 1 }} />
-                            <Typography variant="caption">{homework.createdBy.name}</Typography>
+                            <Avatar src={fineType.createdBy.avatar} sx={{ width: 24, height: 24, mr: 1 }} />
+                            <Typography variant="caption">{fineType.createdBy.name}</Typography>
                           </Box>
                           <Box sx={{ display: "flex" }}>
-                            <Tooltip title="View">
+                            <Tooltip title="View Details">
                               <IconButton size="small" color="primary">
                                 <Visibility fontSize="small" />
                               </IconButton>
@@ -1434,9 +1488,9 @@ export default function HomeworkList() {
                         py: 4,
                       }}
                     >
-                      <Assignment sx={{ fontSize: 48, color: "text.disabled" }} />
+                      <AttachMoney sx={{ fontSize: 48, color: "text.disabled" }} />
                       <Typography variant="h6" color="text.secondary">
-                        No homework found
+                        No fine types found
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Try adjusting your filters or search query
@@ -1458,7 +1512,7 @@ export default function HomeworkList() {
                 <TablePagination
                   rowsPerPageOptions={[6, 12, 24]}
                   component="div"
-                  count={filteredHomework.length}
+                  count={filteredFineTypes.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
@@ -1466,33 +1520,6 @@ export default function HomeworkList() {
                 />
               </Box>
             </>
-          )}
-
-          {/* Calendar View */}
-          {viewMode === "calendar" && (
-            <Box sx={{ p: 2, textAlign: "center" }}>
-              <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-                Calendar View
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  gap: 2,
-                  p: 4,
-                }}
-              >
-                <CalendarMonth sx={{ fontSize: 60, color: "text.disabled" }} />
-                <Typography variant="body1" color="text.secondary">
-                  Calendar view is coming soon!
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  This feature will allow you to view homework assignments in a calendar format.
-                </Typography>
-              </Box>
-            </Box>
           )}
         </CardContent>
       </Card>
@@ -1519,18 +1546,18 @@ export default function HomeworkList() {
         </MenuItem>
         <MenuItem onClick={handleMoreMenuClose}>
           <ListItemIcon>
-            <Download fontSize="small" />
+            <ContentCopy fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Download</ListItemText>
+          <ListItemText>Duplicate</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleMoreMenuClose}>
           <ListItemIcon>
-            <Send fontSize="small" />
+            <Notifications fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Send Reminder</ListItemText>
+          <ListItemText>Send Notification</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={() => handleDeleteDialogOpen(menuHomeworkId!)}>
+        <MenuItem onClick={() => handleDeleteDialogOpen(menuFineTypeId!)}>
           <ListItemIcon>
             <Delete fontSize="small" color="error" />
           </ListItemIcon>
@@ -1549,38 +1576,22 @@ export default function HomeworkList() {
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel>Class</InputLabel>
-              <Select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} label="Class">
-                <MenuItem value="all">All Classes</MenuItem>
-                {classes.map((cls) => (
-                  <MenuItem key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Section</InputLabel>
-              <Select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)} label="Section">
-                <MenuItem value="all">All Sections</MenuItem>
-                {sections.map((section) => (
-                  <MenuItem key={section.id} value={section.id}>
-                    {section.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Subject</InputLabel>
-              <Select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} label="Subject">
-                <MenuItem value="all">All Subjects</MenuItem>
-                {subjects.map((subject) => (
-                  <MenuItem key={subject.id} value={subject.id}>
+              <InputLabel>Category</InputLabel>
+              <Select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} label="Category">
+                <MenuItem value="all">All Categories</MenuItem>
+                {fineCategories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Typography variant="body2" sx={{ mr: 1 }}>
-                        {subject.icon}
-                      </Typography>
-                      {subject.name}
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: "50%",
+                          bgcolor: category.color,
+                          mr: 1,
+                        }}
+                      />
+                      {category.name}
                     </Box>
                   </MenuItem>
                 ))}
@@ -1593,51 +1604,21 @@ export default function HomeworkList() {
                 onChange={(e) => setSelectedStatus(e.target.value as string)}
                 label="Status"
               >
-                {statusOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      {option.value !== "all" && (
-                        <Box
-                          sx={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: "50%",
-                            bgcolor: option.color,
-                            mr: 1,
-                          }}
-                        />
-                      )}
-                      {option.label}
-                    </Box>
-                  </MenuItem>
-                ))}
+                <MenuItem value="all">All Status</MenuItem>
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel>Priority</InputLabel>
+              <InputLabel>Calculation Type</InputLabel>
               <Select
-                value={selectedPriority}
-                onChange={(e) => setSelectedPriority(e.target.value as string)}
-                label="Priority"
+                value={selectedCalculationType}
+                onChange={(e) => setSelectedCalculationType(e.target.value as string)}
+                label="Calculation Type"
               >
-                {priorityOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      {option.value !== "all" && (
-                        <Box
-                          sx={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: "50%",
-                            bgcolor: option.color,
-                            mr: 1,
-                          }}
-                        />
-                      )}
-                      {option.label}
-                    </Box>
-                  </MenuItem>
-                ))}
+                <MenuItem value="all">All Types</MenuItem>
+                <MenuItem value="percentage">Percentage Based</MenuItem>
+                <MenuItem value="fixed">Fixed Amount</MenuItem>
               </Select>
             </FormControl>
             <TextField
@@ -1665,22 +1646,22 @@ export default function HomeworkList() {
             <FormControlLabel
               control={
                 <Switch
-                  checked={showImportantOnly}
-                  onChange={(e) => setShowImportantOnly(e.target.checked)}
+                  checked={showActiveOnly}
+                  onChange={(e) => setShowActiveOnly(e.target.checked)}
                   color="primary"
                 />
               }
-              label="Show Important Only"
+              label="Active Only"
             />
             <FormControlLabel
               control={
                 <Switch
-                  checked={showMyHomeworkOnly}
-                  onChange={(e) => setShowMyHomeworkOnly(e.target.checked)}
-                  color="primary"
+                  checked={showImportantOnly}
+                  onChange={(e) => setShowImportantOnly(e.target.checked)}
+                  color="warning"
                 />
               }
-              label="Show My Homework Only"
+              label="Important Only"
             />
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
               <Button variant="outlined" onClick={resetFilters} startIcon={<Refresh />}>
@@ -1696,10 +1677,10 @@ export default function HomeworkList() {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Delete Homework</DialogTitle>
+        <DialogTitle>Delete Fine Type</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
-            Are you sure you want to delete this homework? This action cannot be undone.
+            Are you sure you want to delete this fine type? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -1729,14 +1710,15 @@ export default function HomeworkList() {
             <Help sx={{ mr: 2, color: "text.secondary" }} />
             <Box>
               <Typography variant="subtitle1" gutterBottom>
-                Managing Homework
+                Managing Fine Types
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                • Use filters to quickly find specific homework assignments
-                <br />• Click on column headers to sort the homework list
-                <br />• Select multiple homework assignments for batch actions
-                <br />• Switch between list and grid views for different perspectives
-                <br />• Click on a homework title to view detailed information
+                • Use filters to quickly find specific fine types
+                <br />• Click on column headers to sort the fine type list
+                <br />• Toggle the active status to enable or disable fine types
+                <br />• Mark important fine types with the bookmark icon
+                <br />• Use the grid view for a more visual representation
+                <br />• Select multiple fine types for batch actions
               </Typography>
             </Box>
           </Box>
