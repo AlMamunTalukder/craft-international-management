@@ -392,7 +392,7 @@ export default function BatchListPage() {
                 }}
               >
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  Batches
+                  Batches new
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <Button
