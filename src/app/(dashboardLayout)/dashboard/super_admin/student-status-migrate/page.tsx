@@ -642,7 +642,8 @@ const StudentStatusMigration = () => {
           <Button variant="outlined" sx={{ mx: 1 }}>
             Branch
           </Button>
-          <Button variant="contained" startIcon={<Add />}>
+          <Button varian
+          t="contained" startIcon={<Add />}>
             New
           </Button>
         </Box>
