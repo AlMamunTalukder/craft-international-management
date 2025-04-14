@@ -15,7 +15,7 @@ import {
 import Box from "@mui/material/Box";
 import * as React from "react";
 import { Add, Delete, Search, Folder } from "@mui/icons-material";
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 import { useTheme } from "@mui/material/styles"; // Updated import
 import CreateFolderModal from "./_components/CreateFolderModal";
 
@@ -63,7 +63,7 @@ const Page = () => {
           }}
         >
           <h1 className=" text-3xl">Folder</h1>
-          <GarageForm onSubmit={handleSubmit}>
+          <CraftForm onSubmit={handleSubmit}>
             <FormControl sx={{}} variant="outlined">
               <InputLabel htmlFor="search" size="small">
                 Search Here
@@ -74,7 +74,7 @@ const Page = () => {
                 className="w-[260px] lg:w-[250px] h-10"
               />
             </FormControl>
-          </GarageForm>
+          </CraftForm>
 
           <Button sx={{ color: "" }} variant="contained" onClick={handleOpen}>
             <Add className="h-5 w-5 mr-2" /> Create Folder

@@ -1,36 +1,33 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React, { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dynamic from 'next/dynamic';
 import { joditConfig } from '@/config';
-// import type { Jodit } from 'jodit-react';
-import { Jodit } from 'jodit/esm';
 
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
-interface EditorProps {
+interface BNPEditorProps {
   name: string;
   label?: string;
 }
 
-const GarageEditor: React.FC<EditorProps> = ({ name, label }) => {
+const DailyTimesEditor: React.FC<BNPEditorProps> = ({ name, label }) => {
   const { control } = useFormContext();
-  const editorRef = useRef<Jodit | null>(null); 
+  const editorRef = useRef<any>(null); 
 
   const config = {
     ...joditConfig,
     uploader: {
       ...joditConfig.uploader,
-      defaultHandlerSuccess: function (this: Jodit, response: any) {
+      defaultHandlerSuccess(this: any, response: any) {
         if (response.files && response.files.length) {
           const imageUrl = response.files[0];
-          this.selection.insertImage(imageUrl, null, 250); // Access `selection` directly
+          this.selection.insertImage(imageUrl, null, 250);
         }
       },
     },
   };
+  
 
   return (
     <Controller
@@ -47,7 +44,7 @@ const GarageEditor: React.FC<EditorProps> = ({ name, label }) => {
               onBlur();
               onChange(newContent);
             }}
-            onChange={(newContent) => {}}
+            onChange={() => {}}
           />
         </div>
       )}
@@ -55,4 +52,4 @@ const GarageEditor: React.FC<EditorProps> = ({ name, label }) => {
   );
 };
 
-export default GarageEditor;
+export default DailyTimesEditor;

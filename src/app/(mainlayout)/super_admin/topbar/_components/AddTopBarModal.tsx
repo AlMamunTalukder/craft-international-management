@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import { Box, Button, IconButton } from "@mui/material";
 import GarageModal from "@/components/Shared/Modal";
 import Image from "next/image";
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import Tabs from "@mui/material/Tabs";
@@ -153,7 +153,7 @@ const AddTopBarModal = ({ open, setOpen }: TProps) => {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <Box padding="5px 10px 10px 10px">
-            <GarageForm onSubmit={handleSubmit}>
+            <CraftForm onSubmit={handleSubmit}>
               <div className="space-y-5">
                 <div className="flex gap-4 justify-end items-center text-center">
                   <div className="lg:flex gap-4 items-center text-center">
@@ -206,7 +206,7 @@ const AddTopBarModal = ({ open, setOpen }: TProps) => {
                   Upload
                 </Button>
               </div>
-            </GarageForm>
+            </CraftForm>
           </Box>
         </CustomTabPanel>
       </Box>

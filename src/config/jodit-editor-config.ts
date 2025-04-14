@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { Jodit } from "jodit/esm";
-
 export const joditConfig = {
   uploader: {
-    url: 'https://api.cloudinary.com/v1_1/do2cbxkkj/image/upload',
+    url: `https://api.cloudinary.com/v1_1/do2cbxkkj/image/upload`,
     format: 'json',
     prepareData: (formData: FormData) => {
       const file = formData.get('files[0]');
@@ -14,7 +11,7 @@ export const joditConfig = {
 
       formData.delete('files[0]');
       formData.append('file', file);
-      formData.append('upload_preset', 'craft');
+      formData.append('upload_preset', 'zrf-foundation');
 
       return formData;
     },
@@ -28,24 +25,26 @@ export const joditConfig = {
         msg: resp.message,
       };
     },
-    defaultHandlerSuccess: function (this: Jodit, response: any) {
+    defaultHandlerSuccess: (response: any, component: any) => {
+      // Insert the image immediately after upload
       if (response.files && response.files.length) {
         const imageUrl = response.files[0];
-        this.selection.insertImage(imageUrl, null, 250); 
+        component.selection.insertImage(imageUrl, null, 250);
       }
-    
     },
     error: (e: Error) => {
       console.error('Upload error:', e.message);
-    },
+    }
   },
   height: 500,
   toolbarAdaptive: false,
   spellcheck: false,
   disablePlugins: ['speechRecognition'],
+  // Enable image resizing and alignment
   enableDragAndDropFileToEditor: true,
   imageDefaultWidth: 250,
-  imageProcessor: {
-    replaceDataURIToBlobIdInView: true, 
-  },
+  // imageProcessor: {
+  //   replaceRelativeUrls: true
+  // }
 };
+

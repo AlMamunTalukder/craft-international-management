@@ -57,12 +57,12 @@ const roboto = Roboto({
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: "#6366f1", // Indigo color for primary
+      main: "#6366f1", 
       light: "#818cf8",
       dark: "#4f46e5",
     },
     secondary: {
-      main: "#ec4899", // Pink color for secondary
+      main: "#ec4899", 
       light: "#f472b6",
       dark: "#db2777",
     },
@@ -403,12 +403,28 @@ export default function SectionAddPage() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-          <Fade in={true} timeout={800}>
-            <Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+     <ThemeProvider theme={theme}>
+          <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
+            <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
+              <Fade in={true} timeout={800}>
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 3,
+                      flexWrap: "wrap",
+                      gap: 2,
+                      paddingTop: 2
+                    }}
+                  >
+
+
+                
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
+                  + New Section
+                </Typography>
                 <Button
                   component={Link}
                   href="/dashboard/super_admin/section"
@@ -417,9 +433,6 @@ export default function SectionAddPage() {
                 >
                   Back to Sections
                 </Button>
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  New Section
-                </Typography>
               </Box>
 
               <Paper

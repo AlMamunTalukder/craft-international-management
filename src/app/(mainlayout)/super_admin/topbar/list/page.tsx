@@ -22,7 +22,7 @@ import Link from "next/link";
 import * as React from "react";
 import award from "../../../../../assets/img/topBar/bg-3.jpg";
 import { Add, Delete, Edit, Search } from "@mui/icons-material";
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 import AddTopBarModal from "../_components/AddTopBarModal";
 
 const events = [
@@ -58,7 +58,7 @@ const Page = () => {
           }}
         >
           <h1 className=" text-3xl">Top Bar</h1>
-          <GarageForm onSubmit={handleSubmit}>
+          <CraftForm onSubmit={handleSubmit}>
             <FormControl sx={{}} variant="outlined">
               <InputLabel htmlFor="search" size="small">
                 Search Here
@@ -69,7 +69,7 @@ const Page = () => {
                 className="w-[260px] lg:w-[250px] h-10"
               />
             </FormControl>
-          </GarageForm>
+          </CraftForm>
 
           <Button
             sx={{ color: "" }}
