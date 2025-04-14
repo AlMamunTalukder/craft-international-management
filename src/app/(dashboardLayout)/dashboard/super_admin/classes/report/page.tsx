@@ -409,7 +409,7 @@ export default function ClassesListPage() {
                     color="primary"
                     startIcon={<AddIcon />}
                     component={Link}
-                    href="/dashboard/super_admin/report/new"
+                    href="/dashboard/super_admin/classes/report/new"
                     sx={{
                       borderRadius: 2,
                       boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
