@@ -389,7 +389,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/discount-type/list",
         title: "Discount",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -398,7 +398,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/fee-type/list",
         title: "Assign Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -407,7 +407,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/assign-discount/list",
         title: "Assign Discount ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -416,7 +416,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/assign-fine/list",
         title: "Assign Fines ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -425,7 +425,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/collect-fee-setting",
         title: "Collect Fee Setting ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -434,7 +434,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/collect-fee/list",
         title: "Collect Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -443,7 +443,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/collect-fee-statement",
         title: "Collected Fees Statement",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -452,7 +452,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/all-sms-history",
         title: "Send Late Fee SMS ",
         icon: (
           <ColorfulIcon color="#F4B400">
