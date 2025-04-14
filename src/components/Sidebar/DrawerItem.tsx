@@ -34,7 +34,6 @@ import {
   Assessment,
   BarChart,
   CloudUpload,
-  Image,
   CompareArrows,
   SwapHoriz,
   AttachMoney,

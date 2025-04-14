@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState } from "react"
@@ -748,7 +749,7 @@ export default function FineTypeAdd() {
                 </Box>
               ) : (
                 <Stepper activeStep={activeStep} orientation={isMobile ? "vertical" : "horizontal"}>
-                  {steps.map((step, index) => (
+                  {steps.map((step) => (
                     <Step key={step.label}>
                       <StepLabel
                         optional={isMobile ? <Typography variant="caption">{step.description}</Typography> : null}

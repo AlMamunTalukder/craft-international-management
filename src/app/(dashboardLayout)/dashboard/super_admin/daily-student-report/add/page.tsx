@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -54,6 +56,7 @@ import {
   DialogTitle,
   LinearProgress,
   Slider,
+  SelectChangeEvent,
 } from "@mui/material"
 import {
   Save as SaveIcon,
@@ -84,6 +87,91 @@ import {
 } from "@mui/icons-material"
 import { styled } from "@mui/material/styles"
 
+// Define types for our data structures
+type Student = {
+  id: string
+  name: string
+  rollNumber: string
+  class: string
+  section: string
+  gender: string
+  photo: string
+}
+
+type Class = {
+  id: string
+  name: string
+}
+
+type Section = {
+  id: string
+  name: string
+}
+
+type Subject = {
+  id: string
+  name: string
+  teacher: string
+}
+
+type Teacher = {
+  id: string
+  name: string
+  subject: string
+}
+
+type SubjectReport = {
+  id: string
+  subject: string
+  teacher: string
+  attendance: string
+  classParticipation: number
+  classworkCompletion: number
+  homeworkStatus: string
+  understandingLevel: number
+  testScore: number
+  remarks: string
+}
+
+type BehaviorNote = {
+  id: string
+  type: string
+  note: string
+  teacher: string
+}
+
+type HomeworkItem = {
+  id: string
+  subject: string
+  description: string
+  dueDate: string
+  status: string
+  grade: string
+  feedback: string
+}
+
+type FormData = {
+  date: string
+  studentId: string
+  classId: string
+  section: string
+  overallAttendance: string
+  arrivalTime: string
+  departureTime: string
+  absenceReason: string
+  overallPerformance: number
+  behaviorRating: number
+  teacherRemarks: string
+  subjectReports: SubjectReport[]
+  parentSignature: boolean
+}
+
+type SnackbarState = {
+  open: boolean
+  message: string
+  severity: "success" | "error" | "warning" | "info"
+}
+
 // Custom styled components
 const StyledRating = styled(Rating)({
   "& .MuiRating-iconFilled": {
@@ -108,25 +196,29 @@ const VisuallyHiddenInput = styled("input")({
 
 export default function DailyStudentReportAdd() {
   const theme = useTheme()
-  const [activeStep, setActiveStep] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
-  const [openDialog, setOpenDialog] = useState(false)
-  const [dialogType, setDialogType] = useState("")
-  const [previewMode, setPreviewMode] = useState(false)
-  const [students, setStudents] = useState([])
-  const [classes, setClasses] = useState([])
-  const [sections, setSections] = useState([])
-  const [subjects, setSubjects] = useState([])
-  const [teachers, setTeachers] = useState([])
-  const [selectedSubjects, setSelectedSubjects] = useState([])
-  const [behaviorNotes, setBehaviorNotes] = useState([])
-  const [homeworkItems, setHomeworkItems] = useState([])
-  const [studentPhoto, setStudentPhoto] = useState(null)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [activeStep, setActiveStep] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: "",
+    severity: "success"
+  })
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
+  const [dialogType, setDialogType] = useState<string>("")
+  const [previewMode, setPreviewMode] = useState<boolean>(false)
+  const [students, setStudents] = useState<Student[]>([])
+  const [classes, setClasses] = useState<Class[]>([])
+  const [sections, setSections] = useState<Section[]>([])
+  const [subjects, setSubjects] = useState<Subject[]>([])
+  const [teachers, setTeachers] = useState<Teacher[]>([])
+  const [selectedSubjects, setSelectedSubjects] = useState<SubjectReport[]>([])
+  const [behaviorNotes, setBehaviorNotes] = useState<BehaviorNote[]>([])
+  const [homeworkItems, setHomeworkItems] = useState<HomeworkItem[]>([])
+  const [studentPhoto, setStudentPhoto] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   // Form data state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     date: formatDateForInput(new Date()),
     studentId: "",
     classId: "",
@@ -143,7 +235,7 @@ export default function DailyStudentReportAdd() {
   })
 
   // Helper function to format date for input
-  function formatDateForInput(date) {
+  function formatDateForInput(date: Date): string {
     const d = new Date(date)
     const year = d.getFullYear()
     const month = String(d.getMonth() + 1).padStart(2, "0")
@@ -152,9 +244,21 @@ export default function DailyStudentReportAdd() {
   }
 
   // Helper function to format date for display
-  function formatDateForDisplay(dateString) {
-    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+  function formatDateForDisplay(dateString: string): string {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
     return new Date(dateString).toLocaleDateString(undefined, options)
+  }
+
+  // Helper function to add days to a date
+  function addDays(date: Date, days: number): Date {
+    const result = new Date(date)
+    result.setDate(result.getDate() + days)
+    return result
   }
 
   // Load mock data
@@ -176,7 +280,7 @@ export default function DailyStudentReportAdd() {
     ])
 
     // Mock students data
-    const mockStudents = [
+    const mockStudents: Student[] = [
       {
         id: "S001",
         name: "Anika Rahman",
@@ -226,7 +330,7 @@ export default function DailyStudentReportAdd() {
     setStudents(mockStudents)
 
     // Mock subjects data
-    const mockSubjects = [
+    const mockSubjects: Subject[] = [
       { id: "1", name: "MATHEMATICS", teacher: "Mr. Rahman" },
       { id: "2", name: "SCIENCE", teacher: "Mrs. Begum" },
       { id: "3", name: "ENGLISH", teacher: "Ms. Chowdhury" },
@@ -253,7 +357,7 @@ export default function DailyStudentReportAdd() {
     ])
 
     // Initialize selected subjects with default values
-    const defaultSubjects = mockSubjects.slice(0, 5).map((subject) => ({
+    const defaultSubjects: SubjectReport[] = mockSubjects.slice(0, 5).map((subject) => ({
       id: subject.id,
       subject: subject.name,
       teacher: subject.teacher,
@@ -292,15 +396,8 @@ export default function DailyStudentReportAdd() {
     ])
   }, [])
 
-  // Helper function to add days to a date
-  function addDays(date, days) {
-    const result = new Date(date)
-    result.setDate(result.getDate() + days)
-    return result
-  }
-
   // Handle form field changes
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData({
       ...formData,
@@ -308,8 +405,16 @@ export default function DailyStudentReportAdd() {
     })
   }
 
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   // Handle switch changes
-  const handleSwitchChange = (e) => {
+  const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target
     setFormData({
       ...formData,
@@ -318,7 +423,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle student selection
-  const handleStudentSelect = (event, newValue) => {
+  const handleStudentSelect = (event: any, newValue: Student | null) => {
     if (newValue) {
       setFormData({
         ...formData,
@@ -331,7 +436,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle subject selection
-  const handleSubjectSelect = (event, newValues) => {
+  const handleSubjectSelect = (event: any, newValues: Subject[]) => {
     const updatedSubjects = newValues.map((subject) => {
       const existingSubject = selectedSubjects.find((s) => s.id === subject.id)
       if (existingSubject) {
@@ -355,7 +460,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle subject report changes
-  const handleSubjectReportChange = (id, field, value) => {
+  const handleSubjectReportChange = (id: string, field: string, value: any) => {
     const updatedSubjects = selectedSubjects.map((subject) =>
       subject.id === id ? { ...subject, [field]: value } : subject,
     )
@@ -364,14 +469,14 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle behavior note changes
-  const handleBehaviorNoteChange = (id, field, value) => {
+  const handleBehaviorNoteChange = (id: string, field: string, value: string) => {
     const updatedNotes = behaviorNotes.map((note) => (note.id === id ? { ...note, [field]: value } : note))
     setBehaviorNotes(updatedNotes)
   }
 
   // Handle add behavior note
   const handleAddBehaviorNote = () => {
-    const newNote = {
+    const newNote: BehaviorNote = {
       id: `BN${behaviorNotes.length + 1}`.padStart(5, "0"),
       type: "Positive",
       note: "",
@@ -381,19 +486,19 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle remove behavior note
-  const handleRemoveBehaviorNote = (id) => {
+  const handleRemoveBehaviorNote = (id: string) => {
     setBehaviorNotes(behaviorNotes.filter((note) => note.id !== id))
   }
 
   // Handle homework item changes
-  const handleHomeworkChange = (id, field, value) => {
+  const handleHomeworkChange = (id: string, field: string, value: string) => {
     const updatedItems = homeworkItems.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     setHomeworkItems(updatedItems)
   }
 
   // Handle add homework item
   const handleAddHomework = () => {
-    const newItem = {
+    const newItem: HomeworkItem = {
       id: `HW${homeworkItems.length + 1}`.padStart(5, "0"),
       subject: subjects[0]?.name || "",
       description: "",
@@ -406,12 +511,12 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle remove homework item
-  const handleRemoveHomework = (id) => {
+  const handleRemoveHomework = (id: string) => {
     setHomeworkItems(homeworkItems.filter((item) => item.id !== id))
   }
 
   // Handle dialog open
-  const handleOpenDialog = (type) => {
+  const handleOpenDialog = (type: string) => {
     setDialogType(type)
     setOpenDialog(true)
   }
@@ -444,7 +549,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
     setLoading(true)
 
@@ -480,7 +585,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Get status color
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "Present":
         return "success"
@@ -494,7 +599,7 @@ export default function DailyStudentReportAdd() {
   }
 
   // Get performance color
-  const getPerformanceColor = (value) => {
+  const getPerformanceColor = (value: number) => {
     if (value >= 80) return "success"
     if (value >= 60) return "primary"
     if (value >= 40) return "warning"
@@ -757,7 +862,7 @@ export default function DailyStudentReportAdd() {
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
                           <InputLabel>Class</InputLabel>
-                          <Select name="classId" value={formData.classId} label="Class" onChange={handleChange}>
+                          <Select name="classId" value={formData.classId} label="Class" onChange={handleSelectChange}>
                             <MenuItem value="">Select Class</MenuItem>
                             {classes.map((cls) => (
                               <MenuItem key={cls.id} value={cls.id}>
@@ -771,7 +876,7 @@ export default function DailyStudentReportAdd() {
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
                           <InputLabel>Section</InputLabel>
-                          <Select name="section" value={formData.section} label="Section" onChange={handleChange}>
+                          <Select name="section" value={formData.section} label="Section" onChange={handleSelectChange}>
                             <MenuItem value="">Select Section</MenuItem>
                             {sections.map((section) => (
                               <MenuItem key={section.id} value={section.id}>
@@ -824,7 +929,7 @@ export default function DailyStudentReportAdd() {
                             <Grid container spacing={2} alignItems="center">
                               <Grid item xs={12} sm={3} sx={{ textAlign: "center" }}>
                                 <Avatar
-                                  src={studentPhoto}
+                                  src={studentPhoto || undefined}
                                   alt={selectedStudent.name}
                                   sx={{ width: 100, height: 100, mx: "auto", mb: 1 }}
                                 />
@@ -911,7 +1016,7 @@ export default function DailyStudentReportAdd() {
                             name="overallAttendance"
                             value={formData.overallAttendance}
                             label="Attendance Status"
-                            onChange={handleChange}
+                            onChange={handleSelectChange}
                           >
                             <MenuItem value="Present">Present</MenuItem>
                             <MenuItem value="Absent">Absent</MenuItem>
@@ -951,18 +1056,18 @@ export default function DailyStudentReportAdd() {
                         {(formData.overallAttendance === "Absent" ||
                           formData.overallAttendance === "Late" ||
                           formData.overallAttendance === "Excused") && (
-                          <TextField
-                            label="Reason"
-                            name="absenceReason"
-                            value={formData.absenceReason}
-                            onChange={handleChange}
-                            fullWidth
-                            multiline
-                            rows={2}
-                            sx={{ mt: 2 }}
-                            placeholder="Enter reason for absence/late arrival"
-                          />
-                        )}
+                            <TextField
+                              label="Reason"
+                              name="absenceReason"
+                              value={formData.absenceReason}
+                              onChange={handleChange}
+                              fullWidth
+                              multiline
+                              rows={2}
+                              sx={{ mt: 2 }}
+                              placeholder="Enter reason for absence/late arrival"
+                            />
+                          )}
                       </Grid>
 
                       <Grid item xs={12} md={6}>
@@ -977,7 +1082,7 @@ export default function DailyStudentReportAdd() {
                             <Grid item xs>
                               <Slider
                                 value={formData.overallPerformance}
-                                onChange={(e, newValue) => setFormData({ ...formData, overallPerformance: newValue })}
+                                onChange={(e, newValue) => setFormData({ ...formData, overallPerformance: newValue as number })}
                                 aria-labelledby="performance-slider"
                                 valueLabelDisplay="auto"
                                 step={5}
@@ -1017,7 +1122,7 @@ export default function DailyStudentReportAdd() {
                               precision={0.5}
                               icon={<StarIcon fontSize="inherit" />}
                               emptyIcon={<StarBorderIcon fontSize="inherit" />}
-                              onChange={(e, newValue) => setFormData({ ...formData, behaviorRating: newValue })}
+                              onChange={(e, newValue) => setFormData({ ...formData, behaviorRating: newValue as number })}
                               size="large"
                             />
                             <Typography variant="body2" sx={{ ml: 2 }}>
@@ -1109,17 +1214,24 @@ export default function DailyStudentReportAdd() {
                           />
                         )}
                         renderTags={(value, getTagProps) =>
-                          value.map((option, index) => (
-                            <Chip
-                              key={option.id}
-                              label={option.name}
-                              size="small"
-                              {...getTagProps({ index })}
-                              sx={{ m: 0.5 }}
-                            />
-                          ))
+                          value.map((option, index) => {
+                            const { key, ...otherProps } = getTagProps({ index });
+                            return (
+                              <Chip
+                                key={option.id} // Explicitly set key
+                                label={option.name}
+                                size="small"
+                                {...otherProps}
+                                sx={{ m: 0.5 }}
+                              />
+                            );
+                          })
                         }
                       />
+
+
+
+
                     }
                   />
                   <Divider />
@@ -1741,7 +1853,7 @@ export default function DailyStudentReportAdd() {
                         <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
                           <Grid item xs={12} sm={3} sx={{ textAlign: "center" }}>
                             <Avatar
-                              src={studentPhoto}
+                              src={studentPhoto || undefined}
                               alt={selectedStudent.name}
                               sx={{ width: 100, height: 100, mx: "auto", mb: 1 }}
                             />
@@ -1896,14 +2008,14 @@ export default function DailyStudentReportAdd() {
                         <Grid item xs={6}>
                           <Box sx={{ borderTop: "1px solid", borderColor: "divider", pt: 1 }}>
                             <Typography variant="body2" align="center">
-                              Teacher's Signature
+                              Teacher&apos;s Signature
                             </Typography>
                           </Box>
                         </Grid>
                         <Grid item xs={6}>
                           <Box sx={{ borderTop: "1px solid", borderColor: "divider", pt: 1 }}>
                             <Typography variant="body2" align="center">
-                              Parent's Signature
+                              Parent&apos;s Signature
                             </Typography>
                             {formData.parentSignature && (
                               <Typography variant="caption" align="center" display="block" color="success.main">

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -41,6 +42,20 @@ import {
   Print as PrintIcon,
   GetApp as GetAppIcon,
 } from "@mui/icons-material"
+
+
+type DailyClassReport = {
+  id: number
+  subject: string
+  teacher: string
+  status: string
+  date: string
+  startTime: string
+  endTime: string
+  classWork: string
+  homework: string
+  test: boolean
+}
 
 // Mock data for the table
 const generateMockData = () => {
@@ -87,8 +102,6 @@ const generateMockData = () => {
 export default function DailyClassReportList() {
   const theme = useTheme()
   const [loading, setLoading] = useState(true)
-  const [reports, setReports] = useState([])
-  const [selectedReports, setSelectedReports] = useState([])
   const [filter, setFilter] = useState({
     class: "",
     section: "",
@@ -96,6 +109,8 @@ export default function DailyClassReportList() {
     date: "",
   })
 
+  const [reports, setReports] = useState<DailyClassReport[]>([])
+const [selectedReports, setSelectedReports] = useState<number[]>([])
   // Load mock data
   useEffect(() => {
     const fetchData = async () => {
@@ -109,7 +124,7 @@ export default function DailyClassReportList() {
   }, [])
 
   // Handle checkbox selection
-  const handleSelectAll = (event) => {
+  const handleSelectAll = (event:any) => {
     if (event.target.checked) {
       setSelectedReports(reports.map((report) => report.id))
     } else {
@@ -117,21 +132,22 @@ export default function DailyClassReportList() {
     }
   }
 
-  const handleSelectOne = (event, id) => {
+  const handleSelectOne = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
     const selectedIndex = selectedReports.indexOf(id)
-    let newSelected = []
-
+    let newSelected: number[] = []
+  
     if (selectedIndex === -1) {
       newSelected = [...selectedReports, id]
     } else {
       newSelected = selectedReports.filter((reportId) => reportId !== id)
     }
-
+  
     setSelectedReports(newSelected)
   }
+  
 
   // Handle filter changes
-  const handleFilterChange = (event) => {
+  const handleFilterChange = (event:any) => {
     const { name, value } = event.target
     setFilter({
       ...filter,

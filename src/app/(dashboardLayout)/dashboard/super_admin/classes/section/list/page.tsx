@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -65,11 +67,11 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
-  School as SchoolIcon,
-  Dashboard as DashboardIcon,
-  AccountTree as BranchIcon,
-  Home as HomeIcon,
-  Notifications as NotificationsIcon,
+  // School as SchoolIcon,
+  // Dashboard as DashboardIcon,
+  // AccountTree as BranchIcon,
+  // Home as HomeIcon,
+  // Notifications as NotificationsIcon,
   ArrowUpward as ArrowUpwardIcon,
   ArrowDownward as ArrowDownwardIcon,
   CheckCircle as CheckCircleIcon,
@@ -375,13 +377,13 @@ export default function SectionsListPage() {
   }
 
   // Handle filters
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilterAnchorEl(event.currentTarget)
-  }
+  // const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setFilterAnchorEl(event.currentTarget)
+  // }
 
-  const handleFilterClose = () => {
-    setFilterAnchorEl(null)
-  }
+  // const handleFilterClose = () => {
+  //   setFilterAnchorEl(null)
+  // }
 
   const handleStatusFilterSelect = (status: string | null) => {
     setStatusFilter(status)
@@ -564,12 +566,12 @@ export default function SectionsListPage() {
           icon: <AccessTimeIcon fontSize="small" />,
           sx: { bgcolor: alpha(theme.palette.warning.main, 0.1) },
         }
-      default:
-        return {
-          color: "default" as const,
-          icon: null,
-          sx: {},
-        }
+        default:
+          return {
+            color: "default" as const,
+            icon: <div />, 
+            sx: {},
+          }
     }
   }
 
@@ -614,7 +616,7 @@ export default function SectionsListPage() {
                     color="primary"
                     startIcon={<AddIcon />}
                     component={Link}
-                    href="/dashboard/super_admin/section/new"
+                    href="/dashboard/super_admin/classes/section/new"
                     sx={{
                       borderRadius: 2,
                       boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
@@ -1540,7 +1542,7 @@ export default function SectionsListPage() {
                                   No sections found
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                  Try adjusting your search or filter to find what you're looking for.
+                                  Try adjusting your search or filter to find what you&apos;re looking for.
                                 </Typography>
                               </Box>
                             </Grid>
@@ -1657,7 +1659,7 @@ export default function SectionsListPage() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the section "{selectedSection?.fullName}"? This action cannot be undone.
+            Are you sure you want to delete the section &#34;{selectedSection?.fullName}&#34;? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3 }}>

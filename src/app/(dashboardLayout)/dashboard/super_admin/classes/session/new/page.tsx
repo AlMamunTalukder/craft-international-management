@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -40,7 +41,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 
 export default function NewSession() {
   const theme = useTheme()
@@ -48,41 +49,40 @@ export default function NewSession() {
 
   const [sessionName, setSessionName] = useState("")
   const [isCurrent, setIsCurrent] = useState(false)
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
+  const [startDate, setStartDate] = useState<Dayjs | null>(null)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
   const [workingDays, setWorkingDays] = useState(0)
   const [holidays, setHolidays] = useState(0)
   const [activeStep, setActiveStep] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
+ 
 
+  
   const steps = ["Session Details", "Date Configuration", "Review & Save"]
 
   const calculateWorkingDays = () => {
-    if (startDate && endDate) {
-      // Simple calculation - can be enhanced for more accuracy
-      const start = dayjs(startDate)
-      const end = dayjs(endDate)
-      const days = end.diff(start, "day")
-
-      // Approximate business days (excluding weekends)
-      const weeks = Math.floor(days / 7)
-      let businessDays = days - weeks * 2
-
-      // Adjust for remaining days
-      const extraDays = days % 7
-      const startDay = start.day()
-
-      for (let i = 0; i < extraDays; i++) {
-        const day = (startDay + i) % 7
-        if (day === 0 || day === 6) {
-          // Sunday or Saturday
-          businessDays--
-        }
+    if (!startDate || !endDate) return
+  
+    const start = dayjs(startDate)
+    const end = dayjs(endDate)
+    const days = end.diff(start, "day")
+  
+    const weeks = Math.floor(days / 7)
+    let businessDays = days - weeks * 2
+  
+    const extraDays = days % 7
+    const startDay = start.day()
+  
+    for (let i = 0; i < extraDays; i++) {
+      const day = (startDay + i) % 7
+      if (day === 0 || day === 6) {
+        businessDays--
       }
-
-      setWorkingDays(businessDays > 0 ? businessDays : 0)
     }
+  
+    setWorkingDays(businessDays > 0 ? businessDays : 0)
   }
+  
 
   const handleSave = () => {
     // Here you would typically save the data to your backend
@@ -113,7 +113,7 @@ export default function NewSession() {
     return false
   }
 
-  const formatDate = (date) => {
+  const formatDate = (date:any) => {
     if (!date) return "Not specified"
     return dayjs(date).format("MMMM D, YYYY")
   }
@@ -282,7 +282,7 @@ export default function NewSession() {
                             },
                           },
                         }}
-                        minDate={startDate}
+                        minDate={startDate ?? undefined}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>

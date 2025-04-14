@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import {
   Box,
@@ -10,15 +11,11 @@ import {
   TextField,
   Button,
   Paper,
-  AppBar,
-  Toolbar,
-  IconButton,
   Avatar,
   Grid,
   Chip,
   MenuItem,
   InputAdornment,
-  Badge,
   useMediaQuery,
   Fade,
   createTheme,
@@ -34,14 +31,9 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  SelectChangeEvent,
 } from "@mui/material"
 import {
-  Save as SaveIcon,
-  School as SchoolIcon,
-  Dashboard as DashboardIcon,
-  AccountTree as BranchIcon,
-  Home as HomeIcon,
-  Notifications as NotificationsIcon,
   ArrowBack as ArrowBackIcon,
   CheckCircle as CheckCircleIcon,
   Groups as GroupsIcon,
@@ -50,6 +42,7 @@ import {
   Schedule as ScheduleIcon,
   Bookmark as BookmarkIcon,
   ColorLens as ColorLensIcon,
+  Save,
 } from "@mui/icons-material"
 import { Roboto } from "next/font/google"
 import Link from "next/link"
@@ -244,12 +237,25 @@ const colorPalette = [
   "#f97316", // Orange
 ]
 
+interface FormData {
+  name: string;
+  classId: string;
+  capacity: number;
+  teacherId: string;
+  roomId: string;
+  timeSlots: number[];
+  description: string;
+  sectionType: number;
+  color: string;
+  isActive: boolean;
+}
+
 export default function SectionAddPage() {
   const theme = customTheme
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     classId: "",
     capacity: 30,
@@ -273,11 +279,20 @@ export default function SectionAddPage() {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "info" | "warning">("success")
 
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
+    const { name, value } = e.target as { name: string; value: string }
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
+
+  // Handle number input changes
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({
       ...formData,
-      [name as string]: value,
+      [name]: Number(value),
     })
   }
 
@@ -478,7 +493,7 @@ export default function SectionAddPage() {
                               name="capacity"
                               type="number"
                               value={formData.capacity}
-                              onChange={handleChange}
+                              onChange={handleNumberChange}
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
@@ -501,7 +516,7 @@ export default function SectionAddPage() {
                                 label="Teacher"
                               >
                                 {sampleTeachers.map((teacher) => (
-                                  <MenuItem key={teacher.id} value={teacher.id}>
+                                  <MenuItem key={teacher.id} value={teacher.id.toString()}>
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                       <Avatar
                                         sx={{
@@ -554,7 +569,7 @@ export default function SectionAddPage() {
                                 label="Room"
                               >
                                 {sampleRooms.map((room) => (
-                                  <MenuItem key={room.id} value={room.id}>
+                                  <MenuItem key={room.id} value={room.id.toString()}>
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                       <RoomIcon fontSize="small" sx={{ mr: 1, color: "action.active" }} />
                                       <Typography variant="body2">{room.name}</Typography>
@@ -613,12 +628,12 @@ export default function SectionAddPage() {
                                 labelId="section-type-label"
                                 id="section-type"
                                 name="sectionType"
-                                value={formData.sectionType}
+                                value={formData.sectionType.toString()}
                                 onChange={handleChange}
                                 label="Section Type"
                               >
                                 {sectionTypes.map((type) => (
-                                  <MenuItem key={type.id} value={type.id}>
+                                  <MenuItem key={type.id} value={type.id.toString()}>
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                       <Box
                                         sx={{
@@ -729,7 +744,7 @@ export default function SectionAddPage() {
                               label="Active Section"
                             />
                             <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
-                              Inactive sections won't appear in schedules and student assignments
+                              Inactive sections won&apos;t appear in schedules and student assignments
                             </Typography>
                           </Grid>
                         </Grid>
@@ -747,7 +762,7 @@ export default function SectionAddPage() {
                             color="primary"
                             type="submit"
                             disabled={loading || success}
-                            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+                            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Save />}
                             sx={{
                               px: 4,
                               py: 1.5,
@@ -835,4 +850,3 @@ export default function SectionAddPage() {
     </ThemeProvider>
   )
 }
-

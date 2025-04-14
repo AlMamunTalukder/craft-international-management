@@ -72,7 +72,10 @@ const LoginDashboard = () => {
             type="submit"
             href="#"
             sx={{
-              backgroundColor: '#9A5AE3', color: 'white', ":hover": {
+              backgroundColor: '#9A5AE3', 
+              color: 'white', 
+              fontFamily: 'inherit',
+              ":hover": {
                 backgroundColor: '#9b73c9', color: 'white'
               }
             }}

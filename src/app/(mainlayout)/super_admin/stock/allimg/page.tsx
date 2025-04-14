@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
@@ -37,7 +38,7 @@ const ImageGalleryPage = () => {
   // Handle adding new images (mock function)
   const handleAddImage = () => {
     const newImage = `https://picsum.photos/200/200?random=${images.length + 1}`;
-    // Convert the URL to StaticImageData-like object
+
     setImages((prev) => [
       ...prev,
       {
