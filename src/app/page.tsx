@@ -40,7 +40,7 @@ const LoginDashboard = () => {
               type="email"
               id="email"
               placeholder="আপনার ইমেইল বা ফোন নম্বর লিখুন"
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#9A5AE3] focus:border-[#9A5AE3] outline-none "
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#9A5AE3] focus:border-[#9A5AE3] outline-none text-black"
               required
             />
           </div>
@@ -54,7 +54,7 @@ const LoginDashboard = () => {
               type="password"
               id="password"
               placeholder="আপনার পাসওয়ার্ড লিখুন"
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#9A5AE3] focus:border-[#9A5AE3] outline-none "
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#9A5AE3] focus:border-[#9A5AE3] outline-none text-black"
               required
             />
           </div>
@@ -66,13 +66,14 @@ const LoginDashboard = () => {
               পাসওয়ার্ড ভুলে গেছেন?
             </Link>
           </div>
-
-
           <Button
             type="submit"
-            href="#"
+            href="/dashboard"
             sx={{
-              backgroundColor: '#9A5AE3', color: 'white', ":hover": {
+              backgroundColor: '#9A5AE3', 
+              color: 'white', 
+              fontFamily: 'inherit',
+              ":hover": {
                 backgroundColor: '#9b73c9', color: 'white'
               }
             }}

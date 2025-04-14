@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 "use client";
 
 import React, { useState } from "react";
@@ -176,11 +175,12 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <Box sx={{
               padding: .5,
               position: "relative",
-              borderRadius: 1,
+              borderRadius: 5,
               bgcolor: "white",
               // '&:hover': { bgcolor: "rgba(255,255,255,0.25)" },
               width: "100%",
               maxWidth: "300px"
+
             }}>
               <Box sx={{
                 position: "absolute",
@@ -188,11 +188,12 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 pointerEvents: "none",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+              
               }}>
                 <SearchIcon sx={{color: "black",}}/>
               </Box>
-              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "black" }} placeholder="Search…" />
+              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "black", }} placeholder="Search…" />
             </Box>
           </Box>
           <IconButton onClick={handleProfileMenuOpen} color="inherit"><Avatar /></IconButton>

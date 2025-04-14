@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -157,7 +158,7 @@ const StudentMigration = () => {
   }, [searchTerm, students])
 
 
-  const handleCurrentFilterChange = (e) => {
+  const handleCurrentFilterChange = (e: any) => {
     const { name, value, type, checked } = e.target
     setCurrentFilters({
       ...currentFilters,
@@ -166,7 +167,7 @@ const StudentMigration = () => {
   }
 
 
-  const handleMigrateToFilterChange = (e) => {
+  const handleMigrateToFilterChange = (e: any) => {
     const { name, value } = e.target
     setMigrateToFilters({
       ...migrateToFilters,
@@ -175,18 +176,18 @@ const StudentMigration = () => {
   }
 
   // Handle page change
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage: any) => {
     setPage(newPage)
   }
 
   // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(Number.parseInt(event.target.value, 10))
     setPage(0)
   }
 
   // Handle select all
-  const handleSelectAll = (event) => {
+  const handleSelectAll = (event: any) => {
     const checked = event.target.checked
     setSelectAll(checked)
     setStudents(
@@ -198,7 +199,7 @@ const StudentMigration = () => {
   }
 
   // Handle select one
-  const handleSelectOne = (id) => {
+  const handleSelectOne = (id: any) => {
     const updatedStudents = students.map((student) =>
       student.id === id ? { ...student, selected: !student.selected } : student,
     )

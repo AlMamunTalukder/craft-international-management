@@ -34,7 +34,6 @@ import {
   Assessment,
   BarChart,
   CloudUpload,
-  Image,
   CompareArrows,
   SwapHoriz,
   AttachMoney,
@@ -119,7 +118,7 @@ export const navigationItems = [
         <Dashboard />
       </ColorfulIcon>
     ),
-    path: "/",
+    path: "/dashboard",
   },
   {
     title: "Classes",

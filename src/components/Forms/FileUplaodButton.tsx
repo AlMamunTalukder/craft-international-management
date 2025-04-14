@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "@mui/material";
-import Image from "next/image";
-import uploadFile from "@/helpers/uploadFile";
+// import Image from "next/image";
+// import uploadFile from "@/helpers/uploadFile";
 
 type TProps = {
   name: string;
@@ -19,7 +19,7 @@ export default function GarageFileUploadButton({
   name,
   label,
   sx,
-  setImageUrl
+  // setImageUrl
 }: TProps) {
   const { control } = useFormContext();
 
@@ -31,10 +31,10 @@ export default function GarageFileUploadButton({
     setLoading(true);
 
     try {
-      const uploadPhoto = await uploadFile(file);
-      setImageUrl(uploadPhoto?.secure_url); 
-    } catch () {
-      setLoading(false);
+      // const uploadPhoto = await uploadFile(file);
+      // setImageUrl(uploadPhoto?.secure_url); 
+    // } catch () {
+    //   setLoading(false);
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -239,7 +240,7 @@ const StudentList = () => {
   }, [filters, students])
 
   // Handle filter change
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e:any) => {
     const { name, value } = e.target
     setFilters({
       ...filters,
@@ -259,24 +260,24 @@ const StudentList = () => {
   }
 
   // Handle page change
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage:any) => {
     setPage(newPage)
   }
 
   // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event:any) => {
     setRowsPerPage(Number.parseInt(event.target.value, 10))
     setPage(0)
   }
 
   // Delete student
-  const handleDeleteStudent = (id) => {
+  const handleDeleteStudent = (id:any) => {
     const updatedStudents = students.filter((student) => student.id !== id)
     setStudents(updatedStudents)
   }
 
   // Get status chip color
-  const getStatusColor = (status) => {
+  const getStatusColor = (status:any) => {
     switch (status) {
       case "Active":
         return "success"

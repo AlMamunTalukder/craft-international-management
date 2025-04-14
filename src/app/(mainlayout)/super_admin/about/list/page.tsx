@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import award from "../../../../../assets/img/topBar/bg-3.jpg";
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 import GarageSelect from "@/components/Forms/Select";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
 
@@ -57,7 +57,7 @@ const Page = () => {
           </Button>
         </div> */}
         
-        <GarageForm onSubmit={handleSubmit}>
+        <CraftForm onSubmit={handleSubmit}>
           <Grid container spacing={1}>
             <Grid item lg={2}>
               <GarageSelect
@@ -76,7 +76,7 @@ const Page = () => {
               />
             </Grid>
           </Grid>
-        </GarageForm>
+        </CraftForm>
       </Card >
 
       <TableContainer component={Paper}>

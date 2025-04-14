@@ -37,7 +37,7 @@ import {
   NavigateBefore,
   NavigateNext,
 } from "@mui/icons-material"
-
+import type { SelectChangeEvent } from "@mui/material/Select"
 // Generate days of month
 const getDaysInMonth = (month: number, year: number) => {
   return new Array(new Date(year, month, 0).getDate()).fill(null).map((_, i) => i + 1)
@@ -106,8 +106,8 @@ export default function MealReport() {
   }
 
   // Handle month change
-  const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setMonth(event.target.value as number)
+  const handleMonthChange = (event: SelectChangeEvent<number>) => {
+    setMonth(Number(event.target.value))
   }
 
   // Get month name
@@ -138,7 +138,7 @@ export default function MealReport() {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: "100%", overflowX: "auto" }}>
+    <Box sx={{ p: 0, maxWidth: "100%", overflowX: "auto" }}>
       {/* Header Section */}
       <Card elevation={3} sx={{ mb: 4, borderRadius: 2, overflow: "hidden" }}>
         <Box
@@ -151,9 +151,9 @@ export default function MealReport() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h4" fontWeight="bold">
-                Craft International Institute
+              Residential Meal Sheet
               </Typography>
-              <Typography variant="subtitle1">Residential Meal Sheet</Typography>
+              {/* <Typography variant="subtitle1">Residential Meal Sheet</Typography> */}
             </Grid>
             <Grid item>
               <Stack direction="row" spacing={2} alignItems="center">
@@ -270,13 +270,15 @@ export default function MealReport() {
       </Box>
 
       {/* Meal Table */}
-      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: "hidden" }}>
-        <Table stickyHeader>
+      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 1, overflow: "auto" }}>
+
+  <Table stickyHeader >
+
           <TableHead>
             <TableRow>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 60 }}>SL</TableCell>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 200 }}>Name</TableCell>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 120 }}>
+              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 5, padding: '0px 4px'}}>SL</TableCell>
+              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 127, padding: '2px 3px'}}>Name</TableCell>
+              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 50, padding: '2px 0px'}}>
                 Designation
               </TableCell>
               {days.map((day) => (
@@ -287,12 +289,12 @@ export default function MealReport() {
                     bgcolor: "#3f51b5",
                     color: "white",
                     fontWeight: "bold",
-                    minWidth: 50,
+                    padding: '2px 3px' ,
                     position: "relative",
                   }}
                 >
                   {day}
-                  <Typography
+                  {/* <Typography
                     variant="caption"
                     sx={{
                       position: "absolute",
@@ -300,11 +302,11 @@ export default function MealReport() {
                       right: 0,
                       bgcolor: "rgba(0,0,0,0.2)",
                       px: 0.5,
-                      borderBottomLeftRadius: 4,
+                      borderBottomLeftRadius: 3,
                     }}
                   >
                     {calculateDailyTotal(day)}
-                  </Typography>
+                  </Typography> */}
                 </TableCell>
               ))}
               <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 80 }}>Total</TableCell>
@@ -312,17 +314,18 @@ export default function MealReport() {
           </TableHead>
           <TableBody>
             {students.map((student, index) => (
-              <TableRow key={student.id} sx={{ "&:nth-of-type(odd)": { bgcolor: "rgba(63, 81, 181, 0.05)" } }}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Avatar src={student.avatar} sx={{ width: 30, height: 30 }} />
-                    <Typography variant="body2" fontWeight="medium">
+              <TableRow key={student.id} sx={{ "&:nth-of-type(odd)": { bgcolor: "rgba(63, 81, 181, 0.05)" },  padding: 1  }}>
+                <TableCell sx={{padding: '2px 5px'}}>{index + 1}</TableCell>
+                <TableCell sx={{padding: '2px 3px'}}>
+                {student.name}
+                  {/* <Stack direction="row" spacing={1} alignItems="center"> */}
+                    {/* <Avatar src={student.avatar} sx={{ width: 30, height: 30 }} /> */}
+                    {/* <Typography variant="body2" fontWeight="medium">
                       {student.name}
-                    </Typography>
-                  </Stack>
+                    </Typography> */}
+                  {/* </Stack> */}
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{padding: '2px 0px'}}>
                   <Chip
                     label={student.designation}
                     size="small"
@@ -348,15 +351,16 @@ export default function MealReport() {
                     align="center"
                     onClick={() => toggleMeal(student.id, day)}
                     sx={{
+                   padding: '2px 0px',
                       cursor: "pointer",
                       "&:hover": { bgcolor: "rgba(63, 81, 181, 0.1)" },
                       transition: "background-color 0.2s",
                     }}
                   >
                     {mealData[student.id][day] ? (
-                      <CheckCircle sx={{ color: "#4caf50", fontSize: 20 }} />
+                      <CheckCircle sx={{ color: "#4caf50", fontSize: 18 }} />
                     ) : (
-                      <Cancel sx={{ color: "#f44336", fontSize: 20 }} />
+                      <Cancel sx={{ color: "#f44336", fontSize: 18 }} />
                     )}
                   </TableCell>
                 ))}

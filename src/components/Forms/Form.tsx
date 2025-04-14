@@ -18,7 +18,7 @@ type TInputProps = {
   onSubmit: SubmitHandler<FieldValues>;
 } & TFormConfig;
 
-const GarageForm = ({
+const CraftForm = ({
   children,
   onSubmit,
   resolver,
@@ -46,4 +46,4 @@ const GarageForm = ({
   );
 };
 
-export default GarageForm;
+export default CraftForm;

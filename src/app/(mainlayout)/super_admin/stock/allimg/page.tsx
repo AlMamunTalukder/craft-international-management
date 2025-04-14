@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
@@ -22,7 +23,7 @@ import img4 from "../../../../../assets/img/about/blog-02.jpg";
 import img5 from "../../../../../assets/img/products/products2.png";
 
 import { Search } from "@mui/icons-material";
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 
 const ImageGalleryPage = () => {
   const [images, setImages] = useState<StaticImageData[]>([
@@ -37,7 +38,7 @@ const ImageGalleryPage = () => {
   // Handle adding new images (mock function)
   const handleAddImage = () => {
     const newImage = `https://picsum.photos/200/200?random=${images.length + 1}`;
-    // Convert the URL to StaticImageData-like object
+
     setImages((prev) => [
       ...prev,
       {
@@ -77,7 +78,7 @@ const ImageGalleryPage = () => {
         }}
       >
         <h1 className=" text-3xl"> Image Gallery</h1>
-        <GarageForm onSubmit={handleSubmit}>
+        <CraftForm onSubmit={handleSubmit}>
           <FormControl sx={{}} variant="outlined">
             <InputLabel htmlFor="search" size="small">
               Search Here
@@ -88,7 +89,7 @@ const ImageGalleryPage = () => {
               className="w-[260px] lg:w-[250px] h-10"
             />
           </FormControl>
-        </GarageForm>
+        </CraftForm>
 
         <Button sx={{ color: "" }} variant="contained">
           <Add className="h-5 w-5 mr-2" /> Add Image

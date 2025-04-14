@@ -4,10 +4,8 @@
 import INTSelect from "@/components/Forms/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Button, Grid } from "@mui/material";
+import {  Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 
 import IconButton from "@mui/material/IconButton";
@@ -21,14 +19,14 @@ import TableHead from "@mui/material/TableHead";
 
 import TableRow from "@mui/material/TableRow";
 
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
-import DCSInput from "@/components/Forms/Input";
+
 import award from "../../../assets/img/topBar/bg-3.jpg";
-import Search from "@mui/icons-material/Search";
-import GarageForm from "@/components/Forms/Form";
+
+import CraftForm from "@/components/Forms/Form";
 
 const events = [
   {
@@ -65,7 +63,7 @@ const Page = () => {
         </div>
       </div> */}
       <div className="my-5  bg-white p-2 rounded-lg border shadow-sm ">
-        <GarageForm onSubmit={handleSubmit}>
+        <CraftForm onSubmit={handleSubmit}>
           <Grid container spacing={1}>
             <Grid item lg={2}>
               <INTSelect
@@ -84,7 +82,7 @@ const Page = () => {
               />
             </Grid>
           </Grid>
-        </GarageForm>
+        </CraftForm>
       </div>
 
       <TableContainer component={Paper}>

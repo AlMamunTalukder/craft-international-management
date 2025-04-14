@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
@@ -46,9 +47,12 @@ import {
   Download as DownloadIcon,
   Print as PrintIcon,
   ArrowBack,
+  Add,
 } from "@mui/icons-material"
 import { Roboto } from "next/font/google"
 import Link from "next/link"
+import TodayLesson from "./_components/TodayLesson"
+import TodayTask from "./_components/TodayTask"
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -174,7 +178,7 @@ const customTheme = createTheme({
 // Sample data for students
 const generateStudentsData = () => {
   const firstNames = [
-    "Mohammad", "Abdul", "Fatima", "Aisha", "Yusuf", 
+    "Mohammad", "Abdul", "Fatima", "Aisha", "Yusuf",
     "Ibrahim", "Zainab", "Hassan", "Amina", "Ali"
   ]
   const lastNames = [
@@ -221,6 +225,14 @@ export default function ClassesListPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
 
+  const [openTask, setTaskOpen] = useState(false)
+  const handleTaskOpen = () => setTaskOpen(true)
+  const handleTaskClose = () => setTaskOpen(false)
+ 
+  const [openLesson, setLessonOpen] = useState(false)
+  const handleLessonOpen = () => setLessonOpen(true)
+  const handleLessonClose = () => setLessonOpen(false)
+  
   const theme = customTheme
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
@@ -285,20 +297,20 @@ export default function ClassesListPage() {
   }
 
   const handleCheckboxChange = (id: number) => {
-    setStudents(students.map(student => 
-      student.id === id ? {...student, dairyFillUp: !student.dairyFillUp} : student
+    setStudents(students.map(student =>
+      student.id === id ? { ...student, dairyFillUp: !student.dairyFillUp } : student
     ))
   }
 
   const handleTaskStatusChange = (id: number, value: string) => {
-    setStudents(students.map(student => 
-      student.id === id ? {...student, taskStatus: value} : student
+    setStudents(students.map(student =>
+      student.id === id ? { ...student, taskStatus: value } : student
     ))
   }
 
   const handleHandwritingChange = (id: number, value: string) => {
-    setStudents(students.map(student => 
-      student.id === id ? {...student, handwriting: value} : student
+    setStudents(students.map(student =>
+      student.id === id ? { ...student, handwriting: value } : student
     ))
   }
 
@@ -316,6 +328,7 @@ export default function ClassesListPage() {
   const paginatedStudents = filteredStudents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   return (
+    <>
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
         <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
@@ -336,212 +349,118 @@ export default function ClassesListPage() {
                   + Add New Report
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
-  <Button
-    variant="contained"
-    color="primary"
-    component={Link}
-    href="/dashboard/super_admin/add-today-task" // Add this href prop
-    sx={{
-      borderRadius: 2,
-      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-    }}
-  >
-    Add Today Task (আজকের পাঠ)
-  </Button>
-  <Button
-    variant="contained"
-    color="primary"
-    startIcon={<ArrowBack />}
-    component={Link}
-    href="/dashboard/super_admin/add-home-task" // Add this href prop
-    sx={{
-      borderRadius: 2,
-      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-    }}
-  >
-    Add Home Task (বাড়ির কাজ)
-  </Button>
-  <Button
-    variant="contained"
-    color="primary"
-    startIcon={<ArrowBack />}
-    component={Link}
-    href="/dashboard/super_admin/report" // This one already has href
-    sx={{
-      borderRadius: 2,
-      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-    }}
-  >
-    Back
-  </Button>
-</Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Add />}                  
+                    onClick={handleTaskOpen}
+                    sx={{
+                      bgcolor:"",
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                    }}
+                  >
+                    Add Today Task (আজকের পাঠ)
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Add />}                
+                    onClick={handleLessonOpen}
+                    sx={{
+                      bgcolor:"#3792de",
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                    }}
+                  >
+                    Add Home Task (বাড়ির কাজ)
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ArrowBack />}
+                    component={Link}
+                    href="/dashboard/super_admin/classes/report"
+                    sx={{
+                      bgcolor:"red",
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Box>
               </Box>
 
               <Paper elevation={0} sx={{ mb: 4, overflow: "hidden" }}>
                 <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        placeholder="Search students by name..."
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon color="action" />
-                            </InputAdornment>
-                          ),
-                          sx: {
-                            borderRadius: 2,
-                            bgcolor: "background.paper",
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.1)",
-                            },
-                          },
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Box sx={{ display: "flex", gap: 2, justifyContent: { xs: "flex-start", md: "flex-end" } }}>
-                        <Button
+                  <Grid container spacing={2} alignItems="center" gap={3}>
+                    <Grid container spacing={2}  >
+                      {/* Teacher Name */}
+                      <Grid item xs={12} md={4}>
+                        <TextField
                           variant="outlined"
-                          color="inherit"
-                          startIcon={<FilterListIcon />}
-                          onClick={handleFilterClick}
-                          sx={{
-                            borderColor: "rgba(0, 0, 0, 0.12)",
-                            color: "text.secondary",
-                            "&:hover": {
-                              borderColor: "primary.main",
-                              bgcolor: "rgba(99, 102, 241, 0.04)",
-                            },
-                          }}
-                        >
-                          Filters
-                        </Button>
-                        <Menu
-                          anchorEl={filterAnchorEl}
-                          open={Boolean(filterAnchorEl)}
-                          onClose={handleFilterClose}
-                          PaperProps={{
-                            elevation: 3,
-                            sx: {
-                              mt: 1,
-                              minWidth: 300,
-                              borderRadius: 2,
-                              overflow: "hidden",
-                              p: 2,
-                            },
-                          }}
-                        >
-                          {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Class</InputLabel>
-                            <Select
-                              value={filters.class}
-                              onChange={(e) => handleFilterChange("class", e.target.value)}
-                              label="Class"
-                            >
-                              <MenuItem value="">All Classes</MenuItem>
-                              <MenuItem value="One">One</MenuItem>
-                              <MenuItem value="Two">Two</MenuItem>
-                              <MenuItem value="Three">Three</MenuItem>
-                              <MenuItem value="Four">Four</MenuItem>
-                              <MenuItem value="Five">Five</MenuItem>
-                            </Select>
-                          </FormControl> */}
-                          {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Batch</InputLabel>
-                            <Select
-                              value={filters.batch}
-                              onChange={(e) => handleFilterChange("batch", e.target.value)}
-                              label="Batch"
-                            >
-                              <MenuItem value="">All Batches</MenuItem>
-                              <MenuItem value="Morning">Morning</MenuItem>
-                              <MenuItem value="Day">Day</MenuItem>
-                              <MenuItem value="Evening">Evening</MenuItem>
-                            </Select>
-                          </FormControl> */}
-                          <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Teacher</InputLabel>
-                            <Select
-                              value={filters.teacher}
-                              onChange={(e) => handleFilterChange("teacher", e.target.value)}
-                              label="Teacher"
-                            >
-                              <MenuItem value="">All Teachers</MenuItem>
-                              <MenuItem value="Mr. Rahman">Mr. Rahman</MenuItem>
-                              <MenuItem value="Ms. Akter">Ms. Akter</MenuItem>
-                              <MenuItem value="Mr. Khan">Mr. Khan</MenuItem>
-                              <MenuItem value="Ms. Begum">Ms. Begum</MenuItem>
-                              <MenuItem value="Mr. Hossain">Mr. Hossain</MenuItem>
-                            </Select>
-                          </FormControl>
-                          <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Day</InputLabel>
-                            <Select
-                              value={filters.day}
-                              onChange={(e) => handleFilterChange("day", e.target.value)}
-                              label="Day"
-                            >
-                              <MenuItem value="">All Days</MenuItem>
-                              <MenuItem value="Saturday">Saturday</MenuItem>
-                              <MenuItem value="Sunday">Sunday</MenuItem>
-                              <MenuItem value="Monday">Monday</MenuItem>
-                              <MenuItem value="Tuesday">Tuesday</MenuItem>
-                              <MenuItem value="Wednesday">Wednesday</MenuItem>
-                              <MenuItem value="Thursday">Thursday</MenuItem>
-                              <MenuItem value="Friday">Friday</MenuItem>
-                            </Select>
-                          </FormControl>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                            <Button onClick={resetFilters} color="secondary">
-                              Reset
-                            </Button>
-                            <Button onClick={handleFilterClose} color="primary">
-                              Apply
-                            </Button>
-                          </Box>
-                        </Menu>
+                          label="শিক্ষকের নাম"
+                          fullWidth
 
-                        {!isMobile && (
-                          <>
-                            <Button
-                              variant="outlined"
-                              color="inherit"
-                              startIcon={<DownloadIcon />}
-                              sx={{
-                                borderColor: "rgba(0, 0, 0, 0.12)",
-                                color: "text.secondary",
-                                "&:hover": {
-                                  borderColor: "primary.main",
-                                  bgcolor: "rgba(99, 102, 241, 0.04)",
-                                },
-                              }}
-                            >
-                              Export
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              color="inherit"
-                              startIcon={<PrintIcon />}
-                              sx={{
-                                borderColor: "rgba(0, 0, 0, 0.12)",
-                                color: "text.secondary",
-                                "&:hover": {
-                                  borderColor: "primary.main",
-                                  bgcolor: "rgba(99, 102, 241, 0.04)",
-                                },
-                              }}
-                            >
-                              Print
-                            </Button>
-                          </>
-                        )}
-                      </Box>
+                          rows={2}
+                          placeholder="শিক্ষকের নাম লিখুন"
+                        />
+                      </Grid>
+                      {/* Class */}
+                      <Grid item xs={12} md={3}>
+                        <TextField
+
+                          variant="outlined"
+                          label="শ্রেণী"
+
+                          rows={2}
+                          fullWidth
+                          placeholder="শ্রেণীর নাম লিখুন"
+                        />
+                      </Grid>
+
+                      {/* Branch */}
+                      <Grid item xs={12} md={2}>
+                        <TextField
+
+                          variant="outlined"
+                          label="শাখা"
+                          rows={2}
+
+                          fullWidth
+                          placeholder="শাখার নাম লিখুন"
+                        />
+                      </Grid>
+
+                      {/* Date */}
+                      <Grid item xs={12} md={3}>
+                        <TextField
+                          variant="outlined"
+                          label="তারিখ"
+                          type="date"
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </Grid>
+
+                     
+
+                     
                     </Grid>
+                    <Grid container  sx={{justifyContent:"space-between"}}>
+                      
+                      {/* Subject */}
+                      <Grid item xs={12} md={3}>
+                        <TextField
+                          variant="outlined"
+                          label="বিষয়"
+                          fullWidth
+                          placeholder="বিষয়ের নাম লিখুন"
+                          sx={{ p: 0 }}
+                        />
+                      </Grid>
+                    </Grid>                  
                   </Grid>
                 </Box>
 
@@ -567,14 +486,11 @@ export default function ClassesListPage() {
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                           <TableRow>
-                            <TableCell>Student Name</TableCell>
-                            {/* <TableCell>Class</TableCell>
-                            <TableCell>Batch</TableCell>
-                            <TableCell>Teacher</TableCell> */}
-                            <TableCell>পাঠ মূল্যায়ন</TableCell>
-                            <TableCell>হাতের লিখা</TableCell>
-                            <TableCell>অভিভাবকের স্বাক্ষর</TableCell>
-                            <TableCell>মন্তব্য</TableCell>
+                            <TableCell >ছাত্রের নাম</TableCell>                         
+                            <TableCell >পাঠ মূল্যায়ন</TableCell>
+                            <TableCell >হাতের লিখা</TableCell>
+                            <TableCell align="center">অভিভাবকের স্বাক্ষর</TableCell>
+                            <TableCell align="center">মন্তব্য</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -586,10 +502,8 @@ export default function ClassesListPage() {
                                     {student.name}
                                   </Typography>
                                 </TableCell>
-                                {/* <TableCell>{student.class}</TableCell>
-                                <TableCell>{student.batch}</TableCell>
-                                <TableCell>{student.teacher}</TableCell> */}
-                                <TableCell>
+                        
+                                <TableCell align="center">
                                   <TextField
                                     size="small"
                                     variant="outlined"
@@ -604,7 +518,7 @@ export default function ClassesListPage() {
                                     <option value="Not Started">পড়া শিখেনি</option>
                                   </TextField>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell align="center">
                                   <TextField
                                     size="small"
                                     variant="outlined"
@@ -731,5 +645,9 @@ export default function ClassesListPage() {
         </DialogActions>
       </Dialog>
     </ThemeProvider>
+    {openTask && <TodayTask open={openTask} setOpen={handleTaskClose} />}
+    {openLesson && <TodayLesson open={openLesson} setOpen={handleLessonClose} />}
+
+    </>
   )
 }

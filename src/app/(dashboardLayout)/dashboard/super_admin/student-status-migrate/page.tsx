@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -163,7 +164,7 @@ const StudentStatusMigration = () => {
   }, [searchTerm, students])
 
   // Handle form data change
-  const handleFormChange = (e) => {
+  const handleFormChange = (e: any) => {
     const { name, value, type, checked } = e.target
     setFormData({
       ...formData,
@@ -172,18 +173,18 @@ const StudentStatusMigration = () => {
   }
 
   // Handle page change
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage: any) => {
     setPage(newPage)
   }
 
   // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(Number.parseInt(event.target.value, 10))
     setPage(0)
   }
 
   // Handle select all
-  const handleSelectAll = (event) => {
+  const handleSelectAll = (event: any) => {
     const checked = event.target.checked
     setSelectAll(checked)
     setStudents(
@@ -195,7 +196,7 @@ const StudentStatusMigration = () => {
   }
 
   // Handle select one
-  const handleSelectOne = (id) => {
+  const handleSelectOne = (id: any) => {
     const updatedStudents = students.map((student) =>
       student.id === id ? { ...student, selected: !student.selected } : student,
     )
@@ -249,7 +250,7 @@ const StudentStatusMigration = () => {
   }
 
   // Get status chip color
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: any) => {
     switch (status) {
       case "Active":
         return "success"
@@ -642,8 +643,7 @@ const StudentStatusMigration = () => {
           <Button variant="outlined" sx={{ mx: 1 }}>
             Branch
           </Button>
-          <Button varian
-          t="contained" startIcon={<Add />}>
+          <Button variant="contained" startIcon={<Add />}>
             New
           </Button>
         </Box>
