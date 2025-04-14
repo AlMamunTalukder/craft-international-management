@@ -201,15 +201,6 @@ export const navigationItems = [
         path: "/dashboard/super_admin/classes/assign-routines",
       },
       {
-        title: "New Report ",
-        icon: (
-          <ColorfulIcon color="#0F9D58">
-            <Addchart />
-          </ColorfulIcon>
-        ),
-        path: "/dashboard/super_admin/classes/report/new",
-      },
-      {
         title: "Class Report List ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -218,6 +209,16 @@ export const navigationItems = [
         ),
         path: "/dashboard/super_admin/classes/report",
       },
+      {
+        title: "New Report ",
+        icon: (
+          <ColorfulIcon color="#0F9D58">
+            <Addchart />
+          </ColorfulIcon>
+        ),
+        path: "/dashboard/super_admin/classes/report/new",
+      },
+      
     ],
   },
   {
