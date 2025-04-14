@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -21,11 +22,58 @@ import {
   useTheme,
 } from "@mui/material"
 import { Person, People, Home, School, AttachMoney, Settings, Save } from "@mui/icons-material"
+type StudentFormData = {
+  studentId: string;
+  smartIdCard: string;
+  name: string;
+  birthDate: string;
+  birthRegistrationNo: string;
+  gender: string;
+  mobile: string;
+  bloodGroup: string;
+  image: File | null;
+
+  fatherName: string;
+  motherName: string;
+  guardianName: string;
+  guardianMobile: string;
+  relation: string;
+  nidFatherMotherGuardian: string;
+
+  permanentAddress: string;
+  permanentDistrict: string;
+  permanentThana: string;
+  sameAsPermanent: boolean;
+  presentAddress: string;
+  presentDistrict: string;
+  presentThana: string;
+
+  class: string;
+  studentClassRoll: string;
+  batch: string;
+  section: string;
+  activeSession: string;
+  status: string;
+  studentType: string;
+  additionalNote: string;
+
+  admissionFee: number;
+  monthlyFee: number;
+  previousDues: number;
+  sessionFee: number;
+  residenceFee: number;
+  otherFee: number;
+  transportFee: number;
+  boardingFee: number;
+
+  sendAdmissionSMS: boolean;
+  studentSerial: string;
+  sendAttendanceSMS: boolean;
+};
 
 const StudentRegistration = () => {
   const theme = useTheme()
-  const [formData, setFormData] = useState({
-    // Personal Information
+  const [formData, setFormData] = useState<StudentFormData>({
     studentId: "",
     smartIdCard: "",
     name: "",
@@ -36,7 +84,6 @@ const StudentRegistration = () => {
     bloodGroup: "",
     image: null,
 
-    // Family Information
     fatherName: "",
     motherName: "",
     guardianName: "",
@@ -44,7 +91,6 @@ const StudentRegistration = () => {
     relation: "",
     nidFatherMotherGuardian: "",
 
-    // Address Information
     permanentAddress: "",
     permanentDistrict: "",
     permanentThana: "",
@@ -53,7 +99,6 @@ const StudentRegistration = () => {
     presentDistrict: "",
     presentThana: "",
 
-    // Academic Information
     class: "",
     studentClassRoll: "",
     batch: "",
@@ -63,7 +108,6 @@ const StudentRegistration = () => {
     studentType: "",
     additionalNote: "",
 
-    // Fee Information
     admissionFee: 0,
     monthlyFee: 0,
     previousDues: 0,
@@ -73,13 +117,14 @@ const StudentRegistration = () => {
     transportFee: 0,
     boardingFee: 0,
 
-    // Other Settings
     sendAdmissionSMS: false,
     studentSerial: "",
     sendAttendanceSMS: false,
-  })
+  });
 
-  const handleChange = (e) => {
+
+
+  const handleChange = (e: any) => {
     const { name, value, type, checked, files } = e.target
 
     if (type === "file") {
@@ -102,7 +147,7 @@ const StudentRegistration = () => {
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
 
     // Create FormData object to handle file uploads
@@ -110,12 +155,19 @@ const StudentRegistration = () => {
 
     // Append all form data to FormData object
     Object.keys(formData).forEach((key) => {
-      if (key === "image" && formData[key]) {
-        studentFormData.append(key, formData[key])
-      } else {
-        studentFormData.append(key, formData[key])
+      const typedKey = key as keyof typeof formData;
+      const value = formData[typedKey];
+
+      if (typedKey === "image" && value) {
+        studentFormData.append(typedKey, value as Blob);
+      } else if (typeof value === "boolean" || typeof value === "number") {
+        studentFormData.append(typedKey, String(value));
+      } else if (value !== null && value !== undefined) {
+        studentFormData.append(typedKey, value);
       }
-    })
+    });
+
+
 
     try {
       // API call would go here
@@ -130,7 +182,7 @@ const StudentRegistration = () => {
     }
   }
 
-  const SectionHeader = ({ icon, title }) => (
+  const SectionHeader = ({ icon, title }: any) => (
     <Box sx={{ display: "flex", alignItems: "center", mb: 2, color: theme.palette.primary.main }}>
       {icon}
       <Typography variant="h6" component="h2" sx={{ ml: 1 }}>
@@ -235,6 +287,8 @@ const StudentRegistration = () => {
                         {formData.image.name}
                       </Typography>
                     )}
+
+
                   </label>
                 </Box>
               </Grid>

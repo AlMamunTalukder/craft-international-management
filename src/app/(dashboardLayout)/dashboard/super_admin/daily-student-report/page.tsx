@@ -1,6 +1,7 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -52,7 +53,8 @@ import {
   ListItemIcon,
   ListItemText,
   InputAdornment,
-} from "@mui/material"
+  SelectChangeEvent,
+} from "@mui/material";
 import {
   Save as SaveIcon,
   School as SchoolIcon,
@@ -84,8 +86,87 @@ import {
   AccessTime as AccessTimeIcon,
   Comment as CommentIcon,
   MoreVert as MoreVertIcon,
-} from "@mui/icons-material"
-import { styled } from "@mui/material/styles"
+} from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+
+// Define types for data structures
+interface Student {
+  id: string;
+  name: string;
+  rollNumber: string;
+  class: string;
+  section: string;
+  gender: string;
+  photo: string;
+}
+
+interface Class {
+  id: string;
+  name: string;
+}
+
+interface Section {
+  id: string;
+  name: string;
+}
+
+interface SubjectReport {
+  id: string;
+  subject: string;
+  teacher: string;
+  attendance: string;
+  classParticipation: number;
+  classworkCompletion: number;
+  homeworkStatus: string;
+  understandingLevel: number;
+  testScore: number;
+  remarks: string;
+}
+
+interface AttendanceRecord {
+  date: string;
+  status: string;
+  arrivalTime: string | null;
+  departureTime: string | null;
+  reason?: string;
+}
+
+interface BehaviorNote {
+  id: string;
+  date: string;
+  type: string;
+  note: string;
+  teacher: string;
+}
+
+interface Homework {
+  id: string;
+  subject: string;
+  assignedDate: string;
+  dueDate: string;
+  description: string;
+  status: string;
+  grade: string;
+  feedback: string;
+}
+
+interface StudentReport {
+  id: string;
+  studentId: string;
+  date: string;
+  overallAttendance: number;
+  overallPerformance: number;
+  behaviorRating: number;
+  teacherRemarks: string;
+  parentSignature: boolean;
+  lastUpdated: string;
+}
+
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: "success" | "error" | "warning" | "info";
+}
 
 // Custom styled components
 const StyledRating = styled(Rating)({
@@ -95,9 +176,14 @@ const StyledRating = styled(Rating)({
   "& .MuiRating-iconHover": {
     color: "#FFCC00",
   },
-})
+});
 
-const ProgressWithLabel = ({ value, color }) => {
+interface ProgressWithLabelProps {
+  value: number;
+  color: "primary" | "secondary" | "success" | "error" | "warning" | "info" | "inherit";
+}
+
+const ProgressWithLabel = ({ value, color }: ProgressWithLabelProps) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
       <Box sx={{ width: "100%", mr: 1 }}>
@@ -107,53 +193,62 @@ const ProgressWithLabel = ({ value, color }) => {
         <Typography variant="body2" color="text.secondary">{`${Math.round(value)}%`}</Typography>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default function DailyStudentReport() {
-  const theme = useTheme()
-  const [loading, setLoading] = useState(true)
-  const [tabValue, setTabValue] = useState(0)
-  const [selectedDate, setSelectedDate] = useState(formatDateForInput(new Date()))
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [students, setStudents] = useState([])
-  const [classes, setClasses] = useState([])
-  const [sections, setSections] = useState([])
-  const [selectedClass, setSelectedClass] = useState("")
-  const [selectedSection, setSelectedSection] = useState("")
-  const [openDialog, setOpenDialog] = useState(false)
-  const [dialogType, setDialogType] = useState("")
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [editMode, setEditMode] = useState(false)
-  const [studentReport, setStudentReport] = useState(null)
-  const [subjectReports, setSubjectReports] = useState([])
-  const [attendanceHistory, setAttendanceHistory] = useState([])
-  const [behaviorNotes, setBehaviorNotes] = useState([])
-  const [homeworkStatus, setHomeworkStatus] = useState([])
-  const printRef = useRef(null)
+  const theme = useTheme();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [tabValue, setTabValue] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<string>(formatDateForInput(new Date()));
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [dialogType, setDialogType] = useState<string>("");
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [studentReport, setStudentReport] = useState<StudentReport | null>(null);
+  const [subjectReports, setSubjectReports] = useState<SubjectReport[]>([]);
+  const [attendanceHistory, setAttendanceHistory] = useState<AttendanceRecord[]>([]);
+  const [behaviorNotes, setBehaviorNotes] = useState<BehaviorNote[]>([]);
+  const [homeworkStatus, setHomeworkStatus] = useState<Homework[]>([]);
+  const printRef = useRef<HTMLDivElement>(null);
 
   // Helper function to format date for input
-  function formatDateForInput(date) {
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, "0")
-    const day = String(d.getDate()).padStart(2, "0")
-    return `${year}-${month}-${day}`
+  function formatDateForInput(date: Date): string {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   // Helper function to format date for display
-  function formatDateForDisplay(dateString) {
-    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
-    return new Date(dateString).toLocaleDateString(undefined, options)
+  function formatDateForDisplay(dateString: string): string {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   }
 
   // Load mock data
   useEffect(() => {
     const fetchData = async () => {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Mock classes data
       setClasses([
@@ -162,17 +257,17 @@ export default function DailyStudentReport() {
         { id: "3", name: "Class 3" },
         { id: "4", name: "Class 4" },
         { id: "5", name: "Class 5" },
-      ])
+      ]);
 
       // Mock sections data
       setSections([
         { id: "A", name: "Section A" },
         { id: "B", name: "Section B" },
         { id: "C", name: "Section C" },
-      ])
+      ]);
 
       // Mock students data
-      const mockStudents = [
+      const mockStudents: Student[] = [
         {
           id: "S001",
           name: "Anika Rahman",
@@ -218,12 +313,12 @@ export default function DailyStudentReport() {
           gender: "Female",
           photo: "/placeholder.svg?height=100&width=100",
         },
-      ]
-      setStudents(mockStudents)
-      setSelectedStudent(mockStudents[0])
+      ];
+      setStudents(mockStudents);
+      setSelectedStudent(mockStudents[0]);
 
       // Mock student report data
-      const mockStudentReport = {
+      const mockStudentReport: StudentReport = {
         id: "R001",
         studentId: "S001",
         date: selectedDate,
@@ -234,11 +329,11 @@ export default function DailyStudentReport() {
           "Anika is a diligent student who actively participates in class discussions. She shows great interest in science subjects and has improved significantly in mathematics.",
         parentSignature: false,
         lastUpdated: "2023-12-01T09:30:00",
-      }
-      setStudentReport(mockStudentReport)
+      };
+      setStudentReport(mockStudentReport);
 
       // Mock subject reports
-      const mockSubjectReports = [
+      const mockSubjectReports: SubjectReport[] = [
         {
           id: "SR001",
           subject: "MATHEMATICS",
@@ -299,11 +394,11 @@ export default function DailyStudentReport() {
           testScore: 90,
           remarks: "Excellent teamwork and sportsmanship. Very active and enthusiastic.",
         },
-      ]
-      setSubjectReports(mockSubjectReports)
+      ];
+      setSubjectReports(mockSubjectReports);
 
       // Mock attendance history
-      const mockAttendanceHistory = [
+      const mockAttendanceHistory: AttendanceRecord[] = [
         { date: "2023-12-01", status: "Present", arrivalTime: "07:45 AM", departureTime: "02:30 PM" },
         { date: "2023-11-30", status: "Present", arrivalTime: "07:50 AM", departureTime: "02:30 PM" },
         { date: "2023-11-29", status: "Absent", arrivalTime: null, departureTime: null, reason: "Sick leave" },
@@ -311,11 +406,11 @@ export default function DailyStudentReport() {
         { date: "2023-11-27", status: "Present", arrivalTime: "07:55 AM", departureTime: "02:30 PM" },
         { date: "2023-11-24", status: "Late", arrivalTime: "08:15 AM", departureTime: "02:30 PM", reason: "Traffic" },
         { date: "2023-11-23", status: "Present", arrivalTime: "07:45 AM", departureTime: "02:30 PM" },
-      ]
-      setAttendanceHistory(mockAttendanceHistory)
+      ];
+      setAttendanceHistory(mockAttendanceHistory);
 
       // Mock behavior notes
-      const mockBehaviorNotes = [
+      const mockBehaviorNotes: BehaviorNote[] = [
         {
           id: "BN001",
           date: "2023-12-01",
@@ -351,11 +446,11 @@ export default function DailyStudentReport() {
           note: "Did not bring required materials for art class.",
           teacher: "Mr. Karim",
         },
-      ]
-      setBehaviorNotes(mockBehaviorNotes)
+      ];
+      setBehaviorNotes(mockBehaviorNotes);
 
       // Mock homework status
-      const mockHomeworkStatus = [
+      const mockHomeworkStatus: Homework[] = [
         {
           id: "HW001",
           subject: "MATHEMATICS",
@@ -396,173 +491,169 @@ export default function DailyStudentReport() {
           grade: "B+",
           feedback: "Good research on Mahatma Gandhi. Could include more about his early life.",
         },
-      ]
-      setHomeworkStatus(mockHomeworkStatus)
+      ];
+      setHomeworkStatus(mockHomeworkStatus);
 
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    fetchData()
-  }, [selectedDate])
+    fetchData();
+  }, [selectedDate]);
 
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue)
-  }
+  const handleSectionChange = (event: SelectChangeEvent<string>) => {
+    setSelectedSection(event.target.value);
 
-  // Handle date change
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value)
-    setLoading(true)
-  }
+  };
 
-  // Handle search
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value)
-  }
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
-  // Handle student selection
-  const handleStudentSelect = (event, newValue) => {
-    setSelectedStudent(newValue)
-    setLoading(true)
-    // In a real app, you would fetch the student's report here
-    setTimeout(() => setLoading(false), 1000)
-  }
+ 
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value);
+    setLoading(true);
+  };
 
-  // Handle class change
-  const handleClassChange = (event) => {
-    setSelectedClass(event.target.value)
-    // In a real app, you would filter students by class here
-  }
 
-  // Handle section change
-  const handleSectionChange = (event) => {
-    setSelectedSection(event.target.value)
-    // In a real app, you would filter students by section here
-  }
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
-  // Handle dialog open
-  const handleOpenDialog = (type) => {
-    setDialogType(type)
-    setOpenDialog(true)
-  }
 
-  // Handle dialog close
+  const handleStudentSelect = (event: React.SyntheticEvent, newValue: Student | null) => {
+    setSelectedStudent(newValue);
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1000);
+  };
+
+
+  const handleClassChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedClass(event.target.value as string);
+  };
+
+
+  const handleOpenDialog = (type: string) => {
+    setDialogType(type);
+    setOpenDialog(true);
+  };
+
+
   const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+    setOpenDialog(false);
+  };
 
-  // Handle snackbar close
+
   const handleSnackbarClose = () => {
-    setSnackbar({ ...snackbar, open: false })
-  }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
-  // Handle menu open
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
 
-  // Handle menu close
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+
   const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
-  // Handle edit mode toggle
+ 
   const handleEditModeToggle = () => {
-    setEditMode(!editMode)
-    handleMenuClose()
-  }
+    setEditMode(!editMode);
+    handleMenuClose();
+  };
 
-  // Handle print report
+
   const handlePrintReport = () => {
-    handleMenuClose()
-    window.print()
-  }
+    handleMenuClose();
+    window.print();
+  };
 
-  // Handle download report
+
   const handleDownloadReport = () => {
-    handleMenuClose()
-    // In a real app, you would generate a PDF here
+    handleMenuClose();
+ 
     setSnackbar({
       open: true,
       message: "Report downloaded successfully!",
       severity: "success",
-    })
-  }
+    });
+  };
 
-  // Handle share report
+
   const handleShareReport = () => {
-    handleOpenDialog("share")
-    handleMenuClose()
-  }
+    handleOpenDialog("share");
+    handleMenuClose();
+  };
 
-  // Handle save report
+
   const handleSaveReport = () => {
-    setLoading(true)
-    // Simulate API call
+    setLoading(true);
+ 
     setTimeout(() => {
-      setEditMode(false)
-      setLoading(false)
+      setEditMode(false);
+      setLoading(false);
       setSnackbar({
         open: true,
         message: "Report saved successfully!",
         severity: "success",
-      })
-    }, 1500)
-  }
+      });
+    }, 1500);
+  };
 
-  // Handle add behavior note
+
   const handleAddBehaviorNote = () => {
-    handleOpenDialog("behavior")
-  }
+    handleOpenDialog("behavior");
+  };
 
-  // Handle add homework
+
   const handleAddHomework = () => {
-    handleOpenDialog("homework")
-  }
+    handleOpenDialog("homework");
+  };
 
-  // Get status color
-  const getStatusColor = (status) => {
+
+  const getStatusColor = (status: string): "success" | "error" | "warning" | "default" => {
     switch (status) {
       case "Present":
-        return "success"
+        return "success";
       case "Absent":
-        return "error"
+        return "error";
       case "Late":
-        return "warning"
+        return "warning";
       default:
-        return "default"
+        return "default";
     }
-  }
+  };
 
-  // Get performance color
-  const getPerformanceColor = (value) => {
-    if (value >= 80) return "success"
-    if (value >= 60) return "primary"
-    if (value >= 40) return "warning"
-    return "error"
-  }
 
-  // Get behavior type icon
-  const getBehaviorTypeIcon = (type) => {
+  const getPerformanceColor = (value: number): "success" | "primary" | "warning" | "error" => {
+    if (value >= 80) return "success";
+    if (value >= 60) return "primary";
+    if (value >= 40) return "warning";
+    return "error";
+  };
+
+
+  const getBehaviorTypeIcon = (type: string) => {
     switch (type) {
       case "Positive":
-        return <CheckCircleIcon color="success" />
+        return <CheckCircleIcon color="success" />;
       case "Concern":
-        return <WarningIcon color="warning" />
+        return <WarningIcon color="warning" />;
       case "Serious":
-        return <ErrorIcon color="error" />
+        return <ErrorIcon color="error" />;
       default:
-        return <InfoIcon color="info" />
+        return <InfoIcon color="info" />;
     }
-  }
+  };
 
-  // Filter students based on search term
+
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", bgcolor: "#f5f7fa" }}>
@@ -651,7 +742,7 @@ export default function DailyStudentReport() {
           <Grid item xs={12} md={3}>
             <FormControl fullWidth size="small">
               <InputLabel>Class</InputLabel>
-              <Select value={selectedClass} label="Class" onChange={handleClassChange}>
+              <Select value={selectedClass} label="Class" onChange={handleSectionChange}>
                 <MenuItem value="">All Classes</MenuItem>
                 {classes.map((cls) => (
                   <MenuItem key={cls.id} value={cls.id}>
@@ -712,7 +803,7 @@ export default function DailyStudentReport() {
               Loading student report...
             </Typography>
           </Box>
-        ) : selectedStudent ? (
+        ) : selectedStudent && studentReport ? (
           <>
             {/* Student Information Card */}
             <Card elevation={0} sx={{ mb: 3, borderRadius: 2, border: "1px solid #e0e0e0" }}>
@@ -995,6 +1086,15 @@ export default function DailyStudentReport() {
                                   value={report.classParticipation}
                                   InputProps={{ inputProps: { min: 0, max: 100 } }}
                                   sx={{ width: 80 }}
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id
+                                          ? { ...r, classParticipation: Number(e.target.value) }
+                                          : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <ProgressWithLabel
@@ -1011,6 +1111,15 @@ export default function DailyStudentReport() {
                                   value={report.classworkCompletion}
                                   InputProps={{ inputProps: { min: 0, max: 100 } }}
                                   sx={{ width: 80 }}
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id
+                                          ? { ...r, classworkCompletion: Number(e.target.value) }
+                                          : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <ProgressWithLabel
@@ -1021,7 +1130,18 @@ export default function DailyStudentReport() {
                             </TableCell>
                             <TableCell>
                               {editMode ? (
-                                <Select value={report.homeworkStatus} size="small" sx={{ width: 150 }}>
+                                <Select
+                                  value={report.homeworkStatus}
+                                  size="small"
+                                  sx={{ width: 150 }}
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id ? { ...r, homeworkStatus: e.target.value } : r,
+                                      ),
+                                    )
+                                  }
+                                >
                                   <MenuItem value="Completed">Completed</MenuItem>
                                   <MenuItem value="Partially Completed">Partially Completed</MenuItem>
                                   <MenuItem value="Not Completed">Not Completed</MenuItem>
@@ -1035,10 +1155,10 @@ export default function DailyStudentReport() {
                                     report.homeworkStatus === "Completed"
                                       ? "success"
                                       : report.homeworkStatus === "Partially Completed"
-                                        ? "warning"
-                                        : report.homeworkStatus === "Not Completed"
-                                          ? "error"
-                                          : "default"
+                                      ? "warning"
+                                      : report.homeworkStatus === "Not Completed"
+                                      ? "error"
+                                      : "default"
                                   }
                                   variant="outlined"
                                 />
@@ -1052,6 +1172,15 @@ export default function DailyStudentReport() {
                                   value={report.understandingLevel}
                                   InputProps={{ inputProps: { min: 0, max: 100 } }}
                                   sx={{ width: 80 }}
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id
+                                          ? { ...r, understandingLevel: Number(e.target.value) }
+                                          : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <ProgressWithLabel
@@ -1068,6 +1197,13 @@ export default function DailyStudentReport() {
                                   value={report.testScore}
                                   InputProps={{ inputProps: { min: 0, max: 100 } }}
                                   sx={{ width: 80 }}
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id ? { ...r, testScore: Number(e.target.value) } : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <Typography
@@ -1076,10 +1212,10 @@ export default function DailyStudentReport() {
                                     report.testScore >= 80
                                       ? "success.main"
                                       : report.testScore >= 60
-                                        ? "primary.main"
-                                        : report.testScore >= 40
-                                          ? "warning.main"
-                                          : "error.main"
+                                      ? "primary.main"
+                                      : report.testScore >= 40
+                                      ? "warning.main"
+                                      : "error.main"
                                   }
                                   fontWeight="medium"
                                 >
@@ -1089,10 +1225,22 @@ export default function DailyStudentReport() {
                             </TableCell>
                             {editMode && (
                               <TableCell>
-                                <IconButton size="small" color="primary">
+                                <IconButton
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => {
+                                    // Handle edit action
+                                  }}
+                                >
                                   <EditIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton size="small" color="error">
+                                <IconButton
+                                  size="small"
+                                  color="error"
+                                  onClick={() => {
+                                    setSubjectReports((prev) => prev.filter((r) => r.id !== report.id));
+                                  }}
+                                >
                                   <DeleteIcon fontSize="small" />
                                 </IconButton>
                               </TableCell>
@@ -1127,6 +1275,13 @@ export default function DailyStudentReport() {
                                   placeholder="Enter remarks"
                                   variant="outlined"
                                   size="small"
+                                  onChange={(e) =>
+                                    setSubjectReports((prev) =>
+                                      prev.map((r) =>
+                                        r.id === report.id ? { ...r, remarks: e.target.value } : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <Typography variant="body2" color="text.secondary">
@@ -1208,7 +1363,7 @@ export default function DailyStudentReport() {
                       </TableHead>
                       <TableBody>
                         {attendanceHistory.map((record, index) => (
-                          <TableRow key={index} hover>
+                          <TableRow key={record.date} hover>
                             <TableCell>{formatDateForDisplay(record.date)}</TableCell>
                             <TableCell>
                               <Chip
@@ -1226,6 +1381,13 @@ export default function DailyStudentReport() {
                                   value={record.arrivalTime ? record.arrivalTime.substring(0, 5) : ""}
                                   InputLabelProps={{ shrink: true }}
                                   disabled={record.status === "Absent"}
+                                  onChange={(e) =>
+                                    setAttendanceHistory((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index ? { ...r, arrivalTime: e.target.value } : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 record.arrivalTime || "N/A"
@@ -1239,6 +1401,13 @@ export default function DailyStudentReport() {
                                   value={record.departureTime ? record.departureTime.substring(0, 5) : ""}
                                   InputLabelProps={{ shrink: true }}
                                   disabled={record.status === "Absent"}
+                                  onChange={(e) =>
+                                    setAttendanceHistory((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index ? { ...r, departureTime: e.target.value } : r,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 record.departureTime || "N/A"
@@ -1251,6 +1420,11 @@ export default function DailyStudentReport() {
                                   value={record.reason || ""}
                                   placeholder="Enter reason"
                                   fullWidth
+                                  onChange={(e) =>
+                                    setAttendanceHistory((prev) =>
+                                      prev.map((r, i) => (i === index ? { ...r, reason: e.target.value } : r)),
+                                    )
+                                  }
                                 />
                               ) : (
                                 record.reason || "N/A"
@@ -1258,10 +1432,22 @@ export default function DailyStudentReport() {
                             </TableCell>
                             {editMode && (
                               <TableCell>
-                                <IconButton size="small" color="primary">
+                                <IconButton
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => {
+                                    // Handle edit action
+                                  }}
+                                >
                                   <EditIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton size="small" color="error">
+                                <IconButton
+                                  size="small"
+                                  color="error"
+                                  onClick={() => {
+                                    setAttendanceHistory((prev) => prev.filter((_, i) => i !== index));
+                                  }}
+                                >
                                   <DeleteIcon fontSize="small" />
                                 </IconButton>
                               </TableCell>
@@ -1299,6 +1485,11 @@ export default function DailyStudentReport() {
                         emptyIcon={<StarBorderIcon fontSize="inherit" />}
                         readOnly={!editMode}
                         size="large"
+                        onChange={(e, newValue) =>
+                          setStudentReport((prev) =>
+                            prev ? { ...prev, behaviorRating: newValue || 0 } : prev,
+                          )
+                        }
                       />
                       <Typography variant="body1" sx={{ ml: 2 }}>
                         {studentReport.behaviorRating} / 5
@@ -1318,8 +1509,8 @@ export default function DailyStudentReport() {
                               note.type === "Positive"
                                 ? "success.main"
                                 : note.type === "Concern"
-                                  ? "warning.main"
-                                  : "error.main",
+                                ? "warning.main"
+                                : "error.main",
                           }}
                         >
                           <CardHeader
@@ -1329,10 +1520,21 @@ export default function DailyStudentReport() {
                             action={
                               editMode && (
                                 <Box>
-                                  <IconButton size="small">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                      // Handle edit action
+                                    }}
+                                  >
                                     <EditIcon fontSize="small" />
                                   </IconButton>
-                                  <IconButton size="small" color="error">
+                                  <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => {
+                                      setBehaviorNotes((prev) => prev.filter((n) => n.id !== note.id));
+                                    }}
+                                  >
                                     <DeleteIcon fontSize="small" />
                                   </IconButton>
                                 </Box>
@@ -1351,6 +1553,11 @@ export default function DailyStudentReport() {
                                 placeholder="Enter note"
                                 variant="outlined"
                                 size="small"
+                                onChange={(e) =>
+                                  setBehaviorNotes((prev) =>
+                                    prev.map((n) => (n.id === note.id ? { ...n, note: e.target.value } : n)),
+                                  )
+                                }
                               />
                             ) : (
                               <Typography variant="body2">{note.note}</Typography>
@@ -1411,6 +1618,13 @@ export default function DailyStudentReport() {
                                   placeholder="Enter description"
                                   variant="outlined"
                                   size="small"
+                                  onChange={(e) =>
+                                    setHomeworkStatus((prev) =>
+                                      prev.map((h) =>
+                                        h.id === homework.id ? { ...h, description: e.target.value } : h,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 homework.description
@@ -1418,7 +1632,18 @@ export default function DailyStudentReport() {
                             </TableCell>
                             <TableCell>
                               {editMode ? (
-                                <Select value={homework.status} size="small" sx={{ width: 150 }}>
+                                <Select
+                                  value={homework.status}
+                                  size="small"
+                                  sx={{ width: 150 }}
+                                  onChange={(e) =>
+                                    setHomeworkStatus((prev) =>
+                                      prev.map((h) =>
+                                        h.id === homework.id ? { ...h, status: e.target.value } : h,
+                                      ),
+                                    )
+                                  }
+                                >
                                   <MenuItem value="Completed">Completed</MenuItem>
                                   <MenuItem value="Partially Completed">Partially Completed</MenuItem>
                                   <MenuItem value="Not Completed">Not Completed</MenuItem>
@@ -1432,10 +1657,10 @@ export default function DailyStudentReport() {
                                     homework.status === "Completed"
                                       ? "success"
                                       : homework.status === "Partially Completed"
-                                        ? "warning"
-                                        : homework.status === "Not Completed"
-                                          ? "error"
-                                          : "default"
+                                      ? "warning"
+                                      : homework.status === "Not Completed"
+                                      ? "error"
+                                      : "default"
                                   }
                                   variant="outlined"
                                 />
@@ -1443,7 +1668,18 @@ export default function DailyStudentReport() {
                             </TableCell>
                             <TableCell>
                               {editMode ? (
-                                <TextField size="small" value={homework.grade} sx={{ width: 80 }} />
+                                <TextField
+                                  size="small"
+                                  value={homework.grade}
+                                  sx={{ width: 80 }}
+                                  onChange={(e) =>
+                                    setHomeworkStatus((prev) =>
+                                      prev.map((h) =>
+                                        h.id === homework.id ? { ...h, grade: e.target.value } : h,
+                                      ),
+                                    )
+                                  }
+                                />
                               ) : (
                                 <Chip
                                   label={homework.grade}
@@ -1452,20 +1688,32 @@ export default function DailyStudentReport() {
                                     homework.grade === "A" || homework.grade === "A+"
                                       ? "success"
                                       : homework.grade === "B" || homework.grade === "B+" || homework.grade === "A-"
-                                        ? "primary"
-                                        : homework.grade === "C" || homework.grade === "C+"
-                                          ? "warning"
-                                          : "error"
+                                      ? "primary"
+                                      : homework.grade === "C" || homework.grade === "C+"
+                                      ? "warning"
+                                      : "error"
                                   }
                                 />
                               )}
                             </TableCell>
                             {editMode && (
                               <TableCell>
-                                <IconButton size="small" color="primary">
+                                <IconButton
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => {
+                                    // Handle edit action
+                                  }}
+                                >
                                   <EditIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton size="small" color="error">
+                                <IconButton
+                                  size="small"
+                                  color="error"
+                                  onClick={() => {
+                                    setHomeworkStatus((prev) => prev.filter((h) => h.id !== homework.id));
+                                  }}
+                                >
                                   <DeleteIcon fontSize="small" />
                                 </IconButton>
                               </TableCell>
@@ -1501,6 +1749,13 @@ export default function DailyStudentReport() {
                                   placeholder="Enter feedback"
                                   variant="outlined"
                                   size="small"
+                                  onChange={(e) =>
+                                    setHomeworkStatus((prev) =>
+                                      prev.map((h) =>
+                                        h.id === homework.id ? { ...h, feedback: e.target.value } : h,
+                                      ),
+                                    )
+                                  }
                                 />
                               ) : (
                                 <Typography variant="body2" color="text.secondary">
@@ -1532,6 +1787,11 @@ export default function DailyStudentReport() {
                           value={studentReport.teacherRemarks}
                           placeholder="Enter teacher remarks"
                           variant="outlined"
+                          onChange={(e) =>
+                            setStudentReport((prev) =>
+                              prev ? { ...prev, teacherRemarks: e.target.value } : prev,
+                            )
+                          }
                         />
                       ) : (
                         <Typography variant="body1" paragraph>
@@ -1551,10 +1811,9 @@ export default function DailyStudentReport() {
                           checked={studentReport.parentSignature}
                           onChange={(e) => {
                             if (editMode) {
-                              setStudentReport({
-                                ...studentReport,
-                                parentSignature: e.target.checked,
-                              })
+                              setStudentReport((prev) =>
+                                prev ? { ...prev, parentSignature: e.target.checked } : prev,
+                              );
                             }
                           }}
                           disabled={!editMode}
@@ -1616,12 +1875,29 @@ export default function DailyStudentReport() {
       <Dialog open={openDialog && dialogType === "behavior"} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>Add Behavior Note</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>Add a new behavior note for {selectedStudent?.name}.</DialogContentText>
+          <DialogContentText sx={{ mb: 2 }}>
+            Add a new behavior note for {selectedStudent?.name}.
+          </DialogContentText>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth sx={{ mt: 1 }}>
                 <InputLabel>Note Type</InputLabel>
-                <Select label="Note Type" defaultValue="Positive">
+                <Select
+                  label="Note Type"
+                  defaultValue="Positive"
+                  onChange={(e) =>
+                    setBehaviorNotes((prev) => [
+                      ...prev,
+                      {
+                        id: `BN${prev.length + 1}`,
+                        date: selectedDate,
+                        type: e.target.value,
+                        note: "",
+                        teacher: "Unknown",
+                      },
+                    ])
+                  }
+                >
                   <MenuItem value="Positive">Positive</MenuItem>
                   <MenuItem value="Concern">Concern</MenuItem>
                   <MenuItem value="Serious">Serious</MenuItem>
@@ -1629,7 +1905,20 @@ export default function DailyStudentReport() {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextField label="Note" multiline rows={4} fullWidth placeholder="Enter behavior note" />
+              <TextField
+                label="Note"
+                multiline
+                rows={4}
+                fullWidth
+                placeholder="Enter behavior note"
+                onChange={(e) =>
+                  setBehaviorNotes((prev) =>
+                    prev.map((n, i) =>
+                      i === prev.length - 1 ? { ...n, note: e.target.value } : n,
+                    ),
+                  )
+                }
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -1637,12 +1926,12 @@ export default function DailyStudentReport() {
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button
             onClick={() => {
-              handleCloseDialog()
+              handleCloseDialog();
               setSnackbar({
                 open: true,
                 message: "Behavior note added successfully!",
                 severity: "success",
-              })
+              });
             }}
             variant="contained"
           >
@@ -1654,12 +1943,32 @@ export default function DailyStudentReport() {
       <Dialog open={openDialog && dialogType === "homework"} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>Add Homework</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>Add a new homework entry for {selectedStudent?.name}.</DialogContentText>
+          <DialogContentText sx={{ mb: 2 }}>
+            Add a new homework entry for {selectedStudent?.name}.
+          </DialogContentText>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth sx={{ mt: 1 }}>
                 <InputLabel>Subject</InputLabel>
-                <Select label="Subject" defaultValue="">
+                <Select
+                  label="Subject"
+                  defaultValue=""
+                  onChange={(e) =>
+                    setHomeworkStatus((prev) => [
+                      ...prev,
+                      {
+                        id: `HW${prev.length + 1}`,
+                        subject: e.target.value,
+                        assignedDate: selectedDate,
+                        dueDate: selectedDate,
+                        description: "",
+                        status: "Assigned",
+                        grade: "",
+                        feedback: "",
+                      },
+                    ])
+                  }
+                >
                   <MenuItem value="">Select Subject</MenuItem>
                   <MenuItem value="MATHEMATICS">Mathematics</MenuItem>
                   <MenuItem value="SCIENCE">Science</MenuItem>
@@ -1671,7 +1980,17 @@ export default function DailyStudentReport() {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth sx={{ mt: 1 }}>
                 <InputLabel>Status</InputLabel>
-                <Select label="Status" defaultValue="Assigned">
+                <Select
+                  label="Status"
+                  defaultValue="Assigned"
+                  onChange={(e) =>
+                    setHomeworkStatus((prev) =>
+                      prev.map((h, i) =>
+                        i === prev.length - 1 ? { ...h, status: e.target.value } : h,
+                      ),
+                    )
+                  }
+                >
                   <MenuItem value="Assigned">Assigned</MenuItem>
                   <MenuItem value="Completed">Completed</MenuItem>
                   <MenuItem value="Partially Completed">Partially Completed</MenuItem>
@@ -1686,16 +2005,60 @@ export default function DailyStudentReport() {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 defaultValue={formatDateForInput(new Date())}
+                onChange={(e) =>
+                  setHomeworkStatus((prev) =>
+                    prev.map((h, i) =>
+                      i === prev.length - 1 ? { ...h, dueDate: e.target.value } : h,
+                    ),
+                  )
+                }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField label="Grade" fullWidth placeholder="e.g., A, B+, C" />
+              <TextField
+                label="Grade"
+                fullWidth
+                placeholder="e.g., A, B+, C"
+                onChange={(e) =>
+                  setHomeworkStatus((prev) =>
+                    prev.map((h, i) =>
+                      i === prev.length - 1 ? { ...h, grade: e.target.value } : h,
+                    ),
+                  )
+                }
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField label="Description" multiline rows={2} fullWidth placeholder="Enter homework description" />
+              <TextField
+                label="Description"
+                multiline
+                rows={2}
+                fullWidth
+                placeholder="Enter homework description"
+                onChange={(e) =>
+                  setHomeworkStatus((prev) =>
+                    prev.map((h, i) =>
+                      i === prev.length - 1 ? { ...h, description: e.target.value } : h,
+                    ),
+                  )
+                }
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField label="Feedback" multiline rows={2} fullWidth placeholder="Enter feedback on homework" />
+              <TextField
+                label="Feedback"
+                multiline
+                rows={2}
+                fullWidth
+                placeholder="Enter feedback on homework"
+                onChange={(e) =>
+                  setHomeworkStatus((prev) =>
+                    prev.map((h, i) =>
+                      i === prev.length - 1 ? { ...h, feedback: e.target.value } : h,
+                    ),
+                  )
+                }
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -1703,12 +2066,12 @@ export default function DailyStudentReport() {
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button
             onClick={() => {
-              handleCloseDialog()
+              handleCloseDialog();
               setSnackbar({
                 open: true,
                 message: "Homework added successfully!",
                 severity: "success",
-              })
+              });
             }}
             variant="contained"
           >
@@ -1721,11 +2084,15 @@ export default function DailyStudentReport() {
         <DialogTitle>Share Student Report</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
-            Share {selectedStudent?.name}'s report with parents or other teachers.
+            Share {selectedStudent?.name}&apos;s report with parents or other teachers.
           </DialogContentText>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField label="Email Recipients" fullWidth placeholder="Enter email addresses separated by commas" />
+              <TextField
+                label="Email Recipients"
+                fullWidth
+                placeholder="Enter email addresses separated by commas"
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -1750,12 +2117,12 @@ export default function DailyStudentReport() {
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button
             onClick={() => {
-              handleCloseDialog()
+              handleCloseDialog();
               setSnackbar({
                 open: true,
                 message: "Report shared successfully!",
                 severity: "success",
-              })
+              });
             }}
             variant="contained"
           >
@@ -1771,10 +2138,15 @@ export default function DailyStudentReport() {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} variant="filled" sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
     </Box>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import TextField from "@mui/material/TextField";
@@ -30,7 +31,7 @@ const GarageAutoComplete = ({
   sx,
   required,
   options,
-  size = "small",
+  // size = "small",
   multiple = true,
   freeSolo = true,
   defaultValue = [],

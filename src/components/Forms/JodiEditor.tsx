@@ -5,7 +5,8 @@ import React, { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dynamic from 'next/dynamic';
 import { joditConfig } from '@/config';
-import type { IJodit } from 'jodit-react';
+// import type { Jodit } from 'jodit-react';
+import { Jodit } from 'jodit/esm';
 
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
@@ -16,13 +17,13 @@ interface EditorProps {
 
 const GarageEditor: React.FC<EditorProps> = ({ name, label }) => {
   const { control } = useFormContext();
-  const editorRef = useRef<IJodit | null>(null); // Updated type
+  const editorRef = useRef<Jodit | null>(null); 
 
   const config = {
     ...joditConfig,
     uploader: {
       ...joditConfig.uploader,
-      defaultHandlerSuccess: function (this: IJodit, response: any) {
+      defaultHandlerSuccess: function (this: Jodit, response: any) {
         if (response.files && response.files.length) {
           const imageUrl = response.files[0];
           this.selection.insertImage(imageUrl, null, 250); // Access `selection` directly

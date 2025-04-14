@@ -597,7 +597,8 @@ export default function HomeworkAdd() {
                 fullWidth
                 placeholder="Search by name or roll number..."
                 InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
+                  startAdornment: <Search />,
+                  // startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
                 }}
                 sx={{ mb: 2 }}
               />
@@ -764,7 +765,7 @@ export default function HomeworkAdd() {
                 </Box>
               ) : (
                 <Stepper activeStep={activeStep} orientation={isMobile ? "vertical" : "horizontal"}>
-                  {steps.map((step, index) => (
+                  {steps.map((step) => (
                     <Step key={step.label}>
                       <StepLabel
                         optional={isMobile ? <Typography variant="caption">{step.description}</Typography> : null}

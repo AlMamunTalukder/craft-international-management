@@ -37,7 +37,7 @@ import {
   NavigateBefore,
   NavigateNext,
 } from "@mui/icons-material"
-
+import type { SelectChangeEvent } from "@mui/material/Select"
 // Generate days of month
 const getDaysInMonth = (month: number, year: number) => {
   return new Array(new Date(year, month, 0).getDate()).fill(null).map((_, i) => i + 1)
@@ -106,8 +106,8 @@ export default function MealReport() {
   }
 
   // Handle month change
-  const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setMonth(event.target.value as number)
+  const handleMonthChange = (event: SelectChangeEvent<number>) => {
+    setMonth(Number(event.target.value))
   }
 
   // Get month name
@@ -138,7 +138,7 @@ export default function MealReport() {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: "100%", overflowX: "auto" }}>
+    <Box sx={{ p: 0, maxWidth: "100%", overflowX: "auto" }}>
       {/* Header Section */}
       <Card elevation={3} sx={{ mb: 4, borderRadius: 2, overflow: "hidden" }}>
         <Box
@@ -274,9 +274,9 @@ export default function MealReport() {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 60 }}>SL</TableCell>
+              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 40 }}>SL</TableCell>
               <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 200 }}>Name</TableCell>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 120 }}>
+              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 60 }}>
                 Designation
               </TableCell>
               {days.map((day) => (

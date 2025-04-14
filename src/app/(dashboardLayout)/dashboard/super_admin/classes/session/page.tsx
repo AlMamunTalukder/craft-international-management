@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -58,6 +60,14 @@ import {
 import Link from "next/link"
 import { motion } from "framer-motion"
 
+
+interface Session {
+  id: number;
+  name: string;
+  isCurrent: boolean;
+}
+
+
 // Sample data for sessions
 const SAMPLE_SESSIONS = [
   {
@@ -113,10 +123,17 @@ const SAMPLE_SESSIONS = [
 ]
 
 // Format date for display
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "short", day: "numeric" }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
+
+const formatDate = (dateString: any) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  };
+  
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 
 export default function SessionList() {
   const theme = useTheme()
@@ -132,9 +149,10 @@ export default function SessionList() {
   const [sortDirection, setSortDirection] = useState("desc")
   const [loading, setLoading] = useState(true)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [selectedSession, setSelectedSession] = useState(null)
+ 
   const [anchorEl, setAnchorEl] = useState(null)
   const [filterAnchorEl, setFilterAnchorEl] = useState(null)
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
   // Simulate loading data
   useEffect(() => {
@@ -145,7 +163,7 @@ export default function SessionList() {
   }, [])
 
   // Handle menu opening
-  const handleMenuOpen = (event, session) => {
+  const handleMenuOpen = (event:any, session:any) => {
     setAnchorEl(event.currentTarget)
     setSelectedSession(session)
   }
@@ -156,7 +174,7 @@ export default function SessionList() {
   }
 
   // Handle filter menu
-  const handleFilterMenuOpen = (event) => {
+  const handleFilterMenuOpen = (event:any) => {
     setFilterAnchorEl(event.currentTarget)
   }
 
@@ -165,7 +183,7 @@ export default function SessionList() {
   }
 
   // Handle delete dialog
-  const handleDeleteDialogOpen = (session) => {
+  const handleDeleteDialogOpen = (session:any) => {
     setSelectedSession(session)
     setDeleteDialogOpen(true)
     handleMenuClose()
@@ -177,18 +195,21 @@ export default function SessionList() {
   }
 
   const handleDeleteSession = () => {
-    // Filter out the deleted session
-    setSessions(sessions.filter((s) => s.id !== selectedSession.id))
-    handleDeleteDialogClose()
-  }
+    // Check if selectedSession is not null before accessing its id
+    if (selectedSession) {
+      setSessions(sessions.filter((s) => s.id !== selectedSession.id));
+    }
+    handleDeleteDialogClose();
+  };
+  
 
   // Handle tab change
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue:any) => {
     setTabValue(newValue)
   }
 
   // Handle sort change
-  const handleSortChange = (field) => {
+  const handleSortChange = (field:any) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -210,13 +231,16 @@ export default function SessionList() {
       if (sortField === "name") {
         return factor * a.name.localeCompare(b.name)
       } else if (sortField === "startDate") {
-        return factor * (new Date(a.startDate) - new Date(b.startDate))
+        return factor * (new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
       } else if (sortField === "endDate") {
-        return factor * (new Date(a.endDate) - new Date(b.endDate))
+        return factor * (new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
       } else if (sortField === "workingDays") {
         return factor * (a.workingDays - b.workingDays)
       } else {
-        return factor * (new Date(a.createdAt) - new Date(b.createdAt))
+        return factor * (new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
       }
     })
 
@@ -768,24 +792,28 @@ export default function SessionList() {
           <ListItemText>Delete Session</ListItemText>
         </MenuItem>
         {selectedSession && !selectedSession.isCurrent && (
-          <MenuItem
-            onClick={() => {
-              // Set as current session
-              setSessions(
-                sessions.map((s) => ({
-                  ...s,
-                  isCurrent: s.id === selectedSession.id,
-                })),
-              )
-              handleMenuClose()
-            }}
-          >
-            <ListItemIcon>
-              <CheckCircle fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Set as Current</ListItemText>
-          </MenuItem>
-        )}
+         <MenuItem
+         onClick={() => {
+           // Set as current session
+           setSessions(
+             sessions.map((s) => ({
+               ...s,
+               isCurrent: s.id === Number(selectedSession?.id), 
+             }))
+           );
+           handleMenuClose();
+         }}
+       >
+       
+        
+  
+    <ListItemIcon>
+      <CheckCircle fontSize="small" />
+    </ListItemIcon>
+    <ListItemText>Set as Current</ListItemText>
+  </MenuItem>
+)}
+
         <MenuItem
           onClick={() => {
             // View details (would navigate to details page)
@@ -809,7 +837,7 @@ export default function SessionList() {
         <DialogTitle id="alert-dialog-title">{"Delete Academic Session?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete the session "{selectedSession?.name}"? This action cannot be undone.
+            Are you sure you want to delete the session &#34;{selectedSession?.name}&#34;? This action cannot be undone.
             {selectedSession?.isCurrent && (
               <Box sx={{ mt: 2, color: "error.main" }}>
                 <Typography variant="body2" sx={{ fontWeight: "bold" }}>

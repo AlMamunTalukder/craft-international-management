@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IJodit } from "jodit/types/jodit";
-
+import { Jodit } from "jodit/esm";
 
 export const joditConfig = {
   uploader: {
@@ -15,7 +14,7 @@ export const joditConfig = {
 
       formData.delete('files[0]');
       formData.append('file', file);
-      formData.append('upload_preset', 'zrf-foundation');
+      formData.append('upload_preset', 'craft');
 
       return formData;
     },
@@ -29,10 +28,10 @@ export const joditConfig = {
         msg: resp.message,
       };
     },
-    defaultHandlerSuccess: function (this: IJodit, response: any) {
+    defaultHandlerSuccess: function (this: Jodit, response: any) {
       if (response.files && response.files.length) {
         const imageUrl = response.files[0];
-        this.selection.insertImage(imageUrl, null, 250); // Access `selection` directly
+        this.selection.insertImage(imageUrl, null, 250); 
       }
     
     },
@@ -47,6 +46,6 @@ export const joditConfig = {
   enableDragAndDropFileToEditor: true,
   imageDefaultWidth: 250,
   imageProcessor: {
-    replaceDataURIToBlobIdInView: true, // Updated to match Jodit's expected type
+    replaceDataURIToBlobIdInView: true, 
   },
 };
