@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, SetStateAction } from "react"
 import {
   Box,
   Typography,
@@ -394,17 +396,17 @@ const DueFeesPage = () => {
   }, [studentId, selectedMonth, selectedYear, selectedFeeType, selectedClass, selectedSession, searchQuery, currentTab])
 
   // Handle tab change
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event:any, newValue:any) => {
     setCurrentTab(newValue)
   }
 
   // Handle student selection for bulk actions
-  const handleSelectionChange = (newSelection) => {
+  const handleSelectionChange = (newSelection:any) => {
     setSelectedStudents(newSelection)
   }
 
   // Handle opening student details dialog
-  const handleOpenStudentDetails = (student) => {
+  const handleOpenStudentDetails = (student: SetStateAction<null>) => {
     setSelectedStudent(student)
     setOpenStudentDialog(true)
   }
@@ -513,7 +515,7 @@ const DueFeesPage = () => {
   }
 
   // Handle collect fee for a single student
-  const handleCollectFee = (studentId) => {
+  const handleCollectFee = (studentId:any) => {
     // In a real app, you would navigate to the fee collection page
     // with the student ID as a query parameter
     setSnackbarMessage(`Redirecting to collect fees for student ${studentId}`)
@@ -522,7 +524,7 @@ const DueFeesPage = () => {
   }
 
   // Handle menu open
-  const handleMenuOpen = (event, student) => {
+  const handleMenuOpen = (event:any, student:any) => {
     setSelectedStudent(student)
     setAnchorEl(event.currentTarget)
   }

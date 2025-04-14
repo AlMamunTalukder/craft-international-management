@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -211,8 +212,8 @@ const mockDeletedFees = [
 // Mock data for students (for dropdown)
 const mockStudents = [
   { id: "2025124", name: "MOHAMMAD KHALID" },
-  { id: "2025312", name: "MST JAMILA AKTER" },
-  { id: "2025602", name: "MOSADDIQUL ISLAM AJMAL" },
+  { id: "2025312", name: "MST JAMA AKTER" },
+  { id: "2025602", name: "MOSADDIQUL ISLAM JAMAL" },
   { id: "2025502", name: "ABDUL MAZID AZMI" },
 ]
 
