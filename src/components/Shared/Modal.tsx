@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -26,7 +27,7 @@ type TModalProps = {
 };
 
 
-export default function GarageModal
+export default function CraftModal
 ({
   open = false,
   setOpen,
@@ -34,10 +35,9 @@ export default function GarageModal
   children,
   sx,
 }: TModalProps) {
-  
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -50,9 +50,10 @@ export default function GarageModal
         aria-labelledby="customized-dialog-title"
         open={open}
         maxWidth="lg"
-        fullWidth
+        fullWidth        
         sx={{
           ...sx,
+         
           "& .MuiDialog-paper": {
             maxWidth: "1800px",
           },
@@ -78,3 +79,5 @@ export default function GarageModal
     </React.Fragment>
   );
 }
+
+

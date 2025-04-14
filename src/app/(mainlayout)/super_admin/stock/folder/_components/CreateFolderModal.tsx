@@ -4,7 +4,7 @@ import React from "react";
 import { Box, Button } from "@mui/material";
 import GarageModal from "@/components/Shared/Modal";
 
-import GarageForm from "@/components/Forms/Form";
+import CraftForm from "@/components/Forms/Form";
 import GarageInput from "@/components/Forms/Input";
 
 export type TProps = {
@@ -25,7 +25,7 @@ const CreateFolderModal = ({ open, setOpen }: TProps) => {
       title="Create Folder"
     >
       <Box sx={{ width: "100%" }}>
-        <GarageForm onSubmit={handleSubmit}>
+        <CraftForm onSubmit={handleSubmit}>
           
           <div className="space-y-0">
             {/* <h1>Create Folder</h1> */}
@@ -37,7 +37,7 @@ const CreateFolderModal = ({ open, setOpen }: TProps) => {
              + Create
             </Button>
           </div>
-        </GarageForm>
+        </CraftForm>
       </Box>
     </GarageModal>
   );

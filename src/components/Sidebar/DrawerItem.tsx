@@ -118,7 +118,7 @@ export const navigationItems = [
         <Dashboard />
       </ColorfulIcon>
     ),
-    path: "/",
+    path: "/dashboard",
   },
   {
     title: "Classes",
