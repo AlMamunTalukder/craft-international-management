@@ -831,7 +831,7 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/dashboard/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/grading/list",
         title: "Gradings ",
         icon: (
           <ColorfulIcon color="#0F9D58">
@@ -840,7 +840,7 @@ export const navigationItems = [
         ),
       },
       {
-        path: "/dashboard/super_admin/stock/allimg",
+        path: "/dashboard/super_admin/exam/exam-categories",
         title: "Exam Category ",
         icon: (
           <ColorfulIcon color="#0F9D58">
