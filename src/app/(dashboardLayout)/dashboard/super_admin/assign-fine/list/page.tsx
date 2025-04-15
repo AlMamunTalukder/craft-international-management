@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -417,7 +419,7 @@ const StatusChip = ({ status }: { status: string }) => {
         return {
           bgcolor: "grey.300",
           color: "text.secondary",
-          icon: null,
+          icon: undefined,
         }
     }
   }

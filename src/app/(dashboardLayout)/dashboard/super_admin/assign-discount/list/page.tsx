@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   Alert,
   Avatar,
@@ -67,7 +69,11 @@ import {
 } from "@mui/icons-material"
 import { ThemeProvider, createTheme, alpha } from "@mui/material/styles"
 import { motion } from "framer-motion"
-import { useSpring, animated } from "react-spring"
+// import { useSpring, animated } from "react-spring"
+
+import { useSpring, animated } from "@react-spring/web";
+import { FC } from "react";
+
 import { DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar } from "@mui/x-data-grid"
 import {
   PieChart,
@@ -82,6 +88,9 @@ import {
   Legend,
 } from "recharts"
 
+interface AnimatedNumberProps {
+  value: number;
+}
 // Create a custom theme with a vibrant color scheme
 const theme = createTheme({
   palette: {
@@ -673,16 +682,34 @@ const MotionPaper = motion(Paper)
 const MotionCard = motion(Card)
 
 // Animated number component
-const AnimatedNumber = ({ value }: { value: number }) => {
-  const { number } = useSpring({
-    from: { number: 0 },
-    number: value,
-    delay: 200,
-    config: { mass: 1, tension: 20, friction: 10 },
-  })
 
-  return <animated.div>{number.to((n) => n.toFixed(0))}</animated.div>
-}
+const AnimatedNumber: FC<AnimatedNumberProps> = ({ value }) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const duration = 1000; 
+    const frameDuration = 1000/60; 
+    const totalFrames = Math.round(duration / frameDuration);
+    let frame = 0;
+    
+    const counter = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      const currentCount = Math.floor(progress * value);
+      
+      if (frame === totalFrames) {
+        setCount(value);
+        clearInterval(counter);
+      } else {
+        setCount(currentCount);
+      }
+    }, frameDuration);
+    
+    return () => clearInterval(counter);
+  }, [value]);
+  
+  return <span>{count}</span>;
+};
 
 // Tab panel component
 function TabPanel(props: { children: React.ReactNode; value: number; index: number }) {
@@ -1218,21 +1245,21 @@ export default function DiscountAssignmentListPage() {
                   </Box>
 
                   {viewMode === "table" ? (
-                    <Box sx={{ height: 500, width: "100%" }}>
-                      <DataGrid
-                        rows={filteredAssignments}
-                        columns={columns}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        onRowSelectionModelChange={(newSelection) => {
-                          setSelectedRows(newSelection as number[])
-                        }}
-                        rowSelectionModel={selectedRows}
-                        components={{
-                          Toolbar: GridToolbar,
-                        }}
-                      />
-                    </Box>
+  <Box sx={{ height: 500, width: "100%" }}>
+    <DataGrid
+      rows={filteredAssignments}
+      columns={columns}
+      checkboxSelection
+      disableRowSelectionOnClick
+      onRowSelectionModelChange={(newSelection) => {
+        setSelectedRows(newSelection as number[])
+      }}
+      rowSelectionModel={selectedRows}
+      slots={{
+        toolbar: GridToolbar,
+      }}
+    />
+  </Box>
                   ) : (
                     <Grid container spacing={2}>
                       {filteredAssignments.map((assignment) => (
@@ -1433,9 +1460,10 @@ export default function DiscountAssignmentListPage() {
                           <Typography variant="caption" color="primary.main" fontWeight={600}>
                             Total Assignments
                           </Typography>
-                          <Typography variant="h4" fontWeight={700} sx={{ mt: 1 }}>
-                            <AnimatedNumber value={statistics.totalAssignments} />
-                          </Typography>
+                         {/* In your statistics display component */}
+<Typography variant="h4" fontWeight={700} sx={{ mt: 1 }}>
+  <AnimatedNumber value={statistics.totalAssignments} />
+</Typography>
                         </Paper>
                       </Grid>
                       <Grid item xs={6}>

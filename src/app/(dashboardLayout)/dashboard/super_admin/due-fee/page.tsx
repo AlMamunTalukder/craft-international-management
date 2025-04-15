@@ -76,6 +76,23 @@ import {
   Legend,
 } from "recharts"
 
+
+interface Student {
+  id: string
+  name: string
+  class: string
+  parentMobile: string
+  dueAmount: number
+  dueFees: string
+  status: "overdue" | "critical"
+  lastReminder: string
+  paymentHistory: Array<{
+    date: string
+    amount: number
+    type: string
+  }>
+}
+
 // Mock data for students with due fees
 const mockStudents = [
   {
@@ -321,14 +338,15 @@ const DueFeesPage = () => {
   // State for data
   const [students, setStudents] = useState(mockStudents)
   const [filteredStudents, setFilteredStudents] = useState(mockStudents)
-  const [selectedStudents, setSelectedStudents] = useState([])
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([])
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [loading, setLoading] = useState(false)
   const [currentTab, setCurrentTab] = useState(0)
   const [viewMode, setViewMode] = useState("table")
 
   // State for dialogs
   const [openStudentDialog, setOpenStudentDialog] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState(null)
+  // const [selectedStudent, setSelectedStudent] = useState(null)
   const [openReminderDialog, setOpenReminderDialog] = useState(false)
   const [reminderType, setReminderType] = useState("sms")
   const [reminderMessage, setReminderMessage] = useState("")
@@ -396,17 +414,22 @@ const DueFeesPage = () => {
   }, [studentId, selectedMonth, selectedYear, selectedFeeType, selectedClass, selectedSession, searchQuery, currentTab])
 
   // Handle tab change
-  const handleTabChange = (event:any, newValue:any) => {
+  const handleTabChange = (event: any, newValue: any) => {
     setCurrentTab(newValue)
   }
 
   // Handle student selection for bulk actions
-  const handleSelectionChange = (newSelection:any) => {
+  const handleSelectionChange = (newSelection: any) => {
     setSelectedStudents(newSelection)
   }
 
   // Handle opening student details dialog
-  const handleOpenStudentDetails = (student: SetStateAction<null>) => {
+  // const handleOpenStudentDetails = (student: SetStateAction<null>) => {
+  //   setSelectedStudent(student)
+  //   setOpenStudentDialog(true)
+  // }
+
+  const handleOpenStudentDetails = (student: Student | null) => {
     setSelectedStudent(student)
     setOpenStudentDialog(true)
   }
@@ -421,11 +444,12 @@ const DueFeesPage = () => {
     }
 
     // Set default reminder message
-    const selectedStudentsData = filteredStudents.filter((s) => selectedStudents.includes(s.id))
+    const selectedStudentsData = filteredStudents.filter((s) => 
+      selectedStudents.includes(s.id)
+    )
 
-    const defaultMessage = `Dear Parent, This is a reminder that your ward has pending fees of Rs. ${
-      selectedStudentsData.length === 1 ? selectedStudentsData[0].dueAmount : "various amounts"
-    }. Please make the payment at your earliest convenience. - Craft International Institute`
+    const defaultMessage = `Dear Parent, This is a reminder that your ward has pending fees of Rs. ${selectedStudentsData.length === 1 ? selectedStudentsData[0].dueAmount : "various amounts"
+      }. Please make the payment at your earliest convenience. - Craft International Institute`
 
     setReminderMessage(defaultMessage)
     setOpenReminderDialog(true)
@@ -465,7 +489,7 @@ const DueFeesPage = () => {
   }
 
   // Handle bulk menu open
-  const handleBulkMenuOpen = (event) => {
+  const handleBulkMenuOpen = (event: any) => {
     if (selectedStudents.length === 0) {
       setSnackbarMessage("Please select at least one student")
       setSnackbarSeverity("warning")
@@ -515,7 +539,7 @@ const DueFeesPage = () => {
   }
 
   // Handle collect fee for a single student
-  const handleCollectFee = (studentId:any) => {
+  const handleCollectFee = (studentId: any) => {
     // In a real app, you would navigate to the fee collection page
     // with the student ID as a query parameter
     setSnackbarMessage(`Redirecting to collect fees for student ${studentId}`)
@@ -524,7 +548,7 @@ const DueFeesPage = () => {
   }
 
   // Handle menu open
-  const handleMenuOpen = (event:any, student:any) => {
+  const handleMenuOpen = (event: any, student: any) => {
     setSelectedStudent(student)
     setAnchorEl(event.currentTarget)
   }
@@ -535,13 +559,22 @@ const DueFeesPage = () => {
   }
 
   // Handle view history
+  // const handleViewHistory = () => {
+  //   handleOpenStudentDetails(selectedStudent)
+  //   handleMenuClose()
+  // }
+
   const handleViewHistory = () => {
-    handleOpenStudentDetails(selectedStudent)
-    handleMenuClose()
+    if (selectedStudent) {
+      handleOpenStudentDetails(selectedStudent)
+      handleMenuClose()
+    }
   }
 
+  
   // Handle send reminder for a single student
   const handleSendSingleReminder = () => {
+    if (!selectedStudent) return
     setSelectedStudents([selectedStudent.id])
     handleOpenReminderDialog()
     handleMenuClose()
@@ -1121,12 +1154,16 @@ const DueFeesPage = () => {
         <DataGrid
           rows={filteredStudents}
           columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10, 25, 50]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[10, 25, 50]}
           checkboxSelection
-          disableSelectionOnClick
-          onSelectionModelChange={handleSelectionChange}
-          selectionModel={selectedStudents}
+          disableRowSelectionOnClick
+          onRowSelectionModelChange={handleSelectionChange}
+          rowSelectionModel={selectedStudents}
           loading={loading}
           sx={{
             "& .MuiDataGrid-columnHeaders": {
@@ -1141,10 +1178,10 @@ const DueFeesPage = () => {
               backgroundColor: theme.palette.action.hover,
             },
             "& .MuiDataGrid-row.Mui-selected": {
-              backgroundColor: `${theme.palette.primary.lighter} !important`,
+              backgroundColor: `${theme.palette.primary.light} !important`,
             },
             "& .MuiDataGrid-row.Mui-selected:hover": {
-              backgroundColor: `${theme.palette.primary.lighter} !important`,
+              backgroundColor: `${theme.palette.primary.light} !important`,
             },
           }}
         />
@@ -1179,7 +1216,7 @@ const DueFeesPage = () => {
                     ))}
                   </Pie>
                   <Legend />
-                  <Tooltip />
+                  <RechartsTooltip />
                 </PieChart>
               </ResponsiveContainer>
             </Paper>
@@ -1207,7 +1244,7 @@ const DueFeesPage = () => {
 
       {/* Student Details Dialog */}
       <Dialog open={openStudentDialog} onClose={() => setOpenStudentDialog(false)} maxWidth="md" fullWidth>
-        {selectedStudent && (
+        {/* {selectedStudent && (
           <>
             <DialogTitle>
               <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -1228,7 +1265,28 @@ const DueFeesPage = () => {
                   </Typography>
                 </Box>
               </Box>
-            </DialogTitle>
+            </DialogTitle> */}
+            {selectedStudent && (
+  <>
+    <DialogTitle>
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Avatar  
+        sx={{
+                    bgcolor: theme.palette.primary.main,
+                    width: 40,
+                    height: 40,
+                    mr: 2,
+                  }}>
+          {selectedStudent.name.charAt(0)}
+        </Avatar>
+        <Box>
+          <Typography variant="h6">{selectedStudent.name}</Typography>
+          <Typography variant="body2" color="textSecondary">
+            ID: {selectedStudent.id} | Class: {selectedStudent.class}
+          </Typography>
+        </Box>
+      </Box>
+    </DialogTitle>
             <DialogContent dividers>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>

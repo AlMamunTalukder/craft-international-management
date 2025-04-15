@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client"
 
 import { useState } from "react"
@@ -67,8 +69,50 @@ import {
   ExpandLess,
 } from "@mui/icons-material"
 
+// Types for data structures
+interface Student {
+  id: string;
+  name: string;
+  class: string;
+  section: string;
+  rollNo: string;
+  avatar: string;
+  parentName: string;
+  parentContact: string;
+  email: string;
+}
+
+interface FeeItem {
+  id: number;
+  type: string;
+  amount: number;
+  mandatory: boolean;
+  description?: string;
+}
+
+interface PaymentRecord {
+  id: string;
+  date: string;
+  amount: number;
+  mode: string;
+  status: string;
+  receiptNo: string;
+}
+
+interface DiscountType {
+  id: number;
+  name: string;
+  percentage: number;
+}
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+}
+
 // Mock data for student information
-const STUDENTS = [
+const STUDENTS: Student[] = [
   {
     id: "STU001",
     name: "Aiden Parker",
@@ -105,7 +149,7 @@ const STUDENTS = [
 ]
 
 // Mock data for fee structure
-const FEE_STRUCTURE = [
+const FEE_STRUCTURE: FeeItem[] = [
   { id: 1, type: "Tuition Fee", amount: 5000, mandatory: true },
   { id: 2, type: "Development Fee", amount: 2000, mandatory: true },
   { id: 3, type: "Library Fee", amount: 500, mandatory: true },
@@ -117,7 +161,7 @@ const FEE_STRUCTURE = [
 ]
 
 // Mock data for payment history
-const PAYMENT_HISTORY = [
+const PAYMENT_HISTORY: PaymentRecord[] = [
   {
     id: "PAY001",
     date: "2025-03-15",
@@ -145,7 +189,7 @@ const PAYMENT_HISTORY = [
 ]
 
 // Mock data for discounts
-const DISCOUNTS = [
+const DISCOUNTS: DiscountType[] = [
   { id: 1, name: "Sibling Discount", percentage: 10 },
   { id: 2, name: "Merit Scholarship", percentage: 25 },
   { id: 3, name: "Staff Ward Discount", percentage: 50 },
@@ -153,7 +197,7 @@ const DISCOUNTS = [
 ]
 
 // Mock data for payment methods
-const PAYMENT_METHODS = [
+const PAYMENT_METHODS: PaymentMethod[] = [
   { id: "cash", name: "Cash", icon: <LocalAtm /> },
   { id: "card", name: "Credit/Debit Card", icon: <CreditCard /> },
   { id: "bank", name: "Bank Transfer", icon: <AccountBalance /> },
@@ -161,7 +205,7 @@ const PAYMENT_METHODS = [
 ]
 
 // Mock data for classes
-const CLASSES = [
+const CLASSES: string[] = [
   "1st Grade",
   "2nd Grade",
   "3rd Grade",
@@ -177,7 +221,7 @@ const CLASSES = [
 ]
 
 // Mock data for sessions
-const SESSIONS = ["2024-2025", "2025-2026", "2026-2027"]
+const SESSIONS: string[] = ["2024-2025", "2025-2026", "2026-2027"]
 
 // Styled components
 const GradientCard = styled(Card)(({ theme }) => ({
@@ -208,55 +252,48 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-const StyledBadge = styled(Chip)(({ theme }) => ({
-  position: "absolute",
-  top: -10,
-  right: -10,
-  zIndex: 1,
-}))
-
 const FeesCollectPage = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
   const isTablet = useMediaQuery(theme.breakpoints.down("md"))
 
   // State management
-  const [activeStep, setActiveStep] = useState(0)
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [selectedFees, setSelectedFees] = useState([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedClass, setSelectedClass] = useState("")
-  const [selectedSession, setSelectedSession] = useState(SESSIONS[0])
-  const [paymentMethod, setPaymentMethod] = useState("")
-  const [discountApplied, setDiscountApplied] = useState(null)
-  const [showHistory, setShowHistory] = useState(false)
-  const [receiptDialogOpen, setReceiptDialogOpen] = useState(false)
-  const [successSnackbar, setSuccessSnackbar] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [tabValue, setTabValue] = useState(0)
-  const [applyLateFeePenalty, setApplyLateFeePenalty] = useState(false)
-  const [paymentNote, setPaymentNote] = useState("")
-  const [searchResults, setSearchResults] = useState([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  const [paymentAmount, setPaymentAmount] = useState("")
-  const [partialPayment, setPartialPayment] = useState(false)
+  const [activeStep, setActiveStep] = useState<number>(0)
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [selectedFees, setSelectedFees] = useState<FeeItem[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>("")
+  const [selectedClass, setSelectedClass] = useState<string>("")
+  const [selectedSession, setSelectedSession] = useState<string>(SESSIONS[0])
+  const [paymentMethod, setPaymentMethod] = useState<string>("")
+  const [discountApplied, setDiscountApplied] = useState<DiscountType | null>(null)
+  const [showHistory, setShowHistory] = useState<boolean>(false)
+  const [receiptDialogOpen, setReceiptDialogOpen] = useState<boolean>(false)
+  const [successSnackbar, setSuccessSnackbar] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [tabValue, setTabValue] = useState<number>(0)
+  const [applyLateFeePenalty, setApplyLateFeePenalty] = useState<boolean>(false)
+  const [paymentNote, setPaymentNote] = useState<string>("")
+  const [searchResults, setSearchResults] = useState<Student[]>([])
+  const [isSearching, setIsSearching] = useState<boolean>(false)
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false)
+  const [paymentAmount, setPaymentAmount] = useState<string>("")
+  const [partialPayment, setPartialPayment] = useState<boolean>(false)
 
   // Calculate totals
-  const calculateSubtotal = () => {
+  const calculateSubtotal = (): number => {
     return selectedFees.reduce((total, fee) => total + fee.amount, 0)
   }
 
-  const calculateDiscount = () => {
+  const calculateDiscount = (): number => {
     if (!discountApplied) return 0
     return (calculateSubtotal() * discountApplied.percentage) / 100
   }
 
-  const calculateLateFee = () => {
+  const calculateLateFee = (): number => {
     return applyLateFeePenalty ? 500 : 0 // Example late fee
   }
 
-  const calculateTotal = () => {
+  const calculateTotal = (): number => {
     return calculateSubtotal() - calculateDiscount() + calculateLateFee()
   }
 
@@ -277,7 +314,7 @@ const FeesCollectPage = () => {
   }
 
   // Handle student selection
-  const handleSelectStudent = (student) => {
+  const handleSelectStudent = (student: Student) => {
     setSelectedStudent(student)
     // Pre-select mandatory fees
     setSelectedFees(FEE_STRUCTURE.filter((fee) => fee.mandatory))
@@ -285,7 +322,7 @@ const FeesCollectPage = () => {
   }
 
   // Handle fee selection
-  const handleFeeToggle = (fee) => {
+  const handleFeeToggle = (fee: FeeItem) => {
     if (selectedFees.find((f) => f.id === fee.id)) {
       setSelectedFees(selectedFees.filter((f) => f.id !== fee.id))
     } else {
@@ -340,7 +377,7 @@ const FeesCollectPage = () => {
   }
 
   // Handle tab change
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
@@ -374,7 +411,7 @@ const FeesCollectPage = () => {
                 <InputLabel>Class</InputLabel>
                 <Select
                   value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
+                  onChange={(e) => setSelectedClass(e.target.value as string)}
                   label="Class"
                   startAdornment={
                     <InputAdornment position="start">
@@ -398,7 +435,7 @@ const FeesCollectPage = () => {
                 <InputLabel>Session</InputLabel>
                 <Select
                   value={selectedSession}
-                  onChange={(e) => setSelectedSession(e.target.value)}
+                  onChange={(e) => setSelectedSession(e.target.value as string)}
                   label="Session"
                   startAdornment={
                     <InputAdornment position="start">
@@ -741,7 +778,7 @@ const FeesCollectPage = () => {
                                   )}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary">
-                                  {fee.description}
+                                  {fee.description || ""}
                                 </Typography>
                               </Box>
                             </Box>
@@ -792,9 +829,6 @@ const FeesCollectPage = () => {
                       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                         <Typography variant="body1" color="error">
                           Discount ({discountApplied.name} - {discountApplied.percentage}%)
-                        </Typography>
-                        <Typography variant="body1" color="error">
-                          -${calculateDiscount().toLocaleString()}
                         </Typography>
                       </Box>
                     )}
