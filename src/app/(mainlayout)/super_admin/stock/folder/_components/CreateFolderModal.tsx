@@ -5,7 +5,7 @@ import { Box, Button } from "@mui/material";
 import GarageModal from "@/components/Shared/Modal";
 
 import CraftForm from "@/components/Forms/Form";
-import GarageInput from "@/components/Forms/Input";
+import CraftInput from "@/components/Forms/Input";
 
 export type TProps = {
   open: boolean;
@@ -29,7 +29,7 @@ const CreateFolderModal = ({ open, setOpen }: TProps) => {
           
           <div className="space-y-0">
             {/* <h1>Create Folder</h1> */}
-            <GarageInput name="name" label="Folder Name" fullWidth/>
+            <CraftInput name="name" label="Folder Name" fullWidth/>
           </div>
 
           <div className="mt-4 flex justify-end ">

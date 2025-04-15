@@ -15,7 +15,7 @@ type TProps = {
   setImageUrl: (image: string) => void;
 };
 
-export default function GarageFileUploadButton({
+export default function CraftFileUploadButton({
   name,
   label,
   sx,

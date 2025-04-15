@@ -6,12 +6,12 @@ import { joditConfig } from '@/config';
 
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
-interface BNPEditorProps {
+interface CraftEditorProps {
   name: string;
   label?: string;
 }
 
-const DailyTimesEditor: React.FC<BNPEditorProps> = ({ name, label }) => {
+const CraftEditor: React.FC<CraftEditorProps> = ({ name, label }) => {
   const { control } = useFormContext();
   const editorRef = useRef<any>(null); 
 
@@ -52,4 +52,4 @@ const DailyTimesEditor: React.FC<BNPEditorProps> = ({ name, label }) => {
   );
 };
 
-export default DailyTimesEditor;
+export default CraftEditor;

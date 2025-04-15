@@ -42,7 +42,7 @@ interface TMultiSelectProps {
   sx?: SxProps;
 }
 
-const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
+const CraftMultiSelect: React.FC<TMultiSelectProps> = ({
   name,
   label,
   items,
@@ -169,4 +169,4 @@ const GarageMultiSelect: React.FC<TMultiSelectProps> = ({
   );
 };
 
-export default GarageMultiSelect;
+export default CraftMultiSelect;
