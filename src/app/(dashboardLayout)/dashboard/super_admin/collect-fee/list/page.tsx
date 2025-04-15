@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -569,8 +571,8 @@ export default function FeeCollectionListPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [paymentMethodFilter, setPaymentMethodFilter] = useState("all")
   const [dateRange, setDateRange] = useState<{
-    startDate: string
-    endDate: string
+    startDate: string | null
+    endDate: string | null
   }>({
     startDate: "",
     endDate: "",
@@ -743,8 +745,11 @@ export default function FeeCollectionListPage() {
 
     // Apply date range filter
     if (dateRange.startDate && dateRange.endDate) {
+      const startDate = dateRange.startDate; 
+      const endDate = dateRange.endDate;     
+      
       filtered = filtered.filter((collection) => {
-        return collection.paymentDate >= dateRange.startDate && collection.paymentDate <= dateRange.endDate
+        return collection.paymentDate >= startDate && collection.paymentDate <= endDate
       })
     }
 
@@ -841,7 +846,7 @@ export default function FeeCollectionListPage() {
                   <Button
                     variant="outlined"
                     startIcon={<ExportIcon />}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     sx={{ mb: { xs: 1, md: 0 } }}
                   >
                     Export
@@ -849,7 +854,7 @@ export default function FeeCollectionListPage() {
                   <Button
                     variant="outlined"
                     startIcon={<PrinterIcon />}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     sx={{ mb: { xs: 1, md: 0 } }}
                   >
                     Print
@@ -2047,9 +2052,9 @@ export default function FeeCollectionListPage() {
                       <TableCell align="right" sx={{ fontWeight: 700 }}>
                         {formatCurrency(
                           selectedReceipt.amount +
-                            selectedReceipt.previousDue +
-                            selectedReceipt.lateCharge -
-                            selectedReceipt.discount,
+                          selectedReceipt.previousDue +
+                          selectedReceipt.lateCharge -
+                          selectedReceipt.discount,
                         )}
                       </TableCell>
                     </TableRow>

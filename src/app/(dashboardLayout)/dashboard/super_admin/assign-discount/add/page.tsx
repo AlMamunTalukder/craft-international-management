@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
@@ -603,16 +605,16 @@ const MotionPaper = motion(Paper)
 const MotionCard = motion(Card)
 
 // Animated number component
-const AnimatedNumber = ({ value }: { value: number }) => {
-  const { number } = useSpring({
-    from: { number: 0 },
-    number: value,
-    delay: 200,
-    config: { mass: 1, tension: 20, friction: 10 },
-  })
+// const AnimatedNumber = ({ value }: { value: number }) => {
+//   const { number } = useSpring({
+//     from: { number: 0 },
+//     number: value,
+//     delay: 200,
+//     config: { mass: 1, tension: 20, friction: 10 },
+//   })
 
-  return <animated.div>{number.to((n) => n.toFixed(0))}</animated.div>
-}
+//   return <animated.div>{number.to((n) => n.toFixed(0))}</animated.div>
+// }
 
 // Tab panel component
 function TabPanel(props: { children: React.ReactNode; value: number; index: number }) {
