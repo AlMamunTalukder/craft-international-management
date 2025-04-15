@@ -75,6 +75,8 @@ import { useSpring, animated } from "@react-spring/web";
 import { FC } from "react";
 
 import { DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar } from "@mui/x-data-grid"
+
+
 import {
   PieChart,
   Pie,
@@ -87,6 +89,13 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts"
+
+import dynamic from "next/dynamic"
+
+
+
+const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
+
 
 interface AnimatedNumberProps {
   value: number;
