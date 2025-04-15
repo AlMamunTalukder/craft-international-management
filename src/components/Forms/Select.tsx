@@ -16,7 +16,7 @@ interface ITextField {
   onChange?: (value: any) => void;
 }
 
-const GarageSelect = ({
+const CraftSelect = ({
   items,
   name,
   label,
@@ -67,4 +67,4 @@ const GarageSelect = ({
   );
 };
 
-export default GarageSelect;
+export default CraftSelect;

@@ -20,7 +20,7 @@ type TAutocompleteControllerProps = {
     size?: 'small' | 'medium'
 };
 
-export const GarageMultipleValue = ({
+export const CraftMultipleValue = ({
     name,
     options,
     defaultValue = [],

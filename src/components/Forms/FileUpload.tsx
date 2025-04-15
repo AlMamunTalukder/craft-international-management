@@ -25,7 +25,7 @@ type TProps = {
   sx?: SxProps;
 };
 
-export default function GarageFileUploader({ name, label, sx }: TProps) {
+export default function CraftFileUploader({ name, label, sx }: TProps) {
   const { control } = useFormContext();
   return (
     <Controller
