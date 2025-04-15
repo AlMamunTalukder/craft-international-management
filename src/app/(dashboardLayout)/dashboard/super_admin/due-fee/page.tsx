@@ -62,7 +62,8 @@ import {
   RemoveRedEye,
   PieChart,
 } from "@mui/icons-material"
-import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import { type GridColDef } from "@mui/x-data-grid"
+
 import {
   BarChart as RechartsBarChart,
   Bar,
@@ -75,6 +76,15 @@ import {
   Cell,
   Legend,
 } from "recharts"
+
+import dynamic from "next/dynamic"
+
+
+
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then((mod) => mod.DataGrid),
+  { ssr: false }
+);
 
 
 interface Student {

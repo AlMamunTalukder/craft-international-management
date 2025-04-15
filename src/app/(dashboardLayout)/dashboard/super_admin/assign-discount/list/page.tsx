@@ -69,12 +69,11 @@ import {
 } from "@mui/icons-material"
 import { ThemeProvider, createTheme, alpha } from "@mui/material/styles"
 import { motion } from "framer-motion"
-// import { useSpring, animated } from "react-spring"
-
-import { useSpring, animated } from "@react-spring/web";
 import { FC } from "react";
 
-import { DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar } from "@mui/x-data-grid"
+import {  type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid"
+
+
 import {
   PieChart,
   Pie,
@@ -87,6 +86,21 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts"
+
+import dynamic from "next/dynamic"
+
+
+
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then((mod) => mod.DataGrid),
+  { ssr: false }
+);
+
+const GridToolbar = dynamic(
+  () => import("@mui/x-data-grid").then((mod) => mod.GridToolbar),
+  { ssr: false }
+);
+
 
 interface AnimatedNumberProps {
   value: number;
