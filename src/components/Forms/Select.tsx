@@ -12,6 +12,7 @@ interface ITextField {
   fullWidth?: boolean;
   sx?: SxProps;
   items: string[];
+  defaultValue?: string;
   margin?: "none" | "normal" | "dense";
   onChange?: (value: any) => void;
 }
@@ -26,6 +27,7 @@ const CraftSelect = ({
   fullWidth = true,
   sx,
   onChange,
+  defaultValue,
 }: ITextField) => {
   const { control, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
@@ -34,7 +36,8 @@ const CraftSelect = ({
     <Controller
       control={control}
       name={name}
-      defaultValue=""
+      defaultValue={defaultValue ?? items[0] ?? ""}
+
       render={({ field }) => (
         <TextField
           {...field}
@@ -66,5 +69,6 @@ const CraftSelect = ({
     />
   );
 };
+
 
 export default CraftSelect;
