@@ -10,11 +10,8 @@ import {
   TextField,
   Button,
   Paper,
-  AppBar,
-  Toolbar,
   IconButton,
   Avatar,
-  Badge,
   Divider,
   Card,
   CardContent,
@@ -32,14 +29,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Menu,
+
   MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Drawer,
-  List,
-  ListItemButton,
-  useMediaQuery,
+
   Stepper,
   Step,
   StepLabel,
@@ -58,25 +50,16 @@ import {
 import {
   Add as AddIcon,
   Save as SaveIcon,
-  Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  School as SchoolIcon,
-  Notifications as NotificationsIcon,
+
   Info as InfoIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
-  Settings as SettingsIcon,
-  Grading as GradingIcon,
   Preview as PreviewIcon,
   Tune as TuneIcon,
   BarChart as BarChartIcon,
-  Help as HelpIcon,
   Check as CheckIcon,
   Edit as EditIcon,
   ContentCopy as ContentCopyIcon,
-  Search as SearchIcon,
-  Person as PersonIcon,
-  Logout as LogoutIcon,
   Category as CategoryIcon,
   Assignment as AssignmentIcon,
   AssignmentTurnedIn as AssignmentTurnedInIcon,
@@ -89,7 +72,7 @@ import {
   Cancel as CancelIcon,
   QuestionAnswer as QuestionAnswerIcon,
   FormatListNumbered as FormatListNumberedIcon,
-  FormatListBulletedIcon,
+  FormatListBulleted,
   CheckBox as CheckBoxIcon,
   RadioButtonChecked as RadioButtonCheckedIcon,
   ShortText as ShortTextIcon,
@@ -98,17 +81,17 @@ import {
   Calculate as CalculateIcon,
   Language as LanguageIcon,
   SportsBasketball as SportsBasketballIcon,
-  MusicNoteIcon,
   LocalLibrary as LocalLibraryIcon,
   Biotech as BiotechIcon,
   Architecture as ArchitectureIconIcon,
-  Eco as EcoIcon,
   Healing as HealingIcon,
   Gavel as GavelIcon,
   Engineering as EngineeringIcon,
   Construction as ConstructionIcon,
   Computer as ComputerIcon,
   Close as CloseIcon,
+  MusicNote,
+  Recycling,
 } from "@mui/icons-material"
 import Link from "next/link"
 
@@ -290,7 +273,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   CalendarTodayIcon: <CalendarTodayIcon />,
   DescriptionIcon: <DescriptionIcon />,
   FormatListNumberedIcon: <FormatListNumberedIcon />,
-  FormatListBulletedIcon: <FormatListBulletedIcon />,
+  FormatListBulletedIcon: <FormatListBulleted />,
   CheckBoxIcon: <CheckBoxIcon />,
   RadioButtonCheckedIcon: <RadioButtonCheckedIcon />,
   ShortTextIcon: <ShortTextIcon />,
@@ -299,11 +282,11 @@ const categoryIcons: Record<string, React.ReactNode> = {
   CalculateIcon: <CalculateIcon />,
   LanguageIcon: <LanguageIcon />,
   SportsBasketballIcon: <SportsBasketballIcon />,
-  MusicNoteIcon: <MusicNoteIcon />,
+  MusicNoteIcon: <MusicNote />,
   LocalLibraryIcon: <LocalLibraryIcon />,
   BiotechIcon: <BiotechIcon />,
   ArchitectureIcon: <ArchitectureIconIcon />,
-  EcoIcon: <EcoIcon />,
+  EcoIcon: <Recycling />,
   HealingIcon: <HealingIcon />,
   GavelIcon: <GavelIcon />,
   EngineeringIcon: <EngineeringIcon />,
@@ -313,11 +296,11 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 export default function ExamCategoryPage() {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-  const isTablet = useMediaQuery(theme.breakpoints.down("lg"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  // const isTablet = useMediaQuery(theme.breakpoints.down("lg"))
 
   // State for drawer
-  const [drawerOpen, setDrawerOpen] = useState(!isMobile)
+
 
   // State for active step in stepper
   const [activeStep, setActiveStep] = useState(0)
@@ -340,7 +323,6 @@ export default function ExamCategoryPage() {
   })
 
   // State for loading
-  const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
 
   // State for snackbar
@@ -359,17 +341,12 @@ export default function ExamCategoryPage() {
   // State for discard dialog
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false)
 
-  // State for profile menu
-  const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null)
+
 
   // State for advanced options
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false)
 
-  // State for color picker
-  const [colorPickerOpen, setColorPickerOpen] = useState(false)
 
-  // State for icon picker
-  const [iconPickerOpen, setIconPickerOpen] = useState(false)
 
   // State for design mode
   const [designMode, setDesignMode] = useState<"basic" | "advanced">("basic")
@@ -453,18 +430,12 @@ export default function ExamCategoryPage() {
     setFormData({
       ...formData,
       ...template,
+      difficultyLevel: template.difficultyLevel as "easy" | "medium" | "hard" | "mixed",
     })
     setTemplateDialogOpen(false)
   }
 
-  // Handle profile menu
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setProfileMenu(event.currentTarget)
-  }
 
-  const handleProfileMenuClose = () => {
-    setProfileMenu(null)
-  }
 
   // Calculate pass percentage
   const passPercentage =
@@ -501,13 +472,13 @@ export default function ExamCategoryPage() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-  
+
 
       {/* Main content */}
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", bgcolor: "#f8faff" }}>
-   
 
-      
+
+
         {/* Main Content */}
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4, flexGrow: 1, overflow: "auto" }}>
           {/* Breadcrumbs */}
@@ -883,7 +854,7 @@ export default function ExamCategoryPage() {
                                       <Chip
                                         key={option}
                                         label={option}
-                                        {...getTagProps({ index })}
+                                        onDelete={getTagProps({ index }).onDelete}
                                         sx={{ bgcolor: `${theme.palette.primary.main}15` }}
                                       />
                                     ))
@@ -913,8 +884,8 @@ export default function ExamCategoryPage() {
                                       <Chip
                                         key={option}
                                         label={option}
-                                        {...getTagProps({ index })}
-                                        sx={{ bgcolor: `${theme.palette.secondary.main}15` }}
+                                        onDelete={getTagProps({ index }).onDelete}
+                                        sx={{ bgcolor: `${theme.palette.primary.main}15` }}
                                       />
                                     ))
                                   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
@@ -284,8 +285,8 @@ const statsData = [
 
 export default function ExamCategoriesPage() {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  // const isTablet = useMediaQuery(theme.breakpoints.down("md"))
 
   // State for view mode
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
@@ -297,7 +298,7 @@ export default function ExamCategoriesPage() {
   const [searchQuery, setSearchQuery] = useState("")
 
   // State for menu
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null) 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   // State for refresh animation

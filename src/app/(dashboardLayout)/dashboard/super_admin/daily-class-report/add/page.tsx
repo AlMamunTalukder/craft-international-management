@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import {
   Box,
@@ -13,10 +13,7 @@ import {
   MenuItem,
   FormControl,
   Select,
-  AppBar,
-  Toolbar,
   IconButton,
-  Avatar,
   Breadcrumbs,
   Link as MuiLink,
   Table,
@@ -28,7 +25,6 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  useTheme,
   Container,
   Divider,
   type SelectChangeEvent,
@@ -38,17 +34,11 @@ import {
   CardContent,
   Tooltip,
   Chip,
-  Badge,
   Fade,
   Zoom,
   LinearProgress,
 } from "@mui/material"
 import {
-  School as SchoolIcon,
-  Settings as SettingsIcon,
-  Notifications as NotificationsIcon,
-  Help as HelpIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon,
   Home as HomeIcon,
   NavigateNext as NavigateNextIcon,
   Print as PrintIcon,
@@ -74,7 +64,6 @@ type ReportRow = {
 }
 
 export default function BengaliDailyClassReport() {
-  const theme = useTheme()
   const [loading, setLoading] = useState(false)
   const [teacherName, setTeacherName] = useState("")
   const [date, setDate] = useState("")

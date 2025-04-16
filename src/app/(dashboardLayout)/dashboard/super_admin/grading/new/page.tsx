@@ -10,11 +10,6 @@ import {
   TextField,
   Button,
   Paper,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Avatar,
-  Badge,
   Divider,
   Card,
   CardContent,
@@ -37,22 +32,15 @@ import {
   DialogActions,
   Menu,
   MenuItem,
-  Drawer,
-  List,
   ListItemIcon,
   ListItemText,
-  ListItemButton,
   Collapse,
-  useMediaQuery,
 } from "@mui/material"
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
   Save as SaveIcon,
-  Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  School as SchoolIcon,
-  Notifications as NotificationsIcon,
+
   Info as InfoIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
@@ -62,7 +50,7 @@ import {
   History as HistoryIcon,
   Tune as TuneIcon,
   BarChart as BarChartIcon,
-  Help as HelpIcon,
+ 
   Lightbulb as LightbulbIcon,
   Check as CheckIcon,
   Edit as EditIcon,
@@ -70,7 +58,7 @@ import {
   Download as DownloadIcon,
   Upload as UploadIcon,
   Refresh as RefreshIcon,
-  Search as SearchIcon,
+ 
   Person as PersonIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material"
@@ -87,10 +75,10 @@ interface GradeEntry {
 
 export default function GradingSystem() {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
-  // State for drawer
-  const [drawerOpen, setDrawerOpen] = useState(!isMobile)
+
+
 
   // State for tabs
   const [tabValue, setTabValue] = useState(0)
@@ -311,10 +299,8 @@ export default function GradingSystem() {
     })
   }
 
-  // Handle profile menu
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setProfileMenu(event.currentTarget)
-  }
+
+ 
 
   const handleProfileMenuClose = () => {
     setProfileMenu(null)
@@ -411,7 +397,7 @@ export default function GradingSystem() {
                     Advanced Grading System
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>
-                    Configure your institution's grading criteria with precision
+                    Configure your institution&apos;s grading criteria with precision
                   </Typography>
                 </Box>
               </Box>
