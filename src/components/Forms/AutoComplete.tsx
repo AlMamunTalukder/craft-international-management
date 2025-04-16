@@ -20,6 +20,7 @@ type TStateProps = {
   size?: "small" | "medium";
   multiple?: boolean;
   freeSolo?: boolean;
+  margin?: "none" | "normal" | "dense";
   defaultValue?: string[] | Option[];
   placeholder?: string;
 };
@@ -31,10 +32,11 @@ const CraftAutoComplete = ({
   sx,
   required,
   options,
-  // size = "small",
+  margin = "normal",
   multiple = true,
   freeSolo = true,
   defaultValue = [],
+  
   placeholder = "Select options",
 }: TStateProps) => {
   const { control } = useFormContext();
@@ -83,6 +85,7 @@ const CraftAutoComplete = ({
               placeholder={placeholder}
               fullWidth={fullWidth}
               required={required}
+              margin={margin}
               error={!!error}
               helperText={error?.message}
               variant="outlined"

@@ -2,14 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import {
   Box,
   Container,
   Typography,
-  TextField,
   Button,
   Paper,
   Grid,
@@ -22,45 +19,36 @@ import {
   Menu,
   MenuItem,
   Divider,
-  InputAdornment,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  useMediaQuery,
   Skeleton,
   Fade,
   createTheme,
   ThemeProvider,
   Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
 } from "@mui/material"
 import {
   Search as SearchIcon,
-  FilterList as FilterListIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
-  Download as DownloadIcon,
-  Print as PrintIcon,
-  ArrowBack,
   Add,
   Save,
 } from "@mui/icons-material"
 import { Roboto } from "next/font/google"
-import Link from "next/link"
 import TodayLesson from "./_components/TodayLesson"
 import TodayTask from "./_components/TodayTask"
 import CraftForm from "@/components/Forms/Form"
-import CraftInput from "@/components/Forms/Input"
 import CraftDatePicker from "@/components/Forms/DatePicker"
 import CraftAutoComplete from "@/components/Forms/AutoComplete"
 import CraftSelect from "@/components/Forms/Select"
 import CraftTextArea from "@/components/Forms/TextArea"
-import CraftTagsInput from "@/components/Forms/TagsInput"
+import { classHour, className, subjectName, teacherName } from "@/options"
+import CraftIntAutoComplete from "@/components/Forms/CruftAutocomplete"
+import CraftSelectWithSearch from "@/components/Forms/CraftSelectWithSearch "
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -185,20 +173,12 @@ const customTheme = createTheme({
 
 // Sample data for students
 const generateStudentsData = () => {
-  const firstNames = [
-    "Mohammad", "Abdul", "Fatima", "Aisha", "Yusuf",
-    "Ibrahim", "Zainab", "Hassan", "Amina", "Ali"
-  ]
-  const lastNames = [
-    "Ahmed", "Khan", "Rahman", "Islam", "Hossain",
-    "Chowdhury", "Ali", "Siddique", "Uddin", "Akter"
-  ]
+  const firstNames = ["Mohammad", "Abdul", "Fatima", "Aisha", "Yusuf", "Ibrahim", "Zainab", "Hassan", "Amina", "Ali"]
+  const lastNames = ["Ahmed", "Khan", "Rahman", "Islam", "Hossain", "Chowdhury", "Ali", "Siddique", "Uddin", "Akter"]
   const classes = ["One", "Two", "Three", "Four", "Five"]
   const batches = ["Morning", "Day", "Evening"]
   const days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-  const teachers = [
-    "Mr. Rahman", "Ms. Akter", "Mr. Khan", "Ms. Begum", "Mr. Hossain"
-  ]
+  const teachers = ["Mr. Rahman", "Ms. Akter", "Mr. Khan", "Ms. Begum", "Mr. Hossain"]
 
   return Array.from({ length: 50 }, (_, i) => ({
     id: i + 1,
@@ -210,7 +190,7 @@ const generateStudentsData = () => {
     day: days[Math.floor(Math.random() * days.length)],
     dairyFillUp: true, // Default checked
     taskStatus: "Completed",
-    handwriting: "Good"
+    handwriting: "Good",
   }))
 }
 
@@ -225,10 +205,12 @@ export default function ClassesListPage() {
     batch: "",
     teacher: "",
     date: "",
-    day: ""
+    day: "",
   })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  // const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedBrand, setSelectedBrand] = useState("")
+  const [filteredSubjects, setFilteredVehicles] = useState<any[]>([])
+
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -254,8 +236,7 @@ export default function ClassesListPage() {
   }, [refreshKey])
 
   const handleSubmit = () => {
-    console.log()
-
+    console.log("Form submitted")
   }
 
   const handleMenuClose = () => {
@@ -278,34 +259,43 @@ export default function ClassesListPage() {
   }
 
   const handleCheckboxChange = (id: number) => {
-    setStudents(students.map(student =>
-      student.id === id ? { ...student, dairyFillUp: !student.dairyFillUp } : student
-    ))
+    setStudents(
+      students.map((student) => (student.id === id ? { ...student, dairyFillUp: !student.dairyFillUp } : student)),
+    )
   }
 
   const handleTaskStatusChange = (id: number, value: string) => {
-    setStudents(students.map(student =>
-      student.id === id ? { ...student, taskStatus: value } : student
-    ))
+    setStudents(students.map((student) => (student.id === id ? { ...student, taskStatus: value } : student)))
   }
 
   const handleHandwritingChange = (id: number, value: string) => {
-    setStudents(students.map(student =>
-      student.id === id ? { ...student, handwriting: value } : student
-    ))
+    setStudents(students.map((student) => (student.id === id ? { ...student, handwriting: value } : student)))
   }
 
-  const filteredStudents = students
-    .filter(
-      (student) =>
-        (searchTerm === "" ||
-          student.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filters.class === "" || student.class === filters.class) &&
-        (filters.batch === "" || student.batch === filters.batch) &&
-        (filters.teacher === "" || student.teacher === filters.teacher) &&
-        (filters.day === "" || student.day === filters.day)
-    )
+  const filteredStudents = students.filter(
+    (student) =>
+      (searchTerm === "" || student.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (filters.class === "" || student.class === filters.class) &&
+      (filters.batch === "" || student.batch === filters.batch) &&
+      (filters.teacher === "" || student.teacher === filters.teacher) &&
+      (filters.day === "" || student.day === filters.day),
+  )
+  const sortedVehicleName = subjectName.sort((a, b) => {
+    if (a.value < b.value) return -1
+    if (a.value > b.value) return 1
+    return 0
+  })
 
+  const handleClassName = (event: any, newValue: any) => {
+    setSelectedBrand(newValue)
+
+    // Filter and sort the vehicles
+    const filtered = sortedVehicleName
+      ?.filter((vehicle: any) => vehicle.label?.toLowerCase().includes(newValue?.toLowerCase()))
+      .sort((a: any, b: any) => a.label.localeCompare(b.label))
+
+    setFilteredVehicles(filtered)
+  }
   const paginatedStudents = filteredStudents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   return (
@@ -323,7 +313,7 @@ export default function ClassesListPage() {
                     mb: 3,
                     flexWrap: "wrap",
                     gap: 2,
-                    paddingTop: 2
+                    paddingTop: 2,
                   }}
                 >
                   <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
@@ -356,7 +346,7 @@ export default function ClassesListPage() {
                       }}
                     >
                       {/* Add Home Task  */}
-                      বাড়ির কাজ
+                      বাড়ির কাজ
                     </Button>
                     <Button
                       variant="contained"
@@ -379,42 +369,61 @@ export default function ClassesListPage() {
                   <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
                     <CraftForm onSubmit={handleSubmit}>
                       <Grid container spacing={2} alignItems="center" gap={3}>
-                        <Grid container spacing={2}  >
+                        <Grid container spacing={2}>
                           {/* Teacher Name */}
                           <Grid item xs={12} md={4}>
-                            <CraftInput
+
+                            <CraftSelectWithSearch
                               name="teacher"
                               label="শিক্ষকের নাম"
                               placeholder="শিক্ষকের নাম লিখুন"
-                              fullWidth
-                              rows={2} />
+                              options={teacherName}
+                            />
+
                           </Grid>
 
                           <Grid item xs={12} md={2}>
-                            <CraftInput
-                              name="class"
-                              label="শ্রেণী"
-                              placeholder="শ্রেণীর নাম লিখুন"
-                              fullWidth
-                              rows={2} />
+                            <CraftForm onSubmit={handleSubmit}>
+                              <CraftIntAutoComplete
+                                name="class"
+                                label="শ্রেণীর নাম লিখুন"
+                                fullWidth
+                                freeSolo
+                                multiple={false}
+                                // options={className} 
+                                options={className.map((option) => option.label)}
+                                onInputChange={(event, newValue) => { }}
+                                onChange={handleClassName}
+                              />
+
+                            </CraftForm>
                           </Grid>
                           <Grid item xs={12} md={3}>
-                            <CraftInput
-                              name="subject"
-                              label="বিষয়"
-                              fullWidth
-                              placeholder="বিষয়ের নাম লিখুন"
-                              rows={2} />
+                            <CraftForm onSubmit={handleSubmit}>
+                              <CraftIntAutoComplete
+                                name="subject"
+                                label="বিষয়ের নাম লিখুন"
+                                fullWidth
+                                freeSolo
+                                multiple={false}
+                                options={filteredSubjects.map((option) => option.value)}
+                                onInputChange={(event, newValue) => { }}
+                              />
+                            </CraftForm>
                           </Grid>
-
+                          <Grid item xs={12} md={1}>
+                            <CraftSelect
+                              name="hour"
+                              label="ঘন্টা"
+                              items={classHour}
+                              sx={{ minWidth: 100 }}
+                            />
+                          </Grid>
                           {/* Date */}
                           <Grid item xs={12} md={2}>
-                            <CraftDatePicker
-                              name="date"
-                              label="তারিখ" />
+                            <CraftDatePicker name="date" label="তারিখ" />
                           </Grid>
                         </Grid>
-
                       </Grid>
                     </CraftForm>
                   </Box>
@@ -441,16 +450,15 @@ export default function ClassesListPage() {
                         <Table sx={{ minWidth: 650 }}>
                           <TableHead>
                             <TableRow>
-                              <TableCell >ছাত্রের নাম</TableCell>
-                              <TableCell >পাঠ মূল্যায়ন</TableCell>
-                              <TableCell >হাতের লিখা</TableCell>
-                              <TableCell >উপস্থিতি</TableCell>
+                              <TableCell>ছাত্রের নাম</TableCell>
+                              <TableCell>পাঠ মূল্যায়ন</TableCell>
+                              <TableCell>হাতের লিখা</TableCell>
+                              <TableCell>উপস্থিতি</TableCell>
                               <TableCell align="center">অভিভাবকের স্বাক্ষর</TableCell>
                               <TableCell align="center">মন্তব্য</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-
                             {filteredStudents.length === 0 && (
                               <TableRow>
                                 <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
@@ -469,7 +477,6 @@ export default function ClassesListPage() {
 
                             {paginatedStudents.length > 0 ? (
                               paginatedStudents.map((student) => (
-
                                 <TableRow key={student.id} sx={{ transition: "all 0.2s" }}>
                                   <TableCell component="th" scope="row">
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
@@ -478,49 +485,32 @@ export default function ClassesListPage() {
                                   </TableCell>
 
                                   <TableCell align="center">
-                                    <CraftForm onSubmit={handleSubmit} >
-                                      <CraftSelect name="read" items={["পড়া শিখেছে", "আংশিক শিখেছে", "পড়া শিখেনি"]} sx={{ minWidth: 160 }} />
+                                    <CraftForm onSubmit={handleSubmit}>
+                                      <CraftSelect
+                                        name="read"
+                                        items={["পড়া শিখেছে", "আংশিক শিখেছে", "পড়া শিখেনি"]}
+                                        sx={{ minWidth: 160 }}
+                                      />
                                     </CraftForm>
-
-
-                                    {/* <TextField
-                                        size="small"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={student.taskStatus}
-                                        onChange={(e) => handleTaskStatusChange(student.id, e.target.value)}
-                                        select
-                                        SelectProps={{ native: true }}
-                                      >
-                                        <option value="Completed">পড়া শিখেছে</option>
-                                        <option value="Pending">আংশিক শিখেছে</option>
-                                        <option value="Not Started">পড়া শিখেনি</option>
-                                      </TextField> */}
                                   </TableCell>
 
                                   <TableCell align="center">
-                                    <CraftForm onSubmit={handleSubmit} >
-                                      <CraftSelect name="handwriting" items={["লিখেছে", "আংশিক লিখেছে", "লিখেনি"]} sx={{ minWidth: 160 }} />
+                                    <CraftForm onSubmit={handleSubmit}>
+                                      <CraftSelect
+                                        name="handwriting"
+                                        items={["লিখেছে", "আংশিক লিখেছে", "লিখেনি"]}
+                                        sx={{ minWidth: 160 }}
+                                      />
                                     </CraftForm>
                                   </TableCell>
                                   <TableCell align="center">
-                                    <CraftForm onSubmit={handleSubmit} >
-                                      <CraftSelect name="handwriting" items={["উপস্থিত", "অনুপস্থিত", "ছুটি"]} sx={{ minWidth: 160 }} />
+                                    <CraftForm onSubmit={handleSubmit}>
+                                      <CraftSelect
+                                        name="attendance"
+                                        items={["উপস্থিত", "অনুপস্থিত", "ছুটি"]}
+                                        sx={{ minWidth: 160 }}
+                                      />
                                     </CraftForm>
-
-                                    {/* <TextField
-                                        size="small"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={student.handwriting}
-                                        onChange={(e) => handleHandwritingChange(student.id, e.target.value)}
-                                        select
-                                        SelectProps={{ native: true }}
-                                      >
-                                        <option value="present"> উপস্থিত</option>
-                                        <option value="absent"> অনুপস্থিত</option>
-                                        <option value="leave"> ছুটি</option>
-                                      </TextField> */}
                                   </TableCell>
                                   <TableCell align="center">
                                     <Checkbox
@@ -530,26 +520,12 @@ export default function ClassesListPage() {
                                     />
                                   </TableCell>
                                   <TableCell>
-                                    <CraftForm onSubmit={handleSubmit} >
-                                      {/* <CraftInput name="comments" label="মন্তব্য"/> */}
-                                      <CraftTextArea name="comments" label="মন্তব্য" placeholder="মন্তব্য" minRows={1}/>
-
+                                    <CraftForm onSubmit={handleSubmit}>
+                                      <CraftTextArea name="comments" label="মন্তব্য" placeholder="মন্তব্য" minRows={1} />
                                     </CraftForm>
-
-                                    {/* <TextField
-                                        size="small"
-                                        variant="outlined"
-                                        fullWidth
-                                        multiline
-                                        rows={2}
-                                        placeholder="Enter comments..."
-                                      /> */}
                                   </TableCell>
-
                                 </TableRow>
-
                               ))
-
                             ) : (
                               <TableRow>
                                 <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
@@ -625,7 +601,8 @@ export default function ClassesListPage() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete the student &#34;{selectedStudent?.name}&#34;? This action cannot be undone.
+              Are you sure you want to delete the student &#34;{selectedStudent?.name}&#34;? This action cannot be
+              undone.
             </DialogContentText>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>

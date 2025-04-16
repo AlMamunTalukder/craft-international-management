@@ -21,7 +21,7 @@ const CraftSelect = ({
   items,
   name,
   label,
-  size = "small",
+  size = "medium",
   margin = "normal",
   required,
   fullWidth = true,
