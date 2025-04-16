@@ -12,7 +12,7 @@ type TTagsInputProps = {
   options?: string[];
 };
 
-const GarageTagsInput = ({
+const CraftTagsInput = ({
   name,
   label,
   placeholder = "Type and press enter",
@@ -64,4 +64,4 @@ const GarageTagsInput = ({
   );
 };
 
-export default GarageTagsInput;
+export default CraftTagsInput;

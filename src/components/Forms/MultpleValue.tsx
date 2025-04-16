@@ -18,7 +18,7 @@ type TAutocompleteProps = {
     defaultValue?: { title: string }[];
 };
 
-export const GarageMultipleValue = ({
+export const CraftMultipleValue = ({
     name,
     label,
     options,

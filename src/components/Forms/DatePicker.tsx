@@ -16,7 +16,7 @@ interface IDatePicker {
   disablePast?: boolean;
 }
 
-const GarageDatePicker = ({
+const CraftDatePicker = ({
   name,
   size = "medium",
   label,
@@ -64,4 +64,4 @@ const GarageDatePicker = ({
   );
 };
 
-export default GarageDatePicker;
+export default CraftDatePicker;

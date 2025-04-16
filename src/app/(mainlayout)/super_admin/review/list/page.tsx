@@ -16,7 +16,7 @@ import Link from "next/link";
 import * as React from "react";
 import award from "../../../../../assets/img/topBar/bg-3.jpg";
 import CraftForm from "@/components/Forms/Form";
-import GarageSelect from "@/components/Forms/Select";
+import CraftSelect from "@/components/Forms/Select";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
 
 const events = [
@@ -55,7 +55,7 @@ const Page = () => {
         <CraftForm onSubmit={handleSubmit}>
           <Grid container spacing={1}>
             <Grid item lg={2}>
-              <GarageSelect
+              <CraftSelect
                 items={["one", "two"]}
                 fullWidth
                 name="branch"
@@ -63,7 +63,7 @@ const Page = () => {
               />
             </Grid>
             <Grid item lg={2}>
-              <GarageSelect
+              <CraftSelect
                 items={["one", "two"]}
                 fullWidth
                 name="shift"

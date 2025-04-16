@@ -18,7 +18,7 @@ type TTextareaProps = {
   fullWidth?: boolean;
 };
 
-const GarageTextArea = ({
+const CraftTextArea = ({
   name,
   label,
   placeholder,
@@ -77,4 +77,4 @@ const GarageTextArea = ({
   );
 };
 
-export default GarageTextArea;
+export default CraftTextArea;

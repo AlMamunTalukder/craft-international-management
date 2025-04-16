@@ -53,6 +53,10 @@ import { Roboto } from "next/font/google"
 import Link from "next/link"
 import TodayLesson from "./_components/TodayLesson"
 import TodayTask from "./_components/TodayTask"
+import CraftForm from "@/components/Forms/Form"
+import CraftInput from "@/components/Forms/Input"
+import CraftDatePicker from "@/components/Forms/DatePicker"
+import CraftAutoComplete from "@/components/Forms/AutoComplete"
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -220,7 +224,7 @@ export default function ClassesListPage() {
     day: ""
   })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
+  // const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -228,13 +232,13 @@ export default function ClassesListPage() {
   const [openTask, setTaskOpen] = useState(false)
   const handleTaskOpen = () => setTaskOpen(true)
   const handleTaskClose = () => setTaskOpen(false)
- 
+
   const [openLesson, setLessonOpen] = useState(false)
   const handleLessonOpen = () => setLessonOpen(true)
   const handleLessonClose = () => setLessonOpen(false)
-  
+
   const theme = customTheme
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   useEffect(() => {
     setLoading(true)
@@ -245,37 +249,42 @@ export default function ClassesListPage() {
     }, 1000)
   }, [refreshKey])
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value)
-    setPage(0)
+  const handleSubmit = () => {
+    console.log()
+
   }
 
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilterAnchorEl(event.currentTarget)
-  }
+  // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchTerm(event.target.value)
+  //   setPage(0)
+  // }
 
-  const handleFilterClose = () => {
-    setFilterAnchorEl(null)
-  }
+  // const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setFilterAnchorEl(event.currentTarget)
+  // }
 
-  const handleFilterChange = (name: string, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }))
-    setPage(0)
-  }
+  // const handleFilterClose = () => {
+  //   setFilterAnchorEl(null)
+  // }
 
-  const resetFilters = () => {
-    setFilters({
-      class: "",
-      batch: "",
-      teacher: "",
-      date: "",
-      day: ""
-    })
-    setPage(0)
-  }
+  // const handleFilterChange = (name: string, value: string) => {
+  //   setFilters(prev => ({
+  //     ...prev,
+  //     [name]: value
+  //   }))
+  //   setPage(0)
+  // }
+
+  // const resetFilters = () => {
+  //   setFilters({
+  //     class: "",
+  //     batch: "",
+  //     teacher: "",
+  //     date: "",
+  //     day: ""
+  //   })
+  //   setPage(0)
+  // }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
@@ -329,324 +338,299 @@ export default function ClassesListPage() {
 
   return (
     <>
-    <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
-        <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
-          <Fade in={true} timeout={800}>
-            <Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 3,
-                  flexWrap: "wrap",
-                  gap: 2,
-                  paddingTop: 2
-                }}
-              >
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  + Add New Report
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<Add />}                  
-                    onClick={handleTaskOpen}
-                    sx={{
-                      bgcolor:"",
-                      borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-                    }}
-                  >
-                    Add Today Task (আজকের পাঠ)
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<Add />}                
-                    onClick={handleLessonOpen}
-                    sx={{
-                      bgcolor:"#3792de",
-                      borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-                    }}
-                  >
-                    Add Home Task (বাড়ির কাজ)
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<ArrowBack />}
-                    component={Link}
-                    href="/dashboard/super_admin/classes/report"
-                    sx={{
-                      bgcolor:"red",
-                      borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-                    }}
-                  >
-                    Back
-                  </Button>
-                </Box>
-              </Box>
-
-              <Paper elevation={0} sx={{ mb: 4, overflow: "hidden" }}>
-                <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
-                  <Grid container spacing={2} alignItems="center" gap={3}>
-                    <Grid container spacing={2}  >
-                      {/* Teacher Name */}
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          variant="outlined"
-                          label="শিক্ষকের নাম"
-                          fullWidth
-
-                          rows={2}
-                          placeholder="শিক্ষকের নাম লিখুন"
-                        />
-                      </Grid>
-                      {/* Class */}
-                      <Grid item xs={12} md={3}>
-                        <TextField
-
-                          variant="outlined"
-                          label="শ্রেণী"
-
-                          rows={2}
-                          fullWidth
-                          placeholder="শ্রেণীর নাম লিখুন"
-                        />
-                      </Grid>
-
-                      {/* Branch */}
-                      <Grid item xs={12} md={2}>
-                        <TextField
-
-                          variant="outlined"
-                          label="শাখা"
-                          rows={2}
-
-                          fullWidth
-                          placeholder="শাখার নাম লিখুন"
-                        />
-                      </Grid>
-
-                      {/* Date */}
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          variant="outlined"
-                          label="তারিখ"
-                          type="date"
-                          fullWidth
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      </Grid>
-
-                     
-
-                     
-                    </Grid>
-                    <Grid container  sx={{justifyContent:"space-between"}}>
-                      
-                      {/* Subject */}
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          variant="outlined"
-                          label="বিষয়"
-                          fullWidth
-                          placeholder="বিষয়ের নাম লিখুন"
-                          sx={{ p: 0 }}
-                        />
-                      </Grid>
-                    </Grid>                  
-                  </Grid>
-                </Box>
-
-                {loading ? (
-                  <Box sx={{ p: 2 }}>
-                    {Array.from(new Array(5)).map((_, index) => (
-                      <Box key={index} sx={{ display: "flex", py: 2, px: 2, alignItems: "center" }}>
-                        <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
-                        <Box sx={{ width: "100%" }}>
-                          <Skeleton variant="text" width="40%" height={30} />
-                          <Box sx={{ display: "flex", mt: 1 }}>
-                            <Skeleton variant="text" width="20%" sx={{ mr: 2 }} />
-                            <Skeleton variant="text" width="30%" />
-                          </Box>
-                        </Box>
-                        <Skeleton variant="rectangular" width={100} height={36} sx={{ borderRadius: 1 }} />
-                      </Box>
-                    ))}
+      <ThemeProvider theme={theme}>
+        <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
+          <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
+            <Fade in={true} timeout={800}>
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 3,
+                    flexWrap: "wrap",
+                    gap: 2,
+                    paddingTop: 2
+                  }}
+                >
+                  <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
+                    + Add New Report
+                  </Typography>
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Add />}
+                      onClick={handleTaskOpen}
+                      sx={{
+                        bgcolor: "",
+                        borderRadius: 2,
+                        boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                      }}
+                    >
+                      Add Today Task (আজকের পাঠ)
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Add />}
+                      onClick={handleLessonOpen}
+                      sx={{
+                        bgcolor: "#3792de",
+                        borderRadius: 2,
+                        boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                      }}
+                    >
+                      Add Home Task (বাড়ির কাজ)
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<ArrowBack />}
+                      component={Link}
+                      href="/dashboard/super_admin/classes/report"
+                      sx={{
+                        bgcolor: "red",
+                        borderRadius: 2,
+                        boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
+                      }}
+                    >
+                      Back
+                    </Button>
                   </Box>
-                ) : (
-                  <>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 650 }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell >ছাত্রের নাম</TableCell>                         
-                            <TableCell >পাঠ মূল্যায়ন</TableCell>
-                            <TableCell >হাতের লিখা</TableCell>
-                            <TableCell align="center">অভিভাবকের স্বাক্ষর</TableCell>
-                            <TableCell align="center">মন্তব্য</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {paginatedStudents.length > 0 ? (
-                            paginatedStudents.map((student) => (
-                              <TableRow key={student.id} sx={{ transition: "all 0.2s" }}>
-                                <TableCell component="th" scope="row">
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                    {student.name}
-                                  </Typography>
-                                </TableCell>
-                        
-                                <TableCell align="center">
-                                  <TextField
-                                    size="small"
-                                    variant="outlined"
-                                    fullWidth
-                                    value={student.taskStatus}
-                                    onChange={(e) => handleTaskStatusChange(student.id, e.target.value)}
-                                    select
-                                    SelectProps={{ native: true }}
-                                  >
-                                    <option value="Completed">পড়া শিখেছে</option>
-                                    <option value="Pending">আংশিক শিখেছে</option>
-                                    <option value="Not Started">পড়া শিখেনি</option>
-                                  </TextField>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <TextField
-                                    size="small"
-                                    variant="outlined"
-                                    fullWidth
-                                    value={student.handwriting}
-                                    onChange={(e) => handleHandwritingChange(student.id, e.target.value)}
-                                    select
-                                    SelectProps={{ native: true }}
-                                  >
-                                    <option value="Excellent">লিখেছে</option>
-                                    <option value="Good">আংশিক লিখেছে</option>
-                                    <option value="Average">লিখেনি</option>
-                                  </TextField>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Checkbox
-                                    color="primary"
-                                    checked={student.dairyFillUp}
-                                    onChange={() => handleCheckboxChange(student.id)}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  <TextField
-                                    size="small"
-                                    variant="outlined"
-                                    fullWidth
-                                    multiline
-                                    rows={2}
-                                    placeholder="Enter comments..."
-                                  />
+                </Box>
+
+                <Paper elevation={0} sx={{ mb: 4, overflow: "hidden" }}>
+                  <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
+                    <CraftForm onSubmit={handleSubmit}>
+                      <Grid container spacing={2} alignItems="center" gap={3}>
+                        <Grid container spacing={2}  >
+
+                          {/* Teacher Name */}
+                          <Grid item xs={12} md={4}>
+                            <CraftInput
+                              name="teacher"
+                              label="শিক্ষকের নাম"
+                              placeholder="শিক্ষকের নাম লিখুন"
+                              fullWidth
+                              rows={2} />
+
+                          </Grid>
+
+                          <Grid item xs={12} md={2}>
+                            <CraftInput
+                              name="class"
+                              label="শ্রেণী"
+                              placeholder="শ্রেণীর নাম লিখুন"
+                              fullWidth
+                              rows={2} />
+
+                          </Grid>
+                          <Grid item xs={12} md={3}>
+                            <CraftInput
+                              name="subject"
+                              label="বিষয়"
+                              fullWidth
+                              placeholder="বিষয়ের নাম লিখুন"
+                              rows={2} />
+                          </Grid>
+
+                          {/* Date */}
+                          <Grid item xs={12} md={2}>
+                            <CraftDatePicker
+                              name="date"
+                              label="তারিখ" />
+                          </Grid>                          
+                        </Grid>
+
+                      </Grid>
+                    </CraftForm>
+                  </Box>
+
+                  {loading ? (
+                    <Box sx={{ p: 2 }}>
+                      {Array.from(new Array(5)).map((_, index) => (
+                        <Box key={index} sx={{ display: "flex", py: 2, px: 2, alignItems: "center" }}>
+                          <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
+                          <Box sx={{ width: "100%" }}>
+                            <Skeleton variant="text" width="40%" height={30} />
+                            <Box sx={{ display: "flex", mt: 1 }}>
+                              <Skeleton variant="text" width="20%" sx={{ mr: 2 }} />
+                              <Skeleton variant="text" width="30%" />
+                            </Box>
+                          </Box>
+                          <Skeleton variant="rectangular" width={100} height={36} sx={{ borderRadius: 1 }} />
+                        </Box>
+                      ))}
+                    </Box>
+                  ) : (
+                    <>
+                      <TableContainer>
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell >ছাত্রের নাম</TableCell>
+                              <TableCell >পাঠ মূল্যায়ন</TableCell>
+                              <TableCell >হাতের লিখা</TableCell>
+                              <TableCell align="center">অভিভাবকের স্বাক্ষর</TableCell>
+                              <TableCell align="center">মন্তব্য</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {paginatedStudents.length > 0 ? (
+                              paginatedStudents.map((student) => (
+                                <TableRow key={student.id} sx={{ transition: "all 0.2s" }}>
+                                  <TableCell component="th" scope="row">
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                                      {student.name}
+                                    </Typography>
+                                  </TableCell>
+
+                                  <TableCell align="center">
+                                    <TextField
+                                      size="small"
+                                      variant="outlined"
+                                      fullWidth
+                                      value={student.taskStatus}
+                                      onChange={(e) => handleTaskStatusChange(student.id, e.target.value)}
+                                      select
+                                      SelectProps={{ native: true }}
+                                    >
+                                      <option value="Completed">পড়া শিখেছে</option>
+                                      <option value="Pending">আংশিক শিখেছে</option>
+                                      <option value="Not Started">পড়া শিখেনি</option>
+                                    </TextField>
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <TextField
+                                      size="small"
+                                      variant="outlined"
+                                      fullWidth
+                                      value={student.handwriting}
+                                      onChange={(e) => handleHandwritingChange(student.id, e.target.value)}
+                                      select
+                                      SelectProps={{ native: true }}
+                                    >
+                                      <option value="Excellent">লিখেছে</option>
+                                      <option value="Good">আংশিক লিখেছে</option>
+                                      <option value="Average">লিখেনি</option>
+                                    </TextField>
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Checkbox
+                                      color="primary"
+                                      checked={student.dairyFillUp}
+                                      onChange={() => handleCheckboxChange(student.id)}
+                                    />
+                                  </TableCell>
+                                  <TableCell>
+                                    <TextField
+                                      size="small"
+                                      variant="outlined"
+                                      fullWidth
+                                      multiline
+                                      rows={2}
+                                      placeholder="Enter comments..."
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            ) : (
+                              <TableRow>
+                                <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
+                                  <Box sx={{ textAlign: "center" }}>
+                                    <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
+                                    <Typography variant="h6" gutterBottom>
+                                      No students found
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                      Try adjusting your search or filter to find what you&apos;re looking for.
+                                    </Typography>
+                                  </Box>
                                 </TableCell>
                               </TableRow>
-                            ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
-                                <Box sx={{ textAlign: "center" }}>
-                                  <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
-                                  <Typography variant="h6" gutterBottom>
-                                    No students found
-                                  </Typography>
-                                  <Typography variant="body2" color="text.secondary">
-                                    Try adjusting your search or filter to find what you&apos;re looking for.
-                                  </Typography>
-                                </Box>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                )}
-              </Paper>
-            </Box>
-          </Fade>
-        </Container>
-      </Box>
+                            )}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </>
+                  )}
+                </Paper>
+              </Box>
+            </Fade>
+          </Container>
+        </Box>
 
-      {/* Context Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        PaperProps={{
-          elevation: 3,
-          sx: {
-            mt: 1,
-            minWidth: 180,
-            borderRadius: 2,
-            overflow: "hidden",
-          },
-        }}
-      >
-        <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
-          <VisibilityIcon fontSize="small" sx={{ mr: 2, color: "info.main" }} />
-          View Details
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
-          <EditIcon fontSize="small" sx={{ mr: 2, color: "warning.main" }} />
-          Edit
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleDeleteClick} sx={{ py: 1.5, color: "error.main" }}>
-          <DeleteIcon fontSize="small" sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Menu>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={handleDeleteCancel}
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            width: "100%",
-            maxWidth: 480,
-          },
-        }}
-      >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-            Delete Student
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the student &#34;{selectedStudent?.name}&#34;? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button
-            onClick={handleDeleteCancel}
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "rgba(0, 0, 0, 0.12)" }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteConfirm} variant="contained" color="error" sx={{ ml: 2 }}>
+        {/* Context Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          PaperProps={{
+            elevation: 3,
+            sx: {
+              mt: 1,
+              minWidth: 180,
+              borderRadius: 2,
+              overflow: "hidden",
+            },
+          }}
+        >
+          <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
+            <VisibilityIcon fontSize="small" sx={{ mr: 2, color: "info.main" }} />
+            View Details
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
+            <EditIcon fontSize="small" sx={{ mr: 2, color: "warning.main" }} />
+            Edit
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleDeleteClick} sx={{ py: 1.5, color: "error.main" }}>
+            <DeleteIcon fontSize="small" sx={{ mr: 2 }} />
             Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </ThemeProvider>
-    {openTask && <TodayTask open={openTask} setOpen={handleTaskClose} />}
-    {openLesson && <TodayLesson open={openLesson} setOpen={handleLessonClose} />}
+          </MenuItem>
+        </Menu>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={handleDeleteCancel}
+          PaperProps={{
+            sx: {
+              borderRadius: 3,
+              width: "100%",
+              maxWidth: 480,
+            },
+          }}
+        >
+          <DialogTitle sx={{ pb: 1 }}>
+            <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+              Delete Student
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete the student &#34;{selectedStudent?.name}&#34;? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 3 }}>
+            <Button
+              onClick={handleDeleteCancel}
+              variant="outlined"
+              color="inherit"
+              sx={{ borderColor: "rgba(0, 0, 0, 0.12)" }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleDeleteConfirm} variant="contained" color="error" sx={{ ml: 2 }}>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ThemeProvider>
+      {openTask && <TodayTask open={openTask} setOpen={handleTaskClose} />}
+      {openLesson && <TodayLesson open={openLesson} setOpen={handleLessonClose} />}
 
     </>
   )

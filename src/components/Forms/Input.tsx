@@ -21,7 +21,7 @@ type TInputProps = {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
-const GarageInput = ({
+const CraftInput = ({
   name,
   label,
   size = "medium",
@@ -74,4 +74,4 @@ const GarageInput = ({
   );
 };
 
-export default GarageInput;
+export default CraftInput;

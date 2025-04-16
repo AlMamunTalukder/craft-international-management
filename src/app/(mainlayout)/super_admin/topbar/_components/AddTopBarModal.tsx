@@ -9,7 +9,7 @@ import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import GarageSelect from "@/components/Forms/Select";
+import CraftSelect from "@/components/Forms/Select";
 import { Upload, CheckCircle } from "@mui/icons-material"; // Import CheckCircle for the tick mark
 import topimg from "../../../../../assets/img/topBar/bg-3.jpg";
 
@@ -161,7 +161,7 @@ const AddTopBarModal = ({ open, setOpen }: TProps) => {
                     <h1>OR</h1>
                   </div>
                   <div className="w-[200px]">
-                    <GarageSelect
+                    <CraftSelect
                       name="folder"
                       items={["Top Bar", "About", "Contact"]}
                       label="Select from Folder"
