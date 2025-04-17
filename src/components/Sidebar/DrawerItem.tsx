@@ -1027,8 +1027,8 @@ export const navigationItems = [
     ),
     children: [
       {
-        path: "/dashboard/super_admin/stock/allimg",
-        title: "Teachers / Staffs",
+        path: "//dashboard/super_admin/teacher/",
+        title: "Teachers",
         icon: (
           <ColorfulIcon color="#DB4437">
             <People />

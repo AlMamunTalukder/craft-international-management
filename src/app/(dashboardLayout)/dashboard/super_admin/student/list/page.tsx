@@ -291,7 +291,7 @@ const StudentList = () => {
   }
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Paper elevation={0} sx={{ mb: 3, bgcolor: theme.palette.primary.main, color: "white", py: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           <School sx={{ mr: 1 }} />
