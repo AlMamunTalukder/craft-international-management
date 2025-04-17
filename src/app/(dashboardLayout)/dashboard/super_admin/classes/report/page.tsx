@@ -238,7 +238,6 @@ export default function ClassesListPage() {
   const theme = customTheme
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
-
   useEffect(() => {
     setLoading(true)
     // Simulate API call
@@ -310,7 +309,6 @@ export default function ClassesListPage() {
     setDeleteDialogOpen(false)
   }
 
-
   const filteredClasses = classes
     .filter(
       (classItem) =>
@@ -341,9 +339,7 @@ export default function ClassesListPage() {
       return order === "asc" ? aValue - bValue : bValue - aValue
     })
 
-
   const paginatedClasses = filteredClasses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
 
   const getStatusChipProps = (status: string) => {
     switch (status) {
@@ -376,20 +372,19 @@ export default function ClassesListPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius:2 }}>
-
-        <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius:2 }}>
+      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius: 2 }}>
+        <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius: 2 }}>
           <Fade in={true} timeout={800}>
             <Box>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",               
+                  alignItems: "center",
                   mb: 3,
                   flexWrap: "wrap",
                   gap: 2,
-                  paddingTop:2
+                  paddingTop: 2,
                 }}
               >
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
@@ -426,7 +421,7 @@ export default function ClassesListPage() {
                     <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth
-                        placeholder="Search Report by Name or Role..."
+                        placeholder="Search by Teacher, Student, Date, Subject, or Class..."
                         variant="outlined"
                         value={searchTerm}
                         onChange={handleSearchChange}
@@ -597,7 +592,7 @@ export default function ClassesListPage() {
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                           <TableRow>
-                          <TableCell>
+                            <TableCell>
                               <Box
                                 sx={{
                                   display: "flex",
@@ -643,7 +638,7 @@ export default function ClassesListPage() {
                                 )}
                               </Box>
                             </TableCell>
-                           
+
                             <TableCell>
                               <Box
                                 sx={{
@@ -655,7 +650,7 @@ export default function ClassesListPage() {
                                 }}
                                 onClick={() => handleSort("teacher")}
                               >
-                                Class	
+                                Class
                                 {orderBy === "teacher" && (
                                   <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
                                     {order === "asc" ? (
@@ -678,7 +673,7 @@ export default function ClassesListPage() {
                                 }}
                                 onClick={() => handleSort("students")}
                               >
-                                Subject	
+                                Subject
                                 {orderBy === "students" && (
                                   <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
                                     {order === "asc" ? (
@@ -701,7 +696,7 @@ export default function ClassesListPage() {
                                 }}
                                 onClick={() => handleSort("status")}
                               >
-                                Learned	
+                                Learned
                                 {orderBy === "status" && (
                                   <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
                                     {order === "asc" ? (
@@ -724,7 +719,7 @@ export default function ClassesListPage() {
                                 }}
                                 onClick={() => handleSort("createdAt")}
                               >
-                                Note	
+                                Note
                                 {orderBy === "createdAt" && (
                                   <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
                                     {order === "asc" ? (
@@ -736,11 +731,11 @@ export default function ClassesListPage() {
                                 )}
                               </Box>
                             </TableCell>
-                            <TableCell align="right">Handwriting	</TableCell>
-                            <TableCell align="right">Materials	</TableCell>
-                            <TableCell align="right">Diary	</TableCell>
-                            <TableCell align="right">Signature		</TableCell>
-                            <TableCell align="right">Date	</TableCell>
+                            <TableCell align="right">Handwriting </TableCell>
+                            <TableCell align="right">Materials </TableCell>
+                            <TableCell align="right">Diary </TableCell>
+                            <TableCell align="right">Signature </TableCell>
+                            <TableCell align="right">Date </TableCell>
                             <TableCell align="right">Actions</TableCell>
                           </TableRow>
                         </TableHead>
@@ -751,7 +746,6 @@ export default function ClassesListPage() {
 
                               return (
                                 <TableRow key={classItem.id} sx={{ transition: "all 0.2s" }}>
-                                 
                                   <TableCell>
                                     <Chip
                                       label={classItem.code}
@@ -769,7 +763,6 @@ export default function ClassesListPage() {
                                       {classItem.name}
                                     </Typography>
                                   </TableCell>
-
 
                                   <TableCell>
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -995,4 +988,3 @@ export default function ClassesListPage() {
     </ThemeProvider>
   )
 }
-
