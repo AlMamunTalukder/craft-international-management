@@ -4,7 +4,7 @@
 
 import type React from "react"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import {
   Avatar,
   Box,
@@ -700,7 +700,7 @@ export default function FeeCollectionListPage() {
   }
 
   // Filter collections based on tab, search term, and filters
-  const getFilteredCollectionsByTab = (collections: typeof feeCollections) => {
+  const getFilteredCollectionsByTab = useCallback((collections: typeof feeCollections) => {
     switch (tabValue) {
       case 0: // All
         return collections
@@ -715,11 +715,11 @@ export default function FeeCollectionListPage() {
       default:
         return collections
     }
-  }
-
+  }, [tabValue]); // tabValue is a dependency here
+  
   const filteredCollections = useMemo(() => {
     let filtered = getFilteredCollectionsByTab(feeCollections)
-
+  
     // Apply search term filter
     if (searchTerm) {
       filtered = filtered.filter(
@@ -730,19 +730,19 @@ export default function FeeCollectionListPage() {
           collection.className.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
-
+  
     // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter((collection) => collection.status.toLowerCase() === statusFilter.toLowerCase())
     }
-
+  
     // Apply payment method filter
     if (paymentMethodFilter !== "all") {
       filtered = filtered.filter(
         (collection) => collection.paymentMethod.toLowerCase() === paymentMethodFilter.toLowerCase(),
       )
     }
-
+  
     // Apply date range filter
     if (dateRange.startDate && dateRange.endDate) {
       const startDate = dateRange.startDate; 
@@ -752,9 +752,9 @@ export default function FeeCollectionListPage() {
         return collection.paymentDate >= startDate && collection.paymentDate <= endDate
       })
     }
-
+  
     return filtered
-  }, [feeCollections, tabValue, searchTerm, statusFilter, paymentMethodFilter, dateRange])
+  }, [getFilteredCollectionsByTab, searchTerm, statusFilter, paymentMethodFilter, dateRange])
 
   // Sort collections
   const sortedCollections = useMemo(() => {

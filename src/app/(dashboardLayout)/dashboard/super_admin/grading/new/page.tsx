@@ -309,18 +309,20 @@ export default function GradingSystem() {
   // Calculate preview data
   useEffect(() => {
     if (formData.enableAutoCalculation) {
-      const mark = previewData.marks
-      const matchingGrade = grades.find((grade) => mark >= grade.markRangeStart && mark <= grade.markRangeEnd)
-
+      const mark = previewData.marks;
+      const matchingGrade = grades.find(
+        (grade) => mark >= grade.markRangeStart && mark <= grade.markRangeEnd
+      );
+  
       if (matchingGrade) {
-        setPreviewData({
-          ...previewData,
+        setPreviewData((prev) => ({
+          ...prev,
           calculatedGrade: matchingGrade.letterGrade,
-          calculatedGradePoint: matchingGrade.gradePoint,
-        })
+          calculatedGradePoint: matchingGrade.gradePoint, 
+        }));
       }
     }
-  }, [grades, previewData.marks, formData.enableAutoCalculation])
+  }, [grades, previewData.marks, formData.enableAutoCalculation]);
 
   // Generate grade distribution data for chart
   const gradeDistributionData = grades.map((grade) => ({

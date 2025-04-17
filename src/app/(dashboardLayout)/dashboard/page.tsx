@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -50,7 +52,7 @@ import {
 import { useRouter } from "next/navigation"
 
 // Custom gradient background component
-const GradientBackground = ({ children, startColor, endColor, direction = "to right" }) => {
+const GradientBackground = ({ children, startColor, endColor, direction = "to right" }:any) => {
   return (
     <Box
       sx={{
@@ -75,7 +77,7 @@ const GradientBackground = ({ children, startColor, endColor, direction = "to ri
 }
 
 // Animated stat card component
-const StatCard = ({ icon, title, value, trend, trendValue, color }) => {
+const StatCard = ({ icon, title, value, trend, trendValue, color }:any) => {
   const theme = useTheme()
   const isPositive = trend === "up"
 
@@ -128,7 +130,7 @@ const StatCard = ({ icon, title, value, trend, trendValue, color }) => {
 }
 
 // Module card component
-const ModuleCard = ({ title, description, icon, color, path, onClick }) => {
+const ModuleCard = ({ title, description, icon, color,  onClick }:any) => {
   const theme = useTheme()
 
   return (
@@ -187,7 +189,7 @@ const ModuleCard = ({ title, description, icon, color, path, onClick }) => {
 }
 
 // Attendance progress component
-const AttendanceProgress = ({ title, present, total, color }) => {
+const AttendanceProgress = ({ title, present, total, color }:any) => {
   const percentage = total > 0 ? Math.round((present / total) * 100) : 0
 
   return (
@@ -220,7 +222,7 @@ const AttendanceProgress = ({ title, present, total, color }) => {
 const DashboardHome = () => {
   const router = useRouter()
   const theme = useTheme()
-  const [anchorEl, setAnchorEl] = useState(null)
+  // const [anchorEl, setAnchorEl] = useState(null)
   const [profileAnchorEl, setProfileAnchorEl] = useState(null)
 
   // Mock data
@@ -334,16 +336,16 @@ const DashboardHome = () => {
   ]
 
   // Handle menu open/close
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+  // const handleMenuOpen = (event:any) => {
+  //   setAnchorEl(event.currentTarget)
+  // }
 
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+  // const handleMenuClose = () => {
+  //   setAnchorEl(null)
+  // }
 
   // Handle profile menu open/close
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = (event:any) => {
     setProfileAnchorEl(event.currentTarget)
   }
 
@@ -352,7 +354,7 @@ const DashboardHome = () => {
   }
 
   // Navigate to module
-  const navigateToModule = (path) => {
+  const navigateToModule = (path:any) => {
     router.push(path)
   }
 
@@ -547,7 +549,7 @@ const DashboardHome = () => {
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                 <Typography variant="h6" fontWeight="bold">
-                  Today's Attendance
+                  Today&apos;s Attendance
                 </Typography>
                 <IconButton size="small">
                   <MoreVert fontSize="small" />

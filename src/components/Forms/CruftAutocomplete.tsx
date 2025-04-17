@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type React from "react"
 import { Controller, useFormContext } from "react-hook-form"
 import TextField from "@mui/material/TextField"
