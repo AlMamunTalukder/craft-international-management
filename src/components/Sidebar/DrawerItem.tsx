@@ -102,6 +102,10 @@ import {
   PostAdd,
   StickyNote2,
   Summarize,
+  Storage,
+  Folder,
+   Image as Photos,
+   Logout,
 } from "@mui/icons-material"
 
 // Colorful icon wrapper component
@@ -280,7 +284,7 @@ export const navigationItems = [
   {
     title: "Meal Report",
     icon: (
-      <ColorfulIcon color="#DB4437">
+      <ColorfulIcon color="#F4B400">
         <RestaurantMenu />
       </ColorfulIcon>
     ),
@@ -289,7 +293,7 @@ export const navigationItems = [
         path: "/dashboard/super_admin/daily-meal-report",
         title: "Meal Report",
         icon: (
-          <ColorfulIcon color="#DB4437">
+          <ColorfulIcon color="#F4B400">
             <ListAlt />
           </ColorfulIcon>
         ),
@@ -298,7 +302,7 @@ export const navigationItems = [
         path: "/dashboard/super_admin/daily-meal-report/add",
         title: "Add Meal Report",
         icon: (
-          <ColorfulIcon color="#DB4437">
+          <ColorfulIcon color="#F4B400">
             <AddCircle />
           </ColorfulIcon>
         ),
@@ -308,7 +312,7 @@ export const navigationItems = [
   {
     title: "Student Report",
     icon: (
-      <ColorfulIcon color="#DB4437">
+      <ColorfulIcon color="#4285F4">
         <AssessmentOutlined />
       </ColorfulIcon>
     ),
@@ -317,7 +321,7 @@ export const navigationItems = [
         path: "/dashboard/super_admin/daily-student-report/add",
         title: "Add Student Report",
         icon: (
-          <ColorfulIcon color="#DB4437">
+          <ColorfulIcon color="#4285F4">
             <PostAdd />
           </ColorfulIcon>
         ),
@@ -326,7 +330,7 @@ export const navigationItems = [
         path: "/dashboard/super_admin/daily-student-report",
         title: "Student Report",
         icon: (
-          <ColorfulIcon color="#DB4437">
+          <ColorfulIcon color="#4285F4">
             <ListAlt />
           </ColorfulIcon>
         ),
@@ -1410,5 +1414,60 @@ export const navigationItems = [
         ),
       },
     ],
+  },
+  {
+    title: "Gallery",
+    icon: (
+      <ColorfulIcon color="#4285F4">
+        <PhotoLibrary />
+      </ColorfulIcon>
+    ),
+    children: [
+      {
+        path: "/dashboard/super_admin/folder",
+        title: "Photos",
+        icon: (
+          <ColorfulIcon color="#4285F4">
+            <Photos />
+          </ColorfulIcon>
+        ),
+      },
+      {
+        path: "/dashboard/super_admin/photos",
+        title: "Folder",
+        icon: (
+          <ColorfulIcon color="#4285F4">
+            <Folder />
+          </ColorfulIcon>
+        ),
+      },
+    ],
+  },  
+  {
+    title: "User Management",
+    path: "/dashboard/super_admin/user-management",
+    icon: (
+      <ColorfulIcon color="#F4B400">
+        <Group />
+      </ColorfulIcon>
+    ),    
+  },
+  {
+    title: "Database Backup",
+    path: "#",
+    icon: (
+      <ColorfulIcon color="#4285F4">
+        <Storage />
+      </ColorfulIcon>
+    ),    
+  },
+  {
+    title: "Log Out",
+    path: "#",
+    icon: (
+      <ColorfulIcon color="#DB4437">
+        <Logout />
+      </ColorfulIcon>
+    ),    
   },
 ]

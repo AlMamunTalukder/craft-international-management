@@ -363,15 +363,16 @@ const DashboardHome = () => {
     weekday: "long",
     year: "numeric",
     month: "long",
-    day: "numeric",
+    day: "numeric",    
   })
 
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "100vh",        
         overflow: "auto",
         background: `linear-gradient(135deg, ${alpha(theme.palette.primary.light, 0.05)} 0%, ${alpha(theme.palette.background.default, 0.8)} 100%)`,
+        borderRadius:6, 
         p: { xs: 2, sm: 3 },
       }}
     >
@@ -390,15 +391,22 @@ const DashboardHome = () => {
           <Typography variant="h4" fontWeight="bold" sx={{ mb: 0.5 }}>
             School Dashboard
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="#9AA6B2">
             {currentDate}
           </Typography>
+
+          {/* <Typography variant="body1" color="gray"> */}
+            {/* <div className="text-white">
+            {currentDate}
+            </div> */}
+          {/* </Typography> */}
         </Box>
 
         <Box sx={{ display: "flex", gap: 1 }}>
           <Paper
             elevation={0}
             sx={{
+              width:400,
               display: { xs: "none", md: "flex" },
               alignItems: "center",
               px: 2,
@@ -415,6 +423,8 @@ const DashboardHome = () => {
 
           <IconButton
             sx={{
+              px: 2,
+              borderRadius: 3,
               bgcolor: alpha(theme.palette.primary.main, 0.1),
               color: theme.palette.primary.main,
               "&:hover": {

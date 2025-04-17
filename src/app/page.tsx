@@ -1,13 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import bg from '../assets/img/bg.webp';
+import logo from '../assets/img/logo/logo.png';
 import Link from 'next/link';
 import { Button } from '@mui/material';
 
 const LoginDashboard = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center  relative overflow-hidden">
-
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="fixed inset-0 z-0 h-screen">
         <Image
           src={bg}
@@ -23,11 +23,14 @@ const LoginDashboard = () => {
         />
       </div>
 
-      <div className="relative z-10 w-full max-w-md p-3 md:p-4 lg:p-8 m-2 bg-white rounded-xl shadow-lg">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#9A5AE3]">লগইন
-          </h1>
-          <p className="text-gray-600 mt-2">অনুগ্রহ করে আপনার ইমেইল বা ফোন নম্বর লিখুন!</p>
+      <div className="relative z-10 w-full max-w-lg p-3 md:p-4 lg:p-8 m-2 bg-white rounded-xl shadow-lg">
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Image src={logo} alt='Craft International Institute' className='h-20 w-[220px]'/>
+          {/* <h1 className="text-3xl font-bold text-[#9A5AE3]">লগইন
+          </h1> */}
+          <p className="text-gray-600 mt-2">
+             ‍<span className='text-[#4F0187]'> লগইন </span>
+            করতে অনুগ্রহ করে আপনার ইমেইল বা ফোন নম্বর লিখুন!</p>
         </div>
 
         <form className="space-y-6">
