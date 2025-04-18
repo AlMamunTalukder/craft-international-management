@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -58,6 +59,42 @@ import {
 } from "@mui/icons-material"
 import { styled } from "@mui/material/styles"
 import { motion } from "framer-motion"
+
+// Define types
+type StaffStatus = "active" | "on leave" | "inactive"
+
+interface StaffMember {
+  id: number
+  name: string
+  avatar: string
+  department: string
+  role: string
+  status: StaffStatus
+  email: string
+  phone: string
+  location: string
+  experience: number
+  rating: string
+  performance: number
+  attendance: number
+  joinDate: string
+  skills: string[]
+  certifications: string | null
+  supervisor: string
+  contractType: string
+  nextReview: string
+  birthdate: string
+}
+
+interface DepartmentStats {
+  department: string
+  color: string
+  total: number
+  active: number
+  onLeave: number
+  inactive: number
+  avgPerformance: number
+}
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -120,7 +157,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-const StatusChip = styled(Chip)(({ theme, status }) => ({
+const StatusChip = styled(Chip)<{ status: StaffStatus }>(({ theme, status }) => ({
   backgroundColor:
     status === "active"
       ? alpha(theme.palette.success.main, 0.1)
@@ -137,12 +174,17 @@ const StatusChip = styled(Chip)(({ theme, status }) => ({
   borderRadius: 8,
 }))
 
-const DepartmentChip = styled(Chip)(({ theme, color }) => ({
-  backgroundColor: alpha(color, 0.1),
-  color: color,
+const DepartmentChip = styled(Chip)(({ theme }) => ({
   fontWeight: 500,
   borderRadius: 8,
 }))
+
+// const DepartmentChip = styled(Chip)<{ color: string }>(({ theme, color }) => ({
+//   backgroundColor: alpha(color, 0.1),
+//   color: color,
+//   fontWeight: 500,
+//   borderRadius: 8,
+// }))
 
 const SearchField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
@@ -159,7 +201,7 @@ const SearchField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-const ViewToggleButton = styled(Button)(({ theme, active }) => ({
+const ViewToggleButton = styled(Button)<{ active: boolean }>(({ theme, active }) => ({
   backgroundColor: active ? alpha(theme.palette.primary.main, 0.1) : "transparent",
   color: active ? theme.palette.primary.main : theme.palette.text.secondary,
   fontWeight: active ? 600 : 400,
@@ -168,7 +210,7 @@ const ViewToggleButton = styled(Button)(({ theme, active }) => ({
   },
 }))
 
-const PerformanceIndicator = styled(Box)(({ theme, value }) => ({
+const PerformanceIndicator = styled(Box)<{ value: number }>(({ theme, value }) => ({
   position: "relative",
   height: 4,
   width: "100%",
@@ -197,7 +239,7 @@ const StatsCard = styled(Paper)(({ theme }) => ({
   height: "100%",
 }))
 
-const CircularProgressWithLabel = ({ value, size = 60, thickness = 5 }) => {
+const CircularProgressWithLabel = ({ value, size = 60, thickness = 5 }: { value: number; size?: number; thickness?: number }) => {
   const theme = useTheme()
   const color =
     value > 80 ? theme.palette.success.main : value > 50 ? theme.palette.warning.main : theme.palette.error.main
@@ -237,7 +279,7 @@ const CircularProgressWithLabel = ({ value, size = 60, thickness = 5 }) => {
 }
 
 // Mock data
-const departmentColors = {
+const departmentColors: Record<string, string> = {
   Administration: "#00b09b",
   Finance: "#6a11cb",
   "Human Resources": "#fc4a1a",
@@ -248,9 +290,9 @@ const departmentColors = {
   "Health Services": "#ff758c",
 }
 
-const generateStaff = (count) => {
+const generateStaff = (count: number): StaffMember[] => {
   const departments = Object.keys(departmentColors)
-  const statuses = ["active", "on leave", "inactive"]
+  const statuses: StaffStatus[] = ["active", "on leave", "inactive"]
   const roles = [
     "Administrative Assistant",
     "Finance Officer",
@@ -316,15 +358,14 @@ const generateStaff = (count) => {
 
 export default function StaffDashboard() {
   const theme = useTheme()
-  const [staff, setStaff] = useState([])
+  const [staff, setStaff] = useState<StaffMember[]>([])
   const [loading, setLoading] = useState(true)
-  const [viewMode, setViewMode] = useState("grid")
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "kanban">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [tabValue, setTabValue] = useState(0)
-  const [sortBy, setSortBy] = useState("name")
-  const [sortDirection, setSortDirection] = useState("asc")
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedStaff, setSelectedStaff] = useState([])
+  const [sortBy, setSortBy] = useState<"name" | "department" | "role" | "experience" | "rating" | "performance">("name")
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [filterDepartment, setFilterDepartment] = useState("all")
 
   useEffect(() => {
@@ -335,7 +376,7 @@ export default function StaffDashboard() {
     }, 1000)
   }, [])
 
-  const handleSortClick = (event) => {
+  const handleSortClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -343,7 +384,7 @@ export default function StaffDashboard() {
     setAnchorEl(null)
   }
 
-  const handleSortChange = (field) => {
+  const handleSortChange = (field: typeof sortBy) => {
     if (sortBy === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -353,7 +394,7 @@ export default function StaffDashboard() {
     handleSortClose()
   }
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
 
     if (newValue === 0) {
@@ -386,7 +427,7 @@ export default function StaffDashboard() {
       } else if (sortBy === "experience") {
         comparison = a.experience - b.experience
       } else if (sortBy === "rating") {
-        comparison = a.rating - b.rating
+        comparison = parseFloat(a.rating) - parseFloat(b.rating)
       } else if (sortBy === "performance") {
         comparison = a.performance - b.performance
       }
@@ -403,7 +444,7 @@ export default function StaffDashboard() {
   }
 
   // Calculate department statistics
-  const departmentStats = Object.keys(departmentColors).map((dept) => {
+  const departmentStats: DepartmentStats[] = Object.keys(departmentColors).map((dept) => {
     const deptStaff = staff.filter((s) => s.department === dept)
     const activeCount = deptStaff.filter((s) => s.status === "active").length
     const onLeaveCount = deptStaff.filter((s) => s.status === "on leave").length
@@ -799,7 +840,7 @@ export default function StaffDashboard() {
                 }}
               >
                 <Tab label="All Departments" />
-                {Object.keys(departmentColors).map((dept, index) => (
+                {Object.keys(departmentColors).map((dept) => (
                   <Tab
                     key={dept}
                     label={
@@ -891,10 +932,19 @@ export default function StaffDashboard() {
                             <Typography variant="body2" color="text.secondary" gutterBottom>
                               {person.role}
                             </Typography>
-                            <DepartmentChip
+
+                            {/* <DepartmentChip
                               label={person.department}
                               size="small"
                               color={departmentColors[person.department]}
+                            /> */}
+                            <DepartmentChip
+                              label={person.department}
+                              size="small"
+                              sx={{
+                                backgroundColor: alpha(departmentColors[person.department], 0.1),
+                                color: departmentColors[person.department],
+                              }}
                             />
                           </Box>
 
@@ -1079,8 +1129,17 @@ export default function StaffDashboard() {
                           <DepartmentChip
                             label={person.department}
                             size="small"
-                            color={departmentColors[person.department]}
+                            sx={{
+                              backgroundColor: alpha(departmentColors[person.department], 0.1),
+                              color: departmentColors[person.department],
+                            }}
                           />
+
+                          {/* <DepartmentChip
+                            label={person.department}
+                            size="small"
+                            color={departmentColors[person.department]}
+                          /> */}
                           <Typography variant="body2">{person.role}</Typography>
                           <Box>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -1118,7 +1177,7 @@ export default function StaffDashboard() {
           ) : (
             <Grid item xs={12}>
               <Grid container spacing={3}>
-                {["active", "on leave", "inactive"].map((status) => (
+                {(["active", "on leave", "inactive"] as StaffStatus[]).map((status) => (
                   <Grid item xs={12} md={4} key={status}>
                     <Paper
                       elevation={0}
@@ -1200,8 +1259,12 @@ export default function StaffDashboard() {
                                   <DepartmentChip
                                     label={person.department}
                                     size="small"
-                                    color={departmentColors[person.department]}
+                                    sx={{
+                                      backgroundColor: alpha(departmentColors[person.department], 0.1),
+                                      color: departmentColors[person.department],
+                                    }}
                                   />
+
                                 </Box>
                                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 1.5 }}>
                                   {person.skills.map((skill) => (
@@ -1222,7 +1285,7 @@ export default function StaffDashboard() {
                                     {person.experience} years
                                   </Typography>
                                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <PerformanceIndicator value={person.performance} width={50} />
+                                    <PerformanceIndicator value={person.performance} />
                                     <Typography variant="body2" fontWeight={600}>
                                       {person.performance}%
                                     </Typography>

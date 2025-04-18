@@ -378,23 +378,29 @@ export default function ClassesListPage() {
                               label="শিক্ষকের নাম"
                               placeholder="শিক্ষকের নাম লিখুন"
                               options={teacherName}
-                              
+
                             />
 
                           </Grid>
 
                           <Grid item xs={12} md={2}>
-                              <CraftIntAutoComplete
-                                name="class"
-                                label="শ্রেণীর নাম লিখুন"
-                                fullWidth
-                                freeSolo
-                                multiple={false}                         
-                                options={className.map((option) => option.label)}
-                                onInputChange={(event, newValue) => { }}
-                                onChange={handleClassName}
-                              />
-                              </Grid>
+                            <CraftIntAutoComplete
+                              name="class"
+                              label="শ্রেণীর নাম লিখুন"
+                              fullWidth
+                              freeSolo
+                              multiple={false}
+                              // options={className.map((option) => option.label)}
+                        
+                              options={className.map((option) => ({
+                                label: option.label,
+                                value: option.value,
+                              }))}
+                              
+                              onInputChange={(event, newValue) => { }}
+                              onChange={handleClassName}
+                            />
+                          </Grid>
                           <Grid item xs={12} md={3}>
                             <CraftForm onSubmit={handleSubmit}>
                               <CraftIntAutoComplete

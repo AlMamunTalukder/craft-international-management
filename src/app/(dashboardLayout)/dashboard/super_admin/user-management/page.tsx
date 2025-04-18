@@ -24,7 +24,6 @@ import {
     TablePagination,
     Menu,
     MenuItem,
-    // Divider,
     InputAdornment,
     Tooltip,
     Dialog,
@@ -43,15 +42,9 @@ import {
     Add as AddIcon,
     Search as SearchIcon,
     FilterList as FilterListIcon,
-    // MoreVert as MoreVertIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
     Visibility as VisibilityIcon,
-    // School as SchoolIcon,
-    // Dashboard as DashboardIcon,
-    // AccountTree as BranchIcon,
-    // Home as HomeIcon,
-    // Notifications as NotificationsIcon,
     ArrowUpward as ArrowUpwardIcon,
     ArrowDownward as ArrowDownwardIcon,
     CheckCircle as CheckCircleIcon,
@@ -61,6 +54,10 @@ import {
     Print as PrintIcon,
     Refresh as RefreshIcon,
     Person,
+    AdminPanelSettings,
+    School,
+    SupervisorAccount,
+    Engineering,
 } from "@mui/icons-material"
 import { Roboto } from "next/font/google"
 import Link from "next/link"
@@ -186,61 +183,76 @@ const customTheme = createTheme({
     },
 })
 
-// Sample data for classes
-const generateClassesData = () => {
+// Define user roles with icons and colors
+const roles = [
+    { 
+        name: "Super Admin", 
+        icon: <AdminPanelSettings fontSize="small" />,
+        color: "primary" as const
+    },
+    { 
+        name: "Admin", 
+        icon: <AdminPanelSettings fontSize="small" />,
+        color: "secondary" as const
+    },
+    { 
+        name: "Supervisor", 
+        icon: <SupervisorAccount fontSize="small" />,
+        color: "info" as const
+    },
+    { 
+        name: "Teacher", 
+        icon: <School fontSize="small" />,
+        color: "warning" as const
+    },
+    { 
+        name: "Student", 
+        icon: <Person fontSize="small" />,
+        color: "success" as const
+    },
+    { 
+        name: "Staff", 
+        icon: <Engineering fontSize="small" />,
+        color: "default" as const
+    }
+]
+
+// Sample data for users
+const generateUsersData = () => {
     const statuses = ["Active", "Inactive", "Pending"]
-    const subjects = [
-        "Mathematics",
-        "Science",
-        "English",
-        "History",
-        "Computer Science",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "Art",
-        "Music",
-    ]
-    const teachers = [
-        { name: "Dr. Smith", avatar: "S" },
-        { name: "Prof. Johnson", avatar: "J" },
-        { name: "Mrs. Williams", avatar: "W" },
-        { name: "Mr. Brown", avatar: "B" },
-        { name: "Ms. Davis", avatar: "D" },
-    ]
-    const emails = [
-        { name: "demo1@demo.com", },
-        { name: "demo2@demo.com", },
-        { name: "demo3@demo.com", },
-        { name: "demo4@demo.com", },
-        { name: "demo5@demo.com", },
+    const users = [
+        { name: "Dr. Smith", email: "smith@example.com" },
+        { name: "Prof. Johnson", email: "johnson@example.com" },
+        { name: "Mrs. Williams", email: "williams@example.com" },
+        { name: "Mr. Brown", email: "brown@example.com" },
+        { name: "Ms. Davis", email: "davis@example.com" },
     ]
 
-    return Array.from({ length: 50 }, (_, i) => ({
+    return Array.from({ length: 20 }, (_, i) => ({
         id: i + 1,
-        name: `${subjects[Math.floor(Math.random() * subjects.length)]} ${Math.floor(Math.random() * 12) + 1}`,
-        code: `CII-${Math.floor(100)}`,
-        students: Math.floor(Math.random() * 40) + 10,
-        teacher: teachers[Math.floor(Math.random() * teachers.length)],
-        email: emails[Math.floor(Math.random() * emails.length)],
-        status: statuses[Math.floor(Math.random() * statuses.length)],
-        createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)),
-        lastUpdated: new Date(Date.now() - Math.floor(Math.random() * 1000000000)),
+        code: `USER-${1000 + i}`,
+        user: users[i % users.length],            
+        role: roles[i % roles.length],            
+        status: statuses[i % statuses.length],     
+        createdAt: new Date(2024, 0, 1 + i),        
+        lastUpdated: new Date(2024, 0, 15 + i),  
+      
     }))
 }
 
-export default function ClassesListPage() {
-    const [classes, setClasses] = useState<any[]>([])
+export default function UserManagementPage() {
+    const [users, setUsers] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState<string | null>(null)
+    const [roleFilter, setRoleFilter] = useState<string | null>(null)
     const [orderBy, setOrderBy] = useState<string>("name")
     const [order, setOrder] = useState<"asc" | "desc">("asc")
-    // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
-    const [selectedClass, setSelectedClass] = useState<any | null>(null)
+    const [roleFilterAnchorEl, setRoleFilterAnchorEl] = useState<null | HTMLElement>(null)
+    const [selectedUser, setSelectedUser] = useState<any | null>(null)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0)
 
@@ -251,7 +263,7 @@ export default function ClassesListPage() {
         setLoading(true)
         // Simulate API call
         setTimeout(() => {
-            setClasses(generateClassesData())
+            setUsers(generateUsersData())
             setLoading(false)
         }, 1000)
     }, [refreshKey])
@@ -274,17 +286,28 @@ export default function ClassesListPage() {
         setPage(0)
     }
 
-    const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleStatusFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setFilterAnchorEl(event.currentTarget)
+    }
+
+    const handleRoleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setRoleFilterAnchorEl(event.currentTarget)
     }
 
     const handleFilterClose = () => {
         setFilterAnchorEl(null)
+        setRoleFilterAnchorEl(null)
     }
 
-    const handleFilterSelect = (status: string | null) => {
+    const handleStatusFilterSelect = (status: string | null) => {
         setStatusFilter(status)
         setFilterAnchorEl(null)
+        setPage(0)
+    }
+
+    const handleRoleFilterSelect = (role: string | null) => {
+        setRoleFilter(role)
+        setRoleFilterAnchorEl(null)
         setPage(0)
     }
 
@@ -294,47 +317,45 @@ export default function ClassesListPage() {
         setOrderBy(property)
     }
 
-    // const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, classItem: any) => {
-    //     setAnchorEl(event.currentTarget)
-    //     setSelectedClass(classItem)
-    // }
-
-    // const handleMenuClose = () => {
-    //     setAnchorEl(null)
-    // }
-
-    const handleDeleteClick = () => {
+    const handleDeleteClick = (user: any) => {
+        setSelectedUser(user)
         setDeleteDialogOpen(true)
-        // setAnchorEl(null)
     }
 
     const handleDeleteConfirm = () => {
-        setClasses(classes.filter((c) => c.id !== selectedClass?.id))
+        setUsers(users.filter((u) => u.id !== selectedUser?.id))
         setDeleteDialogOpen(false)
-        setSelectedClass(null)
+        setSelectedUser(null)
     }
 
     const handleDeleteCancel = () => {
         setDeleteDialogOpen(false)
     }
 
-    const filteredClasses = classes
+    const filteredUsers = users
         .filter(
-            (classItem) =>
+            (user) =>
                 (searchTerm === "" ||
-                    classItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    classItem.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    classItem.teacher.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-                (statusFilter === null || classItem.status === statusFilter),
+                    user.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    user.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    user.code.toLowerCase().includes(searchTerm.toLowerCase())) &&
+                (statusFilter === null || user.status === statusFilter) &&
+                (roleFilter === null || user.role.name === roleFilter)
         )
         .sort((a, b) => {
             const aValue = a[orderBy]
             const bValue = b[orderBy]
 
-            if (orderBy === "teacher") {
+            if (orderBy === "user") {
                 return order === "asc"
-                    ? a.teacher.name.localeCompare(b.teacher.name)
-                    : b.teacher.name.localeCompare(a.teacher.name)
+                    ? a.user.name.localeCompare(b.user.name)
+                    : b.user.name.localeCompare(a.user.name)
+            }
+
+            if (orderBy === "role") {
+                return order === "asc"
+                    ? a.role.name.localeCompare(b.role.name)
+                    : b.role.name.localeCompare(a.role.name)
             }
 
             if (typeof aValue === "string" && typeof bValue === "string") {
@@ -348,7 +369,7 @@ export default function ClassesListPage() {
             return order === "asc" ? aValue - bValue : bValue - aValue
         })
 
-    const paginatedClasses = filteredClasses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    const paginatedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
     const getStatusChipProps = (status: string) => {
         switch (status) {
@@ -377,6 +398,19 @@ export default function ClassesListPage() {
                     sx: {},
                 }
         }
+    }
+
+    const getAvatarColor = (name: string) => {
+        const colors = [
+            theme.palette.primary.main,
+            theme.palette.secondary.main,
+            theme.palette.success.main,
+            theme.palette.warning.main,
+            theme.palette.error.main,
+            theme.palette.info.main,
+        ]
+        const index = name.charCodeAt(0) % colors.length
+        return colors[index]
     }
 
     return (
@@ -426,12 +460,12 @@ export default function ClassesListPage() {
                             </Box>
 
                             <Paper elevation={0} sx={{ mb: 4, overflow: "hidden" }}>
-                                <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
-                                    <Grid container spacing={2} alignItems="center">
-                                        <Grid item xs={12} md={6}>
+                                <Box sx={{ p: 2, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
+                                    <Grid container spacing={1} alignItems="center">
+                                        <Grid item xs={12} md={4.5}>
                                             <TextField
                                                 fullWidth
-                                                placeholder="Search by Teacher, Student, Date, Subject, or Class..."
+                                                placeholder="Search by Name, Email or ID..."
                                                 variant="outlined"
                                                 value={searchTerm}
                                                 onChange={handleSearchChange}
@@ -451,13 +485,13 @@ export default function ClassesListPage() {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid item xs={12} md={7.5}>
                                             <Box sx={{ display: "flex", gap: 2, justifyContent: { xs: "flex-start", md: "flex-end" } }}>
                                                 <Button
                                                     variant="outlined"
                                                     color="inherit"
                                                     startIcon={<FilterListIcon />}
-                                                    onClick={handleFilterClick}
+                                                    onClick={handleStatusFilterClick}
                                                     sx={{
                                                         borderColor: "rgba(0, 0, 0, 0.12)",
                                                         color: "text.secondary",
@@ -489,7 +523,7 @@ export default function ClassesListPage() {
                                                     }}
                                                 >
                                                     <MenuItem
-                                                        onClick={() => handleFilterSelect(null)}
+                                                        onClick={() => handleStatusFilterSelect(null)}
                                                         sx={{
                                                             py: 1.5,
                                                             ...(statusFilter === null && {
@@ -501,7 +535,7 @@ export default function ClassesListPage() {
                                                         All Statuses
                                                     </MenuItem>
                                                     <MenuItem
-                                                        onClick={() => handleFilterSelect("Active")}
+                                                        onClick={() => handleStatusFilterSelect("Active")}
                                                         sx={{
                                                             py: 1.5,
                                                             ...(statusFilter === "Active" && {
@@ -514,7 +548,7 @@ export default function ClassesListPage() {
                                                         Active
                                                     </MenuItem>
                                                     <MenuItem
-                                                        onClick={() => handleFilterSelect("Inactive")}
+                                                        onClick={() => handleStatusFilterSelect("Inactive")}
                                                         sx={{
                                                             py: 1.5,
                                                             ...(statusFilter === "Inactive" && {
@@ -527,7 +561,7 @@ export default function ClassesListPage() {
                                                         Inactive
                                                     </MenuItem>
                                                     <MenuItem
-                                                        onClick={() => handleFilterSelect("Pending")}
+                                                        onClick={() => handleStatusFilterSelect("Pending")}
                                                         sx={{
                                                             py: 1.5,
                                                             ...(statusFilter === "Pending" && {
@@ -539,6 +573,71 @@ export default function ClassesListPage() {
                                                         <AccessTimeIcon fontSize="small" color="warning" sx={{ mr: 1 }} />
                                                         Pending
                                                     </MenuItem>
+                                                </Menu>
+
+                                                <Button
+                                                    variant="outlined"
+                                                    color="inherit"
+                                                    startIcon={<FilterListIcon />}
+                                                    onClick={handleRoleFilterClick}
+                                                    sx={{
+                                                        borderColor: "rgba(0, 0, 0, 0.12)",
+                                                        color: "text.secondary",
+                                                        "&:hover": {
+                                                            borderColor: "primary.main",
+                                                            bgcolor: "rgba(99, 102, 241, 0.04)",
+                                                        },
+                                                        ...(roleFilter && {
+                                                            borderColor: "primary.main",
+                                                            color: "primary.main",
+                                                            bgcolor: "rgba(99, 102, 241, 0.04)",
+                                                        }),
+                                                    }}
+                                                >
+                                                    {roleFilter || "Filter by Role"}
+                                                </Button>
+                                                <Menu
+                                                    anchorEl={roleFilterAnchorEl}
+                                                    open={Boolean(roleFilterAnchorEl)}
+                                                    onClose={handleFilterClose}
+                                                    PaperProps={{
+                                                        elevation: 3,
+                                                        sx: {
+                                                            mt: 1,
+                                                            minWidth: 180,
+                                                            borderRadius: 2,
+                                                            overflow: "hidden",
+                                                        },
+                                                    }}
+                                                >
+                                                    <MenuItem
+                                                        onClick={() => handleRoleFilterSelect(null)}
+                                                        sx={{
+                                                            py: 1.5,
+                                                            ...(roleFilter === null && {
+                                                                bgcolor: "rgba(99, 102, 241, 0.08)",
+                                                                color: "primary.main",
+                                                            }),
+                                                        }}
+                                                    >
+                                                        All Roles
+                                                    </MenuItem>
+                                                    {roles.map((role) => (
+                                                        <MenuItem
+                                                            key={role.name}
+                                                            onClick={() => handleRoleFilterSelect(role.name)}
+                                                            sx={{
+                                                                py: 1.5,
+                                                                ...(roleFilter === role.name && {
+                                                                    bgcolor: "rgba(99, 102, 241, 0.08)",
+                                                                    color: "primary.main",
+                                                                }),
+                                                            }}
+                                                        >
+                                                            {role.icon}
+                                                            <Typography sx={{ ml: 1 }}>{role.name}</Typography>
+                                                        </MenuItem>
+                                                    ))}
                                                 </Menu>
 
                                                 {!isMobile && (
@@ -613,7 +712,7 @@ export default function ClassesListPage() {
                                                                 }}
                                                                 onClick={() => handleSort("code")}
                                                             >
-                                                                Sl. No.
+                                                                User ID
                                                                 {orderBy === "code" && (
                                                                     <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
                                                                         {order === "asc" ? (
@@ -625,22 +724,66 @@ export default function ClassesListPage() {
                                                                 )}
                                                             </Box>
                                                         </TableCell>
-                                                        <TableCell>Name </TableCell>
-                                                        <TableCell>Email </TableCell>
-                                                        <TableCell>Role </TableCell>
-                                                        <TableCell>Status </TableCell>
+                                                        <TableCell>
+                                                            <Box
+                                                                sx={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    cursor: "pointer",
+                                                                    userSelect: "none",
+                                                                    color: orderBy === "user" ? "primary.main" : "inherit",
+                                                                }}
+                                                                onClick={() => handleSort("user")}
+                                                            >
+                                                                Name
+                                                                {orderBy === "user" && (
+                                                                    <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+                                                                        {order === "asc" ? (
+                                                                            <ArrowUpwardIcon fontSize="small" />
+                                                                        ) : (
+                                                                            <ArrowDownwardIcon fontSize="small" />
+                                                                        )}
+                                                                    </Box>
+                                                                )}
+                                                            </Box>
+                                                        </TableCell>
+                                                        <TableCell>Email</TableCell>
+                                                        <TableCell>
+                                                            <Box
+                                                                sx={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    cursor: "pointer",
+                                                                    userSelect: "none",
+                                                                    color: orderBy === "role" ? "primary.main" : "inherit",
+                                                                }}
+                                                                onClick={() => handleSort("role")}
+                                                            >
+                                                                Role
+                                                                {orderBy === "role" && (
+                                                                    <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
+                                                                        {order === "asc" ? (
+                                                                            <ArrowUpwardIcon fontSize="small" />
+                                                                        ) : (
+                                                                            <ArrowDownwardIcon fontSize="small" />
+                                                                        )}
+                                                                    </Box>
+                                                                )}
+                                                            </Box>
+                                                        </TableCell>
+                                                        <TableCell>Status</TableCell>
                                                         <TableCell align="right">Actions</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {paginatedClasses.length > 0 ? (
-                                                        paginatedClasses.map((classItem) => {
-                                                            const statusChipProps = getStatusChipProps(classItem.status)
+                                                    {paginatedUsers.length > 0 ? (
+                                                        paginatedUsers.map((user) => {
+                                                            const statusChipProps = getStatusChipProps(user.status)
                                                             return (
-                                                                <TableRow key={classItem.id} sx={{ transition: "all 0.2s" }}>
+                                                                <TableRow key={user.id} sx={{ transition: "all 0.2s" }}>
                                                                     <TableCell>
                                                                         <Chip
-                                                                            label={classItem.code}
+                                                                            label={user.code}
                                                                             size="small"
                                                                             sx={{
                                                                                 bgcolor: "rgba(99, 102, 241, 0.08)",
@@ -649,8 +792,6 @@ export default function ClassesListPage() {
                                                                             }}
                                                                         />
                                                                     </TableCell>
-
-
                                                                     <TableCell>
                                                                         <Box sx={{ display: "flex", alignItems: "center" }}>
                                                                             <Avatar
@@ -658,36 +799,34 @@ export default function ClassesListPage() {
                                                                                     width: 32,
                                                                                     height: 32,
                                                                                     mr: 1.5,
-                                                                                    bgcolor: "primary.main",
+                                                                                    bgcolor: getAvatarColor(user.user.name),
                                                                                     fontSize: "0.875rem",
                                                                                 }}
                                                                             >
-                                                                                {classItem.teacher.avatar}
+                                                                                {user.user.name.charAt(0)}
                                                                             </Avatar>
-                                                                            <Typography variant="body2">{classItem.teacher.name}</Typography>
+                                                                            <Typography variant="body2">{user.user.name}</Typography>
                                                                         </Box>
                                                                     </TableCell>
-
                                                                     <TableCell>
-                                                                        <Typography variant="body2">{classItem.email.name}</Typography>
+                                                                        <Typography variant="body2">{user.user.email}</Typography>
                                                                     </TableCell>
-
                                                                     <TableCell>
                                                                         <Chip
-                                                                            icon={statusChipProps.icon}
-                                                                            label={classItem.status}
-                                                                            color={statusChipProps.color}
+                                                                            icon={user.role.icon}
+                                                                            label={user.role.name}
+                                                                            color={user.role.color}
                                                                             size="small"
                                                                             sx={{
-                                                                                ...statusChipProps.sx,
                                                                                 fontWeight: 500,
+                                                                                // bgcolor: alpha(theme.palette[user.role.color].main, 0.1),
                                                                             }}
                                                                         />
                                                                     </TableCell>
                                                                     <TableCell>
                                                                         <Chip
                                                                             icon={statusChipProps.icon}
-                                                                            label={classItem.status}
+                                                                            label={user.status}
                                                                             color={statusChipProps.color}
                                                                             size="small"
                                                                             sx={{
@@ -715,7 +854,7 @@ export default function ClassesListPage() {
                                                                                             <VisibilityIcon fontSize="small" />
                                                                                         </IconButton>
                                                                                     </Tooltip>
-                                                                                    <Tooltip title="Edit Class">
+                                                                                    <Tooltip title="Edit User">
                                                                                         <IconButton
                                                                                             size="small"
                                                                                             sx={{
@@ -730,26 +869,24 @@ export default function ClassesListPage() {
                                                                                             <EditIcon fontSize="small" />
                                                                                         </IconButton>
                                                                                     </Tooltip>
-                                                                                    <Tooltip title="Edit Class">
+                                                                                    <Tooltip title="Delete User">
                                                                                         <IconButton
                                                                                             size="small"
                                                                                             sx={{
-                                                                                               color: "error.main",
+                                                                                                color: "error.main",
                                                                                                 bgcolor: alpha(theme.palette.error.main, 0.1),
                                                                                                 mr: 1,
                                                                                                 "&:hover": {
                                                                                                     bgcolor: alpha(theme.palette.error.main, 0.2),
                                                                                                 },
                                                                                             }}
-                                                                                            onClick={handleDeleteClick}
+                                                                                            onClick={() => handleDeleteClick(user)}
                                                                                         >
-                                                                                            <DeleteIcon fontSize="small"  />
-                                                                                            
+                                                                                            <DeleteIcon fontSize="small" />
                                                                                         </IconButton>
                                                                                     </Tooltip>
                                                                                 </>
                                                                             )}
-                                                                            
                                                                         </Box>
                                                                     </TableCell>
                                                                 </TableRow>
@@ -757,11 +894,11 @@ export default function ClassesListPage() {
                                                         })
                                                     ) : (
                                                         <TableRow>
-                                                            <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
+                                                            <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
                                                                 <Box sx={{ textAlign: "center" }}>
                                                                     <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
                                                                     <Typography variant="h6" gutterBottom>
-                                                                        No classes found
+                                                                        No users found
                                                                     </Typography>
                                                                     <Typography variant="body2" color="text.secondary">
                                                                         Try adjusting your search or filter to find what you&apos;re looking for.
@@ -776,7 +913,7 @@ export default function ClassesListPage() {
                                         <TablePagination
                                             rowsPerPageOptions={[5, 10, 25, 50]}
                                             component="div"
-                                            count={filteredClasses.length}
+                                            count={filteredUsers.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={handleChangePage}
@@ -793,13 +930,10 @@ export default function ClassesListPage() {
                 </Container>
             </Box>
 
-           
-
             {/* Delete Confirmation Dialog */}
             <Dialog
                 open={deleteDialogOpen}
                 onClose={handleDeleteCancel}
-                
             >
                 <DialogTitle sx={{ pb: 1 }}>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
@@ -808,7 +942,7 @@ export default function ClassesListPage() {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the User &#34;{selectedClass?.name}&#34;? This action cannot be undone.
+                        Are you sure you want to delete the user &#34;{selectedUser?.user.name}&#34;? This action cannot be undone.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3 }}>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -25,6 +26,7 @@ import {
   Alert,
   Snackbar,
   InputLabel,
+  SelectChangeEvent,
 } from "@mui/material"
 import {
   AccountCircle,
@@ -49,12 +51,103 @@ import {
   Wc,
   CardMembership,
   Fingerprint,
-  Apartment,
   BusinessCenter,
   EventNote,
   ContactPhone,
   Add,
 } from "@mui/icons-material"
+
+// Define interfaces
+interface Address {
+  address: string
+  village: string
+  postOffice: string
+  thana: string
+  district: string
+  state: string
+  country: string
+  zipCode: string
+}
+
+interface Education {
+  degree: string
+  institution: string
+  year: string
+  specialization: string
+}
+
+interface Certification {
+  name: string
+  issuedBy: string
+  year: string
+  description: string
+}
+
+interface Experience {
+  organization: string
+  position: string
+  from: string
+  to: string
+  description: string
+}
+
+interface BankDetails {
+  accountName: string
+  accountNumber: string
+  bankName: string
+  branchName: string
+  ifscCode: string
+}
+
+interface EmergencyContact {
+  name: string
+  relation: string
+  phone: string
+}
+
+interface SocialMedia {
+  facebook: string
+  twitter: string
+  youtube: string
+  linkedin: string
+  instagram: string
+}
+
+interface FormData {
+  teacherId: string
+  teacherSerial: string
+  name: string
+  englishName: string
+  phone: string
+  email: string
+  smartIdCard: string
+  bloodGroup: string
+  gender: string
+  dateOfBirth: string
+  nationality: string
+  religion: string
+  maritalStatus: string
+  permanentAddress: Address
+  currentAddress: Address
+  designation: string
+  department: string
+  joiningDate: string
+  monthlySalary: string
+  staffType: string
+  residenceType: string
+  subjectsTaught: string[]
+  classesAssigned: string[]
+  education: Education[]
+  certifications: Certification[]
+  skills: string[]
+  experience: Experience[]
+  emergencyContact: EmergencyContact
+  socialMedia: SocialMedia
+  status: string
+  language: string
+  activeSession: string
+  bankDetails: BankDetails
+}
 
 // Steps for the stepper
 const steps = [
@@ -134,12 +227,11 @@ export default function TeacherRegistration() {
   const [activeStep, setActiveStep] = useState(0)
   const [sameAsPermAddress, setSameAsPermAddress] = useState(false)
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [selectedSubjects, setSelectedSubjects] = useState([])
-  const [previewImage, setPreviewImage] = useState(null)
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
 
-  // Form data state
-  const [formData, setFormData] = useState({
-    // Personal Information
+  // Form data state with proper typing
+  const [formData, setFormData] = useState<FormData>({
     teacherId: "",
     teacherSerial: "",
     name: "",
@@ -153,8 +245,6 @@ export default function TeacherRegistration() {
     nationality: "",
     religion: "",
     maritalStatus: "",
-
-    // Address Information
     permanentAddress: {
       address: "",
       village: "",
@@ -175,8 +265,6 @@ export default function TeacherRegistration() {
       country: "",
       zipCode: "",
     },
-
-    // Professional Information
     designation: "",
     department: "",
     joiningDate: "",
@@ -185,14 +273,10 @@ export default function TeacherRegistration() {
     residenceType: "",
     subjectsTaught: [],
     classesAssigned: [],
-
-    // Qualifications & Skills
     education: [{ degree: "", institution: "", year: "", specialization: "" }],
     certifications: [{ name: "", issuedBy: "", year: "", description: "" }],
     skills: [],
     experience: [{ organization: "", position: "", from: "", to: "", description: "" }],
-
-    // Additional Information
     emergencyContact: {
       name: "",
       relation: "",
@@ -217,15 +301,19 @@ export default function TeacherRegistration() {
     },
   })
 
-  // Handle form input changes
-  const handleInputChange = (e, section = null, index = null) => {
+  // Handle form input changes with proper typing
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>,
+    section?: keyof FormData,
+    index?: number
+  ) => {
     const { name, value } = e.target
 
     if (section) {
-      if (index !== null) {
+      if (index !== undefined) {
         // For array fields like education, certifications, experience
         setFormData((prev) => {
-          const newArray = [...prev[section]]
+          const newArray = [...prev[section] as any[]]
           newArray[index] = { ...newArray[index], [name]: value }
           return { ...prev, [section]: newArray }
         })
@@ -233,29 +321,41 @@ export default function TeacherRegistration() {
         // For nested objects like permanentAddress, currentAddress
         setFormData((prev) => ({
           ...prev,
-          [section]: { ...prev[section], [name]: value },
+          [section]: { ...(prev[section] as any), [name]: value },
         }))
       }
     } else {
       // For direct fields
-      setFormData((prev) => ({ ...prev, [name]: value }))
+      setFormData((prev) => ({ ...prev, [name as string]: value }))
+    }
+  }
+  // Handle select changes with proper typing
+  const handleSelectChange = (e: SelectChangeEvent<string>, section?: keyof FormData) => {
+    const { name, value } = e.target
+    if (section) {
+      setFormData((prev) => ({
+        ...prev,
+        [section]: { ...(prev[section] as any), [name]: value },
+      }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name as string]: value }))
     }
   }
 
   // Handle file upload for profile image
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
       reader.onload = () => {
-        setPreviewImage(reader.result)
+        setPreviewImage(reader.result as string)
       }
       reader.readAsDataURL(file)
     }
   }
 
   // Handle same as permanent address checkbox
-  const handleSameAddressChange = (e) => {
+  const handleSameAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSameAsPermAddress(e.target.checked)
     if (e.target.checked) {
       setFormData((prev) => ({
@@ -266,11 +366,13 @@ export default function TeacherRegistration() {
   }
 
   // Handle subject selection
-  const handleSubjectChange = (e) => {
-    setSelectedSubjects(e.target.value)
+  const handleSubjectChange = (e: SelectChangeEvent<string[]>) => {
+    const value = e.target.value
+    const selected = typeof value === 'string' ? value.split(',') : value
+    setSelectedSubjects(selected)
     setFormData((prev) => ({
       ...prev,
-      subjectsTaught: e.target.value,
+      subjectsTaught: selected,
     }))
   }
 
@@ -283,7 +385,7 @@ export default function TeacherRegistration() {
   }
 
   // Remove education entry
-  const removeEducation = (index) => {
+  const removeEducation = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index),
@@ -299,7 +401,7 @@ export default function TeacherRegistration() {
   }
 
   // Remove certification entry
-  const removeCertification = (index) => {
+  const removeCertification = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       certifications: prev.certifications.filter((_, i) => i !== index),
@@ -315,7 +417,7 @@ export default function TeacherRegistration() {
   }
 
   // Remove experience entry
-  const removeExperience = (index) => {
+  const removeExperience = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       experience: prev.experience.filter((_, i) => i !== index),
@@ -333,7 +435,7 @@ export default function TeacherRegistration() {
   }
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log("Form submitted:", formData)
     setOpenSnackbar(true)
@@ -341,7 +443,7 @@ export default function TeacherRegistration() {
   }
 
   // Render form content based on active step
-  const getStepContent = (step) => {
+  const getStepContent = (step: number) => {
     switch (step) {
       case 0:
         return (
@@ -350,6 +452,7 @@ export default function TeacherRegistration() {
               Basic Details
             </Typography>
             <Grid container spacing={3}>
+
               <Grid item xs={12} sm={6} md={4}>
                 <TextField
                   required
@@ -491,11 +594,12 @@ export default function TeacherRegistration() {
               <Grid item xs={12} sm={6} md={4}>
                 <FormControl fullWidth required>
                   <InputLabel id="blood-group-label">Blood Group</InputLabel>
+
                   <Select
                     labelId="blood-group-label"
                     name="bloodGroup"
                     value={formData.bloodGroup}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleSelectChange(e)}
                     startAdornment={
                       <InputAdornment position="start">
                         <BloodtypeOutlined color="primary" />
@@ -517,7 +621,7 @@ export default function TeacherRegistration() {
                     labelId="gender-label"
                     name="gender"
                     value={formData.gender}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, "permanentAddress")}
                     startAdornment={
                       <InputAdornment position="start">
                         <Wc color="primary" />
@@ -564,7 +668,7 @@ export default function TeacherRegistration() {
                     labelId="marital-status-label"
                     name="maritalStatus"
                     value={formData.maritalStatus}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, "permanentAddress")}
                   >
                     <MenuItem value="Single">Single</MenuItem>
                     <MenuItem value="Married">Married</MenuItem>
@@ -830,20 +934,19 @@ export default function TeacherRegistration() {
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
+                {/* Designation Select */}
                 <FormControl fullWidth required>
                   <InputLabel id="designation-label">Designation</InputLabel>
                   <Select
                     labelId="designation-label"
                     name="designation"
                     value={formData.designation}
-                    onChange={handleInputChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BusinessCenter color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
+                    onChange={(e) => handleSelectChange(e)}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <BusinessCenter color="primary" />
+                      </InputAdornment>
+                    }
                   >
                     {designations.map((designation) => (
                       <MenuItem key={designation} value={designation}>
@@ -860,14 +963,20 @@ export default function TeacherRegistration() {
                     labelId="department-label"
                     name="department"
                     value={formData.department}
-                    onChange={handleInputChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Apartment color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
+                    onChange={(e) => handleSelectChange(e)}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <BusinessCenter color="primary" />
+                      </InputAdornment>
+                    }
+
+                    // InputProps={{
+                    //   startAdornment: (
+                    //     <InputAdornment position="start">
+                    //       <Apartment color="primary" />
+                    //     </InputAdornment>
+                    //   ),
+                    // }}
                   >
                     {departments.map((department) => (
                       <MenuItem key={department} value={department}>
@@ -921,7 +1030,7 @@ export default function TeacherRegistration() {
                     labelId="staff-type-label"
                     name="staffType"
                     value={formData.staffType}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, "permanentAddress")}
                   >
                     {staffTypes.map((type) => (
                       <MenuItem key={type} value={type}>
@@ -932,13 +1041,14 @@ export default function TeacherRegistration() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
+
                 <FormControl fullWidth>
                   <InputLabel id="residence-type-label">Residence Type</InputLabel>
                   <Select
                     labelId="residence-type-label"
                     name="residenceType"
                     value={formData.residenceType}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleSelectChange(e)}
                   >
                     {residenceTypes.map((type) => (
                       <MenuItem key={type} value={type}>
@@ -947,6 +1057,7 @@ export default function TeacherRegistration() {
                     ))}
                   </Select>
                 </FormControl>
+
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -1361,9 +1472,15 @@ export default function TeacherRegistration() {
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
+                {/* Status Select */}
                 <FormControl fullWidth required>
                   <InputLabel id="status-label">Status</InputLabel>
-                  <Select labelId="status-label" name="status" value={formData.status} onChange={handleInputChange}>
+                  <Select
+                    labelId="status-label"
+                    name="status"
+                    value={formData.status}
+                    onChange={(e) => handleSelectChange(e)}
+                  >
                     <MenuItem value="Active">Active</MenuItem>
                     <MenuItem value="On Leave">On Leave</MenuItem>
                     <MenuItem value="Suspended">Suspended</MenuItem>
@@ -1372,20 +1489,19 @@ export default function TeacherRegistration() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
+                {/* Language Select */}
                 <FormControl fullWidth>
                   <InputLabel id="language-label">Preferred Language</InputLabel>
                   <Select
                     labelId="language-label"
                     name="language"
                     value={formData.language}
-                    onChange={handleInputChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Language color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
+                    onChange={(e) => handleSelectChange(e)}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Language color="primary" />
+                      </InputAdornment>
+                    }
                   >
                     {languages.map((language) => (
                       <MenuItem key={language} value={language}>
@@ -1554,56 +1670,14 @@ export default function TeacherRegistration() {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Paper
-        elevation={3}
-        sx={{
-          p: 3,
-          borderRadius: 2,
-          background: `linear-gradient(135deg, ${theme.palette.primary.light}22 0%, ${theme.palette.background.paper} 100%)`,
-        }}
-      >
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
         <Box sx={{ mb: 4, textAlign: "center" }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            color="primary"
-            sx={{
-              fontWeight: "bold",
-              position: "relative",
-              display: "inline-block",
-              "&:after": {
-                content: '""',
-                position: "absolute",
-                width: "60%",
-                height: "4px",
-                bottom: "-8px",
-                left: "20%",
-                backgroundColor: theme.palette.primary.main,
-                borderRadius: "2px",
-              },
-            }}
-          >
+          <Typography variant="h4" component="h1" gutterBottom color="primary">
             New Teacher Registration
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Complete the form below to register a new teacher in the system
           </Typography>
         </Box>
 
-        <Stepper
-          activeStep={activeStep}
-          alternativeLabel
-          sx={{
-            mb: 4,
-            "& .MuiStepLabel-root .Mui-completed": {
-              color: theme.palette.primary.main,
-            },
-            "& .MuiStepLabel-root .Mui-active": {
-              color: theme.palette.primary.dark,
-            },
-          }}
-        >
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>

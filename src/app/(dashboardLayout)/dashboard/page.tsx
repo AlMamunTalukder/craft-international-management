@@ -21,6 +21,8 @@ import {
   Badge,
   useTheme,
   alpha,
+  InputAdornment,
+  TextField,
 } from "@mui/material"
 import {
   AccountBalance,
@@ -52,7 +54,7 @@ import {
 import { useRouter } from "next/navigation"
 
 // Custom gradient background component
-const GradientBackground = ({ children, startColor, endColor, direction = "to right" }:any) => {
+const GradientBackground = ({ children, startColor, endColor, direction = "to right" }: any) => {
   return (
     <Box
       sx={{
@@ -77,7 +79,7 @@ const GradientBackground = ({ children, startColor, endColor, direction = "to ri
 }
 
 // Animated stat card component
-const StatCard = ({ icon, title, value, trend, trendValue, color }:any) => {
+const StatCard = ({ icon, title, value, trend, trendValue, color }: any) => {
   const theme = useTheme()
   const isPositive = trend === "up"
 
@@ -130,7 +132,7 @@ const StatCard = ({ icon, title, value, trend, trendValue, color }:any) => {
 }
 
 // Module card component
-const ModuleCard = ({ title, description, icon, color,  onClick }:any) => {
+const ModuleCard = ({ title, description, icon, color, onClick }: any) => {
   const theme = useTheme()
 
   return (
@@ -189,7 +191,7 @@ const ModuleCard = ({ title, description, icon, color,  onClick }:any) => {
 }
 
 // Attendance progress component
-const AttendanceProgress = ({ title, present, total, color }:any) => {
+const AttendanceProgress = ({ title, present, total, color }: any) => {
   const percentage = total > 0 ? Math.round((present / total) * 100) : 0
 
   return (
@@ -345,7 +347,7 @@ const DashboardHome = () => {
   // }
 
   // Handle profile menu open/close
-  const handleProfileMenuOpen = (event:any) => {
+  const handleProfileMenuOpen = (event: any) => {
     setProfileAnchorEl(event.currentTarget)
   }
 
@@ -354,7 +356,7 @@ const DashboardHome = () => {
   }
 
   // Navigate to module
-  const navigateToModule = (path:any) => {
+  const navigateToModule = (path: any) => {
     router.push(path)
   }
 
@@ -363,16 +365,16 @@ const DashboardHome = () => {
     weekday: "long",
     year: "numeric",
     month: "long",
-    day: "numeric",    
+    day: "numeric",
   })
 
   return (
     <Box
       sx={{
-        height: "100vh",        
-        overflow: "auto",
+        // height: "100vh",        
+        // overflow: "auto",
         background: `linear-gradient(135deg, ${alpha(theme.palette.primary.light, 0.05)} 0%, ${alpha(theme.palette.background.default, 0.8)} 100%)`,
-        borderRadius:6, 
+        borderRadius: 6,
         p: { xs: 2, sm: 3 },
       }}
     >
@@ -388,22 +390,45 @@ const DashboardHome = () => {
         }}
       >
         <Box>
-          <Typography variant="h4" fontWeight="bold" sx={{ mb: 0.5 }}>
-            School Dashboard
+          <Typography variant="h4" fontWeight="bold" sx={{ mb: 0.5 }} color="#4F0187">
+            Craft Dashboard
           </Typography>
           <Typography variant="body1" color="#9AA6B2">
             {currentDate}
           </Typography>
 
           {/* <Typography variant="body1" color="gray"> */}
-            {/* <div className="text-white">
+          {/* <div className="text-white">
             {currentDate}
             </div> */}
           {/* </Typography> */}
         </Box>
 
         <Box sx={{ display: "flex", gap: 1 }}>
-          <Paper
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              placeholder="Search by Teacher, Student, Date, Subject, or Class..."
+              variant="outlined"
+              // value={searchTerm}
+              // onChange={handleSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="action" />
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: 2,
+                  bgcolor: "background.paper",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(0, 0, 0, 0.1)",
+                  },
+                },
+              }}
+            />
+          </Grid>
+          {/* <Paper
             elevation={0}
             sx={{
               width:400,
@@ -419,7 +444,7 @@ const DashboardHome = () => {
             <Typography variant="body2" color="text.secondary">
               Search...
             </Typography>
-          </Paper>
+          </Paper> */}
 
           <IconButton
             sx={{
@@ -428,7 +453,7 @@ const DashboardHome = () => {
               bgcolor: alpha(theme.palette.primary.main, 0.1),
               color: theme.palette.primary.main,
               "&:hover": {
-                bgcolor: alpha(theme.palette.primary.main, 0.2),
+                bgcolor: alpha(theme.palette.primary.main, 0.3),
               },
             }}
           >
@@ -449,7 +474,7 @@ const DashboardHome = () => {
               bgcolor: alpha(theme.palette.primary.main, 0.1),
               color: theme.palette.primary.main,
               "&:hover": {
-                bgcolor: alpha(theme.palette.primary.main, 0.2),
+                bgcolor: alpha(theme.palette.primary.main, 0.3),
               },
             }}
           >
