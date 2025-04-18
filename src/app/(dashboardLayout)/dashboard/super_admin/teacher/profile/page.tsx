@@ -1,3 +1,5 @@
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useState } from "react"
@@ -34,6 +36,8 @@ import {
   useTheme,
   alpha,
   CircularProgress,
+  SxProps,
+  Theme,
 } from "@mui/material"
 import {
   School,
@@ -261,7 +265,7 @@ const teacherData = {
 }
 
 // Tab Panel component
-function TabPanel(props) {
+function TabPanel(props:any) {
   const { children, value, index, ...other } = props
 
   return (
@@ -281,7 +285,7 @@ export default function TeacherProfile() {
   const theme = useTheme()
   const [tabValue, setTabValue] = useState(0)
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue:any) => {
     setTabValue(newValue)
   }
 
@@ -1894,7 +1898,7 @@ export default function TeacherProfile() {
 }
 
 // Helper component for circular progress with label
-function CircularProgressWithLabel(props) {
+function CircularProgressWithLabel(props:any) {
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>
       <CircularProgress
@@ -1938,7 +1942,7 @@ function CircularProgressWithLabel(props) {
 }
 
 // Timeline components
-function Timeline({ children }) {
+function Timeline({ children }:any) {
   return (
     <Box
       sx={{
@@ -1960,11 +1964,11 @@ function Timeline({ children }) {
   )
 }
 
-function TimelineItem({ children }) {
+function TimelineItem({ children }:any) {
   return <Box sx={{ display: "flex" }}>{children}</Box>
 }
 
-function TimelineSeparator({ children }) {
+function TimelineSeparator({ children }:any) {
   return (
     <Box
       sx={{
@@ -1992,23 +1996,51 @@ function TimelineConnector() {
   )
 }
 
-function TimelineDot({ children, color = "primary" }) {
+
+
+type PaletteColorOption = 
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'success';
+
+interface TimelineDotProps {
+  children?: React.ReactNode;
+  color?: PaletteColorOption | string;
+  sx?: SxProps<Theme>;
+}
+
+function TimelineDot({ children, color = "primary", sx }: TimelineDotProps) {
   return (
     <Avatar
       sx={{
         width: 36,
         height: 36,
-        bgcolor: (theme) => theme.palette[color].main,
+        bgcolor: (theme: Theme) => {
+          // Check if it's a standard palette color
+          if (typeof color === 'string' && color in theme.palette) {
+            const paletteColor = theme.palette[color as keyof typeof theme.palette];
+            // Check if it has a 'main' property (PaletteColor type)
+            if (paletteColor && typeof paletteColor === 'object' && 'main' in paletteColor) {
+              return paletteColor.main;
+            }
+          }
+          // Fallback to raw color value (for custom colors or invalid palette colors)
+          return color;
+        },
         color: "white",
         zIndex: 1,
+        ...sx,
       }}
     >
       {children}
     </Avatar>
-  )
+  );
 }
 
-function TimelineContent({ children }) {
+function TimelineContent({ children }:any) {
   return <Box sx={{ py: 1 }}>{children}</Box>
 }
 

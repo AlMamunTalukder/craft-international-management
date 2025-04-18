@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -52,6 +53,27 @@ import {
 } from "@mui/icons-material"
 import { styled } from "@mui/material/styles"
 import { motion } from "framer-motion"
+
+// Define types
+type TeacherStatus = "active" | "on leave" | "inactive"
+
+interface Teacher {
+  id: number
+  name: string
+  avatar: string
+  department: string
+  status: TeacherStatus
+  email: string
+  phone: string
+  subjects: string[]
+  classes: string[]
+  experience: number
+  rating: string
+  performance: number
+  students: number
+  joinDate: string
+  qualifications: string
+}
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -114,7 +136,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-const StatusChip = styled(Chip)(({ theme, status }) => ({
+const StatusChip = styled(Chip)<{ status: TeacherStatus }>(({ theme, status }) => ({
   backgroundColor:
     status === "active"
       ? alpha(theme.palette.success.main, 0.1)
@@ -131,9 +153,7 @@ const StatusChip = styled(Chip)(({ theme, status }) => ({
   borderRadius: 8,
 }))
 
-const DepartmentChip = styled(Chip)(({ theme, color }) => ({
-  backgroundColor: alpha(color, 0.1),
-  color: color,
+const DepartmentChip = styled(Chip)(({ theme }) => ({
   fontWeight: 500,
   borderRadius: 8,
 }))
@@ -153,7 +173,7 @@ const SearchField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-const ViewToggleButton = styled(Button)(({ theme, active }) => ({
+const ViewToggleButton = styled(Button)<{ active: boolean }>(({ theme, active }) => ({
   backgroundColor: active ? alpha(theme.palette.primary.main, 0.1) : "transparent",
   color: active ? theme.palette.primary.main : theme.palette.text.secondary,
   fontWeight: active ? 600 : 400,
@@ -162,7 +182,7 @@ const ViewToggleButton = styled(Button)(({ theme, active }) => ({
   },
 }))
 
-const PerformanceIndicator = styled(Box)(({ theme, value }) => ({
+const PerformanceIndicator = styled(Box)<{ value: number }>(({ theme, value }) => ({
   position: "relative",
   height: 4,
   width: "100%",
@@ -183,7 +203,7 @@ const PerformanceIndicator = styled(Box)(({ theme, value }) => ({
 }))
 
 // Mock data
-const departmentColors = {
+const departmentColors: Record<string, string> = {
   Mathematics: "#3a7bd5",
   Science: "#00d2ff",
   English: "#6a11cb",
@@ -194,9 +214,9 @@ const departmentColors = {
   Music: "#12c2e9",
 }
 
-const generateTeachers = (count) => {
+const generateTeachers = (count: number): Teacher[] => {
   const departments = Object.keys(departmentColors)
-  const statuses = ["active", "on leave", "inactive"]
+  const statuses: TeacherStatus[] = ["active", "on leave", "inactive"]
 
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
@@ -238,26 +258,25 @@ const generateTeachers = (count) => {
 
 export default function TeachersDashboard() {
   const theme = useTheme()
-  const [teachers, setTeachers] = useState([])
+  const [teachers, setTeachers] = useState<Teacher[]>([])
   const [loading, setLoading] = useState(true)
-  const [viewMode, setViewMode] = useState("grid")
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "kanban">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [tabValue, setTabValue] = useState(0)
-  const [sortBy, setSortBy] = useState("name")
-  const [sortDirection, setSortDirection] = useState("asc")
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedTeachers, setSelectedTeachers] = useState([])
+  const [sortBy, setSortBy] = useState<"name" | "department" | "experience" | "rating" | "performance">("name")
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedTeachers, setSelectedTeachers] = useState<Teacher[]>([])
   const [filterDepartment, setFilterDepartment] = useState("all")
 
   useEffect(() => {
-    // Simulate API call
     setTimeout(() => {
       setTeachers(generateTeachers(24))
       setLoading(false)
     }, 1000)
   }, [])
 
-  const handleSortClick = (event) => {
+  const handleSortClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -265,7 +284,7 @@ export default function TeachersDashboard() {
     setAnchorEl(null)
   }
 
-  const handleSortChange = (field) => {
+  const handleSortChange = (field: typeof sortBy) => {
     if (sortBy === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -275,41 +294,26 @@ export default function TeachersDashboard() {
     handleSortClose()
   }
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
-
-    if (newValue === 0) {
-      setFilterDepartment("all")
-    } else {
-      const department = Object.keys(departmentColors)[newValue - 1]
-      setFilterDepartment(department)
-    }
+    setFilterDepartment(newValue === 0 ? "all" : Object.keys(departmentColors)[newValue - 1])
   }
 
   const filteredTeachers = teachers
-    .filter(
-      (teacher) =>
-        (searchQuery === "" ||
-          teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          teacher.department.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (filterDepartment === "all" || teacher.department === filterDepartment),
+    .filter((teacher) =>
+      (searchQuery === "" ||
+        teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        teacher.department.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (filterDepartment === "all" || teacher.department === filterDepartment)
     )
     .sort((a, b) => {
       let comparison = 0
-
-      if (sortBy === "name") {
-        comparison = a.name.localeCompare(b.name)
-      } else if (sortBy === "department") {
-        comparison = a.department.localeCompare(b.department)
-      } else if (sortBy === "experience") {
-        comparison = a.experience - b.experience
-      } else if (sortBy === "rating") {
-        comparison = a.rating - b.rating
-      } else if (sortBy === "performance") {
-        comparison = a.performance - b.performance
-      }
-
+      if (sortBy === "name") comparison = a.name.localeCompare(b.name)
+      else if (sortBy === "department") comparison = a.department.localeCompare(b.department)
+      else if (sortBy === "experience") comparison = a.experience - b.experience
+      else if (sortBy === "rating") comparison = parseFloat(a.rating) - parseFloat(b.rating)
+      else if (sortBy === "performance") comparison = a.performance - b.performance
       return sortDirection === "asc" ? comparison : -comparison
     })
 
@@ -633,7 +637,10 @@ export default function TeachersDashboard() {
                             <DepartmentChip
                               label={teacher.department}
                               size="small"
-                              color={departmentColors[teacher.department]}
+                              sx={{
+                                backgroundColor: alpha(departmentColors[teacher.department], 0.1),
+                                color: departmentColors[teacher.department],
+                              }}
                             />
                           </Box>
 
@@ -818,8 +825,12 @@ export default function TeachersDashboard() {
                           <DepartmentChip
                             label={teacher.department}
                             size="small"
-                            color={departmentColors[teacher.department]}
+                            sx={{
+                              backgroundColor: alpha(departmentColors[teacher.department], 0.1),
+                              color: departmentColors[teacher.department],
+                            }}
                           />
+
                           <Box>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                               <MailIcon fontSize="small" sx={{ color: "text.secondary", fontSize: 16 }} />
@@ -879,10 +890,12 @@ export default function TeachersDashboard() {
                         }}
                       >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        
+
                           <StatusChip
                             label={status.charAt(0).toUpperCase() + status.slice(1)}
                             size="small"
-                            status={status}
+                            status={status as TeacherStatus} 
                           />
                           <Typography variant="body2" color="text.secondary">
                             {filteredTeachers.filter((t) => t.status === status).length} teachers

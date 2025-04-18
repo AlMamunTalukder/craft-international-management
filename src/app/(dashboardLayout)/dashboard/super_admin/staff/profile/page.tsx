@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -360,7 +361,7 @@ const staffData = {
 }
 
 // Tab Panel component
-function TabPanel(props) {
+function TabPanel(props:any) {
   const { children, value, index, ...other } = props
 
   return (
@@ -393,11 +394,11 @@ export default function StaffProfile() {
     return () => clearTimeout(timer)
   }, [])
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue:any) => {
     setTabValue(newValue)
   }
 
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event:any) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -405,7 +406,7 @@ export default function StaffProfile() {
     setAnchorEl(null)
   }
 
-  const handleFilterClick = (event) => {
+  const handleFilterClick = (event:any) => {
     setFilterAnchorEl(event.currentTarget)
   }
 
@@ -414,7 +415,7 @@ export default function StaffProfile() {
   }
 
   // Status color mapping
-  const getStatusColor = (status) => {
+  const getStatusColor = (status:any) => {
     switch (status.toLowerCase()) {
       case "completed":
       case "approved":
@@ -431,7 +432,7 @@ export default function StaffProfile() {
   }
 
   // Attendance status color mapping
-  const getAttendanceColor = (status) => {
+  const getAttendanceColor = (status:any) => {
     switch (status.toLowerCase()) {
       case "present":
         return theme.palette.success.main

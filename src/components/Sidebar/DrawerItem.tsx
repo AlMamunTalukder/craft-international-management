@@ -198,7 +198,7 @@ export const navigationItems: NavigationItem[] = [
             <Subject />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/classes/assign-subjects",
+        path: "//dashboard/super_admin/classes/assign-subjects/list",
         roles: ["super_admin", "admin"],
       },
       {

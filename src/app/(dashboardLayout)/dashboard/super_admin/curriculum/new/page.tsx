@@ -3,7 +3,7 @@ import React from 'react';
 const page = () => {
     return (
         <div>
-            assign teacher
+            <h4>curriculum </h4>
         </div>
     );
 };
