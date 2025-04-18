@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -8,248 +7,292 @@ import {
   Box,
   Container,
   Typography,
-  TextField,
-  Button,
   Paper,
+  Button,
+  InputBase,
   IconButton,
-  Avatar,
-  Grid,
   Chip,
+  Avatar,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   TablePagination,
+  TableRow,
+  TableSortLabel,
   Menu,
   MenuItem,
-  Divider,
-  InputAdornment,
-  Tooltip,
+  ListItemIcon,
+  ListItemText,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  useMediaQuery,
-  Skeleton,
+  Tooltip,
   Fade,
-  alpha,
-  createTheme,
-  ThemeProvider,
+  Divider,
+  LinearProgress,
 } from "@mui/material"
 import {
-  Add as AddIcon,
   Search as SearchIcon,
+  Add as AddIcon,
   FilterList as FilterListIcon,
+  GetApp as GetAppIcon,
+  Print as PrintIcon,
   MoreVert as MoreVertIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
-  // School as SchoolIcon,
-  // Dashboard as DashboardIcon,
-  // AccountTree as BranchIcon,
-  // Home as HomeIcon,
-  // Notifications as NotificationsIcon,
-  ArrowUpward as ArrowUpwardIcon,
-  ArrowDownward as ArrowDownwardIcon,
-  CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
-  AccessTime as AccessTimeIcon,
-  Download as DownloadIcon,
-  Print as PrintIcon,
+  Group as GroupIcon,
+  Event as EventIcon,
+  Description as DescriptionIcon,
+  CloudDownload as CloudDownloadIcon,
   Refresh as RefreshIcon,
+  CheckCircle as CheckCircleIcon,
+  AccessTime as AccessTimeIcon,
+  Cancel as CancelIcon,
+  School as SchoolIcon,
 } from "@mui/icons-material"
-import { Roboto } from "next/font/google"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-})
+// Define types
+type Order = "asc" | "desc"
+type BatchStatus = "active" | "pending" | "inactive" | "completed"
 
-// Create a custom theme with vibrant colors
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#6366f1",
-      light: "#818cf8",
-      dark: "#4f46e5",
-    },
-    secondary: {
-      main: "#ec4899",
-      light: "#f472b6",
-      dark: "#db2777",
-    },
-    background: {
-      default: "#f9fafb",
-      paper: "#ffffff",
-    },
-    success: {
-      main: "#10b981",
-      light: "#34d399",
-      dark: "#059669",
-    },
-    warning: {
-      main: "#f59e0b",
-      light: "#fbbf24",
-      dark: "#d97706",
-    },
-    error: {
-      main: "#ef4444",
-      light: "#f87171",
-      dark: "#dc2626",
-    },
-    info: {
-      main: "#3b82f6",
-      light: "#60a5fa",
-      dark: "#2563eb",
-    },
-  },
-  typography: {
-    fontFamily: roboto.style.fontFamily,
-    h4: {
-      fontWeight: 600,
-    },
-    h6: {
-      fontWeight: 500,
-    },
-  },
-  shape: {
-    borderRadius: 12,
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-          borderRadius: 8,
-          padding: "10px 20px",
-          boxShadow: "none",
-          "&:hover": {
-            boxShadow: "0px 4px 8px rgba(99, 102, 241, 0.2)",
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
-          overflow: "visible",
-        },
-      },
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
-          padding: "16px",
-        },
-        head: {
-          fontWeight: 600,
-          backgroundColor: "rgba(99, 102, 241, 0.04)",
-          color: "#6366f1",
-        },
-      },
-    },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          "&:hover": {
-            backgroundColor: "rgba(99, 102, 241, 0.04)",
-          },
-          "&:last-child td": {
-            borderBottom: 0,
-          },
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          fontWeight: 500,
-        },
-      },
-    },
-  },
-})
+interface Batch {
+  id: string
+  name: string
+  code: string
+  teacher: {
+    name: string
+    avatar: string
+  }
+  students: number
+  capacity: number
+  status: BatchStatus
+  created: string
+  class: string
+  section: string
+}
 
-// Sample data for classes
-const generateClassesData = () => {
-  const statuses = ["Active", "Inactive", "Pending"]
-  const subjects = [
-    "Mathematics",
-    "Science",
-    "English",
-    "History",
-    "Computer Science",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Art",
-    "Music",
-  ]
-  const teachers = [
-    { name: "Dr. Smith", avatar: "S" },
-    { name: "Prof. Johnson", avatar: "J" },
-    { name: "Mrs. Williams", avatar: "W" },
-    { name: "Mr. Brown", avatar: "B" },
-    { name: "Ms. Davis", avatar: "D" },
-  ]
+// Mock data for the batch list
+const MOCK_BATCHES: Batch[] = [
+  {
+    id: "1",
+    name: "Advanced Mathematics",
+    code: "MATH-4501",
+    teacher: { name: "Dr. Johnson", avatar: "J" },
+    students: 45,
+    capacity: 50,
+    status: "active",
+    created: "2025-01-15",
+    class: "Class 12",
+    section: "Section A",
+  },
+  {
+    id: "2",
+    name: "Biology Fundamentals",
+    code: "BIO-2620",
+    teacher: { name: "Ms. Davis", avatar: "D" },
+    students: 38,
+    capacity: 40,
+    status: "active",
+    created: "2025-01-10",
+    class: "Class 10",
+    section: "Section B",
+  },
+  {
+    id: "3",
+    name: "Chemistry Lab",
+    code: "CHEM-3301",
+    teacher: { name: "Mrs. Williams", avatar: "W" },
+    students: 32,
+    capacity: 35,
+    status: "pending",
+    created: "2025-01-20",
+    class: "Class 11",
+    section: "Section A",
+  },
+  {
+    id: "4",
+    name: "Computer Science",
+    code: "CS-5012",
+    teacher: { name: "Prof. Brown", avatar: "B" },
+    students: 42,
+    capacity: 45,
+    status: "active",
+    created: "2025-01-05",
+    class: "Class 12",
+    section: "Section C",
+  },
+  {
+    id: "5",
+    name: "Physics Advanced",
+    code: "PHY-4102",
+    teacher: { name: "Dr. Miller", avatar: "M" },
+    students: 28,
+    capacity: 30,
+    status: "inactive",
+    created: "2025-01-25",
+    class: "Class 11",
+    section: "Section B",
+  },
+  {
+    id: "6",
+    name: "English Literature",
+    code: "ENG-2201",
+    teacher: { name: "Ms. Taylor", avatar: "T" },
+    students: 35,
+    capacity: 40,
+    status: "active",
+    created: "2025-01-12",
+    class: "Class 10",
+    section: "Section A",
+  },
+  {
+    id: "7",
+    name: "World History",
+    code: "HIST-3105",
+    teacher: { name: "Mr. Anderson", avatar: "A" },
+    students: 30,
+    capacity: 35,
+    status: "completed",
+    created: "2024-12-15",
+    class: "Class 9",
+    section: "Section D",
+  },
+  {
+    id: "8",
+    name: "Art & Design",
+    code: "ART-2103",
+    teacher: { name: "Mrs. Garcia", avatar: "G" },
+    students: 25,
+    capacity: 30,
+    status: "active",
+    created: "2025-01-18",
+    class: "Class 8",
+    section: "Section B",
+  },
+  {
+    id: "9",
+    name: "Physical Education",
+    code: "PE-1101",
+    teacher: { name: "Mr. Wilson", avatar: "W" },
+    students: 48,
+    capacity: 50,
+    status: "pending",
+    created: "2025-01-22",
+    class: "Class 7",
+    section: "Section A",
+  },
+  {
+    id: "10",
+    name: "Music Theory",
+    code: "MUS-2201",
+    teacher: { name: "Ms. Martinez", avatar: "M" },
+    students: 22,
+    capacity: 25,
+    status: "active",
+    created: "2025-01-08",
+    class: "Class 9",
+    section: "Section C",
+  },
+  {
+    id: "11",
+    name: "Economics",
+    code: "ECON-4301",
+    teacher: { name: "Dr. Thompson", avatar: "T" },
+    students: 38,
+    capacity: 40,
+    status: "inactive",
+    created: "2025-01-14",
+    class: "Class 12",
+    section: "Section B",
+  },
+  {
+    id: "12",
+    name: "Geography",
+    code: "GEO-3102",
+    teacher: { name: "Mrs. Lee", avatar: "L" },
+    students: 33,
+    capacity: 35,
+    status: "active",
+    created: "2025-01-19",
+    class: "Class 10",
+    section: "Section D",
+  },
+]
 
-  return Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    name: `${subjects[Math.floor(Math.random() * subjects.length)]} ${Math.floor(Math.random() * 12) + 1}`,
-    code: `CLS-${Math.floor(1000 + Math.random() * 9000)}`,
-    students: Math.floor(Math.random() * 40) + 10,
-    teacher: teachers[Math.floor(Math.random() * teachers.length)],
-    status: statuses[Math.floor(Math.random() * statuses.length)],
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)),
-    lastUpdated: new Date(Date.now() - Math.floor(Math.random() * 1000000000)),
-  }))
+function getStatusInfo(status: BatchStatus) {
+  switch (status) {
+    case "active":
+      return {
+        icon: <CheckCircleIcon fontSize="small" />,
+        color: "#4caf50",
+        bgColor: "#e8f5e9",
+        label: "Active",
+      }
+    case "pending":
+      return {
+        icon: <AccessTimeIcon fontSize="small" />,
+        color: "#ff9800",
+        bgColor: "#fff3e0",
+        label: "Pending",
+      }
+    case "inactive":
+      return {
+        icon: <CancelIcon fontSize="small" />,
+        color: "#f44336",
+        bgColor: "#ffebee",
+        label: "Inactive",
+      }
+    case "completed":
+      return {
+        icon: <CheckCircleIcon fontSize="small" />,
+        color: "#2196f3",
+        bgColor: "#e3f2fd",
+        label: "Completed",
+      }
+    default:
+      return {
+        icon: <AccessTimeIcon fontSize="small" />,
+        color: "#9e9e9e",
+        bgColor: "#f5f5f5",
+        label: status,
+      }
+  }
 }
 
 export default function BatchListPage() {
-  const [classes, setClasses] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const [order, setOrder] = useState<Order>("asc")
+  const [orderBy, setOrderBy] = useState<keyof Batch>("name")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string | null>(null)
-  const [orderBy, setOrderBy] = useState<string>("name")
-  const [order, setOrder] = useState<"asc" | "desc">("asc")
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedClass, setSelectedClass] = useState<any | null>(null)
+  const [selectedBatch, setSelectedBatch] = useState<string | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [batchToDelete, setBatchToDelete] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [fadeIn, setFadeIn] = useState(false)
 
-  const theme = customTheme
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-
-
+  // Simulate loading
   useEffect(() => {
-    setLoading(true)
-    // Simulate API call
-    setTimeout(() => {
-      setClasses(generateClassesData())
+    const timer = setTimeout(() => {
       setLoading(false)
+      setFadeIn(true)
     }, 1000)
-  }, [refreshKey])
+    return () => clearTimeout(timer)
+  }, [])
 
-  const handleRefresh = () => {
-    setRefreshKey((prev) => prev + 1)
+  const handleRequestSort = (property: keyof Batch) => {
+    const isAsc = orderBy === property && order === "asc"
+    setOrder(isAsc ? "desc" : "asc")
+    setOrderBy(property)
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -266,657 +309,591 @@ export default function BatchListPage() {
     setPage(0)
   }
 
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilterAnchorEl(event.currentTarget)
-  }
-
-  const handleFilterClose = () => {
-    setFilterAnchorEl(null)
-  }
-
-  const handleFilterSelect = (status: string | null) => {
-    setStatusFilter(status)
-    setFilterAnchorEl(null)
-    setPage(0)
-  }
-
-  const handleSort = (property: string) => {
-    const isAsc = orderBy === property && order === "asc"
-    setOrder(isAsc ? "desc" : "asc")
-    setOrderBy(property)
-  }
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, classItem: any) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, batchId: string) => {
     setAnchorEl(event.currentTarget)
-    setSelectedClass(classItem)
+    setSelectedBatch(batchId)
   }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+    setSelectedBatch(null)
   }
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (batchId: string) => {
+    setBatchToDelete(batchId)
     setDeleteDialogOpen(true)
-    setAnchorEl(null)
+    handleMenuClose()
   }
 
   const handleDeleteConfirm = () => {
-    setClasses(classes.filter((c) => c.id !== selectedClass?.id))
+    // Here you would delete the batch
+    console.log("Deleting batch:", batchToDelete)
     setDeleteDialogOpen(false)
-    setSelectedClass(null)
+    setBatchToDelete(null)
   }
 
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false)
+    setBatchToDelete(null)
   }
 
+  // Filter and sort batches
+  const filteredBatches = MOCK_BATCHES.filter(
+    (batch) =>
+      batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batch.teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batch.class.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
-  const filteredClasses = classes
-    .filter(
-      (classItem) =>
-        (searchTerm === "" ||
-          classItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          classItem.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          classItem.teacher.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (statusFilter === null || classItem.status === statusFilter),
-    )
-    .sort((a, b) => {
-      const aValue = a[orderBy]
-      const bValue = b[orderBy]
+  const sortedBatches = filteredBatches.sort((a, b) => {
+    const aValue = a[orderBy]
+    const bValue = b[orderBy]
 
-      if (orderBy === "teacher") {
-        return order === "asc"
-          ? a.teacher.name.localeCompare(b.teacher.name)
-          : b.teacher.name.localeCompare(a.teacher.name)
-      }
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return order === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
-      }
-
-      if (aValue instanceof Date && bValue instanceof Date) {
-        return order === "asc" ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime()
-      }
-
-      return order === "asc" ? aValue - bValue : bValue - aValue
-    })
-
-
-  const paginatedClasses = filteredClasses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
-
-  const getStatusChipProps = (status: string) => {
-    switch (status) {
-      case "Active":
-        return {
-          color: "success" as const,
-          icon: <CheckCircleIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.success.main, 0.1) },
-        }
-      case "Inactive":
-        return {
-          color: "error" as const,
-          icon: <CancelIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.error.main, 0.1) },
-        }
-      case "Pending":
-        return {
-          color: "warning" as const,
-          icon: <AccessTimeIcon fontSize="small" />,
-          sx: { bgcolor: alpha(theme.palette.warning.main, 0.1) },
-        }
-      default:
-        return {
-          color: "default" as const,
-          icon: undefined,
-          sx: {},
-        }
+    if (orderBy === "students" || orderBy === "capacity") {
+      return order === "asc" ? Number(aValue) - Number(bValue) : Number(bValue) - Number(aValue)
     }
-  }
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return order === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+    }
+
+    return 0
+  })
+
+  // Get current page of batches
+  const currentBatches = sortedBatches.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh", borderRadius:2 }}>
-        <Container maxWidth="xl" sx={{ mt: 0, mb: 8, borderRadius:2 }}>
-          <Fade in={true} timeout={800}>
-            <Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",               
-                  mb: 3,
-                  flexWrap: "wrap",
-                  gap: 2,
-                  paddingTop:2 
-                }}
-              >
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: "text.primary" }}>
-                  Batches new
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<RefreshIcon />}
-                    onClick={handleRefresh}
-                    sx={{ borderRadius: 2 }}
-                  >
-                    Refresh
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddIcon />}
-                    component={Link}
-                    href="/dashboard/super_admin/classes/new"
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(99, 102, 241, 0.2)",
-                    }}
-                  >
-                    Add New Batch
-                  </Button>
-                </Box>
-              </Box>
-
-              <Paper elevation={0} sx={{ mb: 4, overflow: "hidden" }}>
-                <Box sx={{ p: 3, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        placeholder="Search classes by name, code or teacher..."
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon color="action" />
-                            </InputAdornment>
-                          ),
-                          sx: {
-                            borderRadius: 2,
-                            bgcolor: "background.paper",
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.1)",
-                            },
-                          },
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Box sx={{ display: "flex", gap: 2, justifyContent: { xs: "flex-start", md: "flex-end" } }}>
-                        <Button
-                          variant="outlined"
-                          color="inherit"
-                          startIcon={<FilterListIcon />}
-                          onClick={handleFilterClick}
-                          sx={{
-                            borderColor: "rgba(0, 0, 0, 0.12)",
-                            color: "text.secondary",
-                            "&:hover": {
-                              borderColor: "primary.main",
-                              bgcolor: "rgba(99, 102, 241, 0.04)",
-                            },
-                            ...(statusFilter && {
-                              borderColor: "primary.main",
-                              color: "primary.main",
-                              bgcolor: "rgba(99, 102, 241, 0.04)",
-                            }),
-                          }}
-                        >
-                          {statusFilter || "Filter by Status"}
-                        </Button>
-                        <Menu
-                          anchorEl={filterAnchorEl}
-                          open={Boolean(filterAnchorEl)}
-                          onClose={handleFilterClose}
-                          PaperProps={{
-                            elevation: 3,
-                            sx: {
-                              mt: 1,
-                              minWidth: 180,
-                              borderRadius: 2,
-                              overflow: "hidden",
-                            },
-                          }}
-                        >
-                          <MenuItem
-                            onClick={() => handleFilterSelect(null)}
-                            sx={{
-                              py: 1.5,
-                              ...(statusFilter === null && {
-                                bgcolor: "rgba(99, 102, 241, 0.08)",
-                                color: "primary.main",
-                              }),
-                            }}
-                          >
-                            All Statuses
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => handleFilterSelect("Active")}
-                            sx={{
-                              py: 1.5,
-                              ...(statusFilter === "Active" && {
-                                bgcolor: "rgba(99, 102, 241, 0.08)",
-                                color: "primary.main",
-                              }),
-                            }}
-                          >
-                            <CheckCircleIcon fontSize="small" color="success" sx={{ mr: 1 }} />
-                            Active
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => handleFilterSelect("Inactive")}
-                            sx={{
-                              py: 1.5,
-                              ...(statusFilter === "Inactive" && {
-                                bgcolor: "rgba(99, 102, 241, 0.08)",
-                                color: "primary.main",
-                              }),
-                            }}
-                          >
-                            <CancelIcon fontSize="small" color="error" sx={{ mr: 1 }} />
-                            Inactive
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => handleFilterSelect("Pending")}
-                            sx={{
-                              py: 1.5,
-                              ...(statusFilter === "Pending" && {
-                                bgcolor: "rgba(99, 102, 241, 0.08)",
-                                color: "primary.main",
-                              }),
-                            }}
-                          >
-                            <AccessTimeIcon fontSize="small" color="warning" sx={{ mr: 1 }} />
-                            Pending
-                          </MenuItem>
-                        </Menu>
-
-                        {!isMobile && (
-                          <>
-                            <Button
-                              variant="outlined"
-                              color="inherit"
-                              startIcon={<DownloadIcon />}
-                              sx={{
-                                borderColor: "rgba(0, 0, 0, 0.12)",
-                                color: "text.secondary",
-                                "&:hover": {
-                                  borderColor: "primary.main",
-                                  bgcolor: "rgba(99, 102, 241, 0.04)",
-                                },
-                              }}
-                            >
-                              Export
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              color="inherit"
-                              startIcon={<PrintIcon />}
-                              sx={{
-                                borderColor: "rgba(0, 0, 0, 0.12)",
-                                color: "text.secondary",
-                                "&:hover": {
-                                  borderColor: "primary.main",
-                                  bgcolor: "rgba(99, 102, 241, 0.04)",
-                                },
-                              }}
-                            >
-                              Print
-                            </Button>
-                          </>
-                        )}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Box>
-
-                {loading ? (
-                  <Box sx={{ p: 2 }}>
-                    {Array.from(new Array(5)).map((_, index) => (
-                      <Box key={index} sx={{ display: "flex", py: 2, px: 2, alignItems: "center" }}>
-                        <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
-                        <Box sx={{ width: "100%" }}>
-                          <Skeleton variant="text" width="40%" height={30} />
-                          <Box sx={{ display: "flex", mt: 1 }}>
-                            <Skeleton variant="text" width="20%" sx={{ mr: 2 }} />
-                            <Skeleton variant="text" width="30%" />
-                          </Box>
-                        </Box>
-                        <Skeleton variant="rectangular" width={100} height={36} sx={{ borderRadius: 1 }} />
-                      </Box>
-                    ))}
-                  </Box>
-                ) : (
-                  <>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 650 }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "name" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("name")}
-                              >
-                                Class Name
-                                {orderBy === "name" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "code" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("code")}
-                              >
-                                Code
-                                {orderBy === "code" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "teacher" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("teacher")}
-                              >
-                                Teacher
-                                {orderBy === "teacher" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "students" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("students")}
-                              >
-                                Students
-                                {orderBy === "students" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "status" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("status")}
-                              >
-                                Status
-                                {orderBy === "status" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                  color: orderBy === "createdAt" ? "primary.main" : "inherit",
-                                }}
-                                onClick={() => handleSort("createdAt")}
-                              >
-                                Created
-                                {orderBy === "createdAt" && (
-                                  <Box component="span" sx={{ display: "inline-flex", ml: 0.5 }}>
-                                    {order === "asc" ? (
-                                      <ArrowUpwardIcon fontSize="small" />
-                                    ) : (
-                                      <ArrowDownwardIcon fontSize="small" />
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {paginatedClasses.length > 0 ? (
-                            paginatedClasses.map((classItem) => {
-                              const statusChipProps = getStatusChipProps(classItem.status)
-
-                              return (
-                                <TableRow key={classItem.id} sx={{ transition: "all 0.2s" }}>
-                                  <TableCell component="th" scope="row">
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                      {classItem.name}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Chip
-                                      label={classItem.code}
-                                      size="small"
-                                      sx={{
-                                        bgcolor: "rgba(99, 102, 241, 0.08)",
-                                        color: "primary.main",
-                                        fontWeight: 500,
-                                      }}
-                                    />
-                                  </TableCell>
-                                  <TableCell>
-                                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                                      <Avatar
-                                        sx={{
-                                          width: 32,
-                                          height: 32,
-                                          mr: 1.5,
-                                          bgcolor: "primary.main",
-                                          fontSize: "0.875rem",
-                                        }}
-                                      >
-                                        {classItem.teacher.avatar}
-                                      </Avatar>
-                                      <Typography variant="body2">{classItem.teacher.name}</Typography>
-                                    </Box>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography variant="body2">{classItem.students}</Typography>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Chip
-                                      icon={statusChipProps.icon}
-                                      label={classItem.status}
-                                      color={statusChipProps.color}
-                                      size="small"
-                                      sx={{
-                                        ...statusChipProps.sx,
-                                        fontWeight: 500,
-                                      }}
-                                    />
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography variant="body2" color="text.secondary">
-                                      {classItem.createdAt.toLocaleDateString()}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                      {!isMobile && (
-                                        <>
-                                          <Tooltip title="View Details">
-                                            <IconButton
-                                              size="small"
-                                              sx={{
-                                                color: "info.main",
-                                                bgcolor: alpha(theme.palette.info.main, 0.1),
-                                                mr: 1,
-                                                "&:hover": {
-                                                  bgcolor: alpha(theme.palette.info.main, 0.2),
-                                                },
-                                              }}
-                                            >
-                                              <VisibilityIcon fontSize="small" />
-                                            </IconButton>
-                                          </Tooltip>
-                                          <Tooltip title="Edit Class">
-                                            <IconButton
-                                              size="small"
-                                              sx={{
-                                                color: "warning.main",
-                                                bgcolor: alpha(theme.palette.warning.main, 0.1),
-                                                mr: 1,
-                                                "&:hover": {
-                                                  bgcolor: alpha(theme.palette.warning.main, 0.2),
-                                                },
-                                              }}
-                                            >
-                                              <EditIcon fontSize="small" />
-                                            </IconButton>
-                                          </Tooltip>
-                                        </>
-                                      )}
-                                      <Tooltip title="More Actions">
-                                        <IconButton
-                                          size="small"
-                                          onClick={(e) => handleMenuClick(e, classItem)}
-                                          sx={{
-                                            color: "text.secondary",
-                                            bgcolor: "rgba(0, 0, 0, 0.04)",
-                                            "&:hover": {
-                                              bgcolor: "rgba(0, 0, 0, 0.08)",
-                                            },
-                                          }}
-                                        >
-                                          <MoreVertIcon fontSize="small" />
-                                        </IconButton>
-                                      </Tooltip>
-                                    </Box>
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            })
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                                <Box sx={{ textAlign: "center" }}>
-                                  <SearchIcon sx={{ fontSize: 48, color: "text.disabled", mb: 2 }} />
-                                  <Typography variant="h6" gutterBottom>
-                                    No classes found
-                                  </Typography>
-                                  <Typography variant="body2" color="text.secondary">
-                                    Try adjusting your search or filter to find what you&apos;re looking for.
-                                  </Typography>
-                                </Box>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25, 50]}
-                      component="div"
-                      count={filteredClasses.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      sx={{
-                        borderTop: "1px solid rgba(0, 0, 0, 0.06)",
-                      }}
-                    />
-                  </>
-                )}
-              </Paper>
-            </Box>
-          </Fade>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom, #f9f9f9, #f0f0f0)",
+        pt: 2,
+        pb: 8,
+      }}
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%)",
+          color: "white",
+          py: 3,
+          mb: 4,
+          borderRadius: { xs: 0, md: "0 0 20px 20px" },
+          boxShadow: "0 4px 20px rgba(106, 27, 154, 0.4)",
+        }}
+      >
+        <Container maxWidth="xl">
+          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+            <SchoolIcon sx={{ fontSize: 40, mr: 2 }} />
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+              Batch Management
+            </Typography>
+          </Box>
+          <Typography variant="body1" sx={{ opacity: 0.9, maxWidth: 700 }}>
+            Manage all your academic batches in one place. Create, edit, and track batch progress efficiently.
+          </Typography>
         </Container>
       </Box>
 
-      {/* Context Menu */}
+      <Container maxWidth="xl">
+        {/* Search and Actions */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", md: "center" },
+            gap: 2,
+            mb: 4,
+          }}
+        >
+          <Paper
+            elevation={3}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              px: 2,
+              py: 0.5,
+              borderRadius: 100,
+              flex: { xs: "1", md: "0 0 400px" },
+              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            }}
+          >
+            <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />
+            <InputBase
+              placeholder="Search batches..."
+              fullWidth
+              value={searchTerm}
+              onChange={handleSearchChange}
+              sx={{ ml: 1 }}
+            />
+          </Paper>
+
+          <Box sx={{ display: "flex", gap: 1, justifyContent: { xs: "space-between", md: "flex-end" } }}>
+            <Button
+              variant="outlined"
+              startIcon={<FilterListIcon />}
+              sx={{
+                borderRadius: 100,
+                borderColor: "rgba(0,0,0,0.12)",
+                color: "text.secondary",
+                px: 2,
+              }}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<GetAppIcon />}
+              sx={{
+                borderRadius: 100,
+                borderColor: "rgba(0,0,0,0.12)",
+                color: "text.secondary",
+                px: 2,
+              }}
+            >
+              Export
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<PrintIcon />}
+              sx={{
+                borderRadius: 100,
+                borderColor: "rgba(0,0,0,0.12)",
+                color: "text.secondary",
+                px: 2,
+              }}
+            >
+              Print
+            </Button>
+            <Link href="/new-batch" passHref>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{
+                  borderRadius: 100,
+                  background: "linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%)",
+                  boxShadow: "0 4px 10px rgba(106, 27, 154, 0.3)",
+                  px: 3,
+                }}
+              >
+                New Batch
+              </Button>
+            </Link>
+          </Box>
+        </Box>
+
+        {/* Batch List */}
+        <Paper
+          elevation={3}
+          sx={{
+            borderRadius: 4,
+            overflow: "hidden",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+            position: "relative",
+          }}
+        >
+          {loading && (
+            <LinearProgress
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 4,
+                "& .MuiLinearProgress-bar": {
+                  background: "linear-gradient(90deg, #6a1b9a, #4a148c)",
+                },
+              }}
+            />
+          )}
+
+          <Fade in={fadeIn} timeout={800}>
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ bgcolor: "#f5f5f5" }}>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      <TableSortLabel
+                        active={orderBy === "name"}
+                        direction={orderBy === "name" ? order : "asc"}
+                        onClick={() => handleRequestSort("name")}
+                      >
+                        Batch Name
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Code</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Teacher</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      <TableSortLabel
+                        active={orderBy === "students"}
+                        direction={orderBy === "students" ? order : "asc"}
+                        onClick={() => handleRequestSort("students")}
+                      >
+                        Students
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      <TableSortLabel
+                        active={orderBy === "created"}
+                        direction={orderBy === "created" ? order : "asc"}
+                        onClick={() => handleRequestSort("created")}
+                      >
+                        Created
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 600 }}>
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {currentBatches.map((batch) => {
+                    const statusInfo = getStatusInfo(batch.status)
+                    const fillPercentage = (batch.students / batch.capacity) * 100
+                    const fillColor = fillPercentage > 90 ? "#f44336" : fillPercentage > 75 ? "#ff9800" : "#4caf50"
+
+                    return (
+                      <TableRow
+                        key={batch.id}
+                        hover
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "rgba(0,0,0,0.02)",
+                            transition: "background-color 0.2s ease",
+                          },
+                        }}
+                      >
+                        <TableCell>
+                          <Box sx={{ display: "flex", flexDirection: "column" }}>
+                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                              {batch.name}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {batch.class}, {batch.section}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={batch.code}
+                            size="small"
+                            sx={{
+                              bgcolor: "rgba(106, 27, 154, 0.08)",
+                              color: "#6a1b9a",
+                              fontWeight: 500,
+                              borderRadius: 1,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Avatar
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                bgcolor: "primary.main",
+                                fontSize: "0.875rem",
+                              }}
+                            >
+                              {batch.teacher.avatar}
+                            </Avatar>
+                            <Typography variant="body2">{batch.teacher.name}</Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography variant="body2">
+                              {batch.students}/{batch.capacity}
+                            </Typography>
+                            <Box
+                              sx={{
+                                width: 60,
+                                height: 6,
+                                bgcolor: "rgba(0,0,0,0.08)",
+                                borderRadius: 3,
+                                overflow: "hidden",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  height: "100%",
+                                  width: `${fillPercentage}%`,
+                                  bgcolor: fillColor,
+                                  borderRadius: 3,
+                                }}
+                              />
+                            </Box>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            icon={statusInfo.icon}
+                            label={statusInfo.label}
+                            size="small"
+                            sx={{
+                              bgcolor: statusInfo.bgColor,
+                              color: statusInfo.color,
+                              fontWeight: 500,
+                              "& .MuiChip-icon": {
+                                color: statusInfo.color,
+                              },
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {new Date(batch.created).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Tooltip title="View Details" arrow>
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "text.secondary",
+                                  "&:hover": { color: "primary.main", bgcolor: "rgba(106, 27, 154, 0.08)" },
+                                }}
+                              >
+                                <VisibilityIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Edit" arrow>
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "primary.main",
+                                  "&:hover": { bgcolor: "rgba(106, 27, 154, 0.08)" },
+                                }}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <IconButton
+                              size="small"
+                              sx={{
+                                color: "text.secondary",
+                                "&:hover": { color: "primary.main", bgcolor: "rgba(106, 27, 154, 0.08)" },
+                              }}
+                              onClick={(e) => handleMenuOpen(e, batch.id)}
+                            >
+                              <MoreVertIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                  {currentBatches.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                          <Box
+                            sx={{
+                              width: 80,
+                              height: 80,
+                              borderRadius: "50%",
+                              bgcolor: "rgba(106, 27, 154, 0.08)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <SearchIcon sx={{ fontSize: 40, color: "#6a1b9a" }} />
+                          </Box>
+                          <Typography variant="h6" color="text.secondary">
+                            No batches found
+                          </Typography>
+                          <Typography variant="body2" color="text.disabled" sx={{ maxWidth: 300, textAlign: "center" }}>
+                            Try adjusting your search or create a new batch to get started
+                          </Typography>
+                          <Button
+                            variant="outlined"
+                            startIcon={<RefreshIcon />}
+                            onClick={() => setSearchTerm("")}
+                            sx={{ mt: 1, borderRadius: 100 }}
+                          >
+                            Clear Search
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Fade>
+
+          <Divider />
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredBatches.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+
+        {/* Stats Cards */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr 1fr" },
+            gap: 3,
+            mt: 4,
+          }}
+        >
+          <Paper
+            elevation={2}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Typography variant="overline" sx={{ color: "#1565c0", fontWeight: 600 }}>
+              Total Batches
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: "#0d47a1" }}>
+              {MOCK_BATCHES.length}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#1976d2" }}>
+              Across all classes and sections
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={2}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Typography variant="overline" sx={{ color: "#2e7d32", fontWeight: 600 }}>
+              Active Batches
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: "#1b5e20" }}>
+              {MOCK_BATCHES.filter((b) => b.status === "active").length}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#388e3c" }}>
+              Currently in progress
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={2}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Typography variant="overline" sx={{ color: "#e65100", fontWeight: 600 }}>
+              Total Students
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: "#bf360c" }}>
+              {MOCK_BATCHES.reduce((sum, batch) => sum + batch.students, 0)}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#f57c00" }}>
+              Enrolled in all batches
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={2}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Typography variant="overline" sx={{ color: "#6a1b9a", fontWeight: 600 }}>
+              Completion Rate
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: "#4a148c" }}>
+              {Math.round((MOCK_BATCHES.filter((b) => b.status === "completed").length / MOCK_BATCHES.length) * 100)}%
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#8e24aa" }}>
+              Batches completed successfully
+            </Typography>
+          </Paper>
+        </Box>
+      </Container>
+
+      {/* Action Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         PaperProps={{
           elevation: 3,
           sx: {
-            mt: 1,
-            minWidth: 180,
             borderRadius: 2,
-            overflow: "hidden",
+            mt: 1,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
           },
         }}
       >
-        <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
-          <VisibilityIcon fontSize="small" sx={{ mr: 2, color: "info.main" }} />
-          View Details
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <GroupIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>View Students</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleMenuClose} sx={{ py: 1.5 }}>
-          <EditIcon fontSize="small" sx={{ mr: 2, color: "warning.main" }} />
-          Edit Class
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <EventIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Schedule</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <DescriptionIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Reports</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <PrintIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Print Details</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <CloudDownloadIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Export Data</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleDeleteClick} sx={{ py: 1.5, color: "error.main" }}>
-          <DeleteIcon fontSize="small" sx={{ mr: 2 }} />
-          Delete Class
+        <MenuItem onClick={() => selectedBatch && handleDeleteClick(selectedBatch)}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" sx={{ color: "error.main" }} />
+          </ListItemIcon>
+          <ListItemText sx={{ color: "error.main" }}>Delete Batch</ListItemText>
         </MenuItem>
       </Menu>
 
@@ -925,38 +902,42 @@ export default function BatchListPage() {
         open={deleteDialogOpen}
         onClose={handleDeleteCancel}
         PaperProps={{
-          sx: {
-            borderRadius: 3,
-            width: "100%",
-            maxWidth: 480,
-          },
+          elevation: 3,
+          sx: { borderRadius: 3 },
         }}
       >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-            Delete Class
-          </Typography>
-        </DialogTitle>
+        <DialogTitle sx={{ fontWeight: 600 }}>Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the class &#34;{selectedClass?.name}&#34;? This action cannot be undone.
+            Are you sure you want to delete this batch? This action cannot be undone and will remove all associated
+            data.
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3 }}>
+        <DialogActions sx={{ p: 2 }}>
           <Button
             onClick={handleDeleteCancel}
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "rgba(0, 0, 0, 0.12)" }}
+            sx={{
+              color: "text.secondary",
+              borderRadius: 100,
+              px: 3,
+            }}
           >
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} variant="contained" color="error" sx={{ ml: 2 }}>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            color="error"
+            sx={{
+              borderRadius: 100,
+              px: 3,
+            }}
+            autoFocus
+          >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-    </ThemeProvider>
+    </Box>
   )
 }
-
