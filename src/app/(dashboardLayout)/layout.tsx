@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Drawer,
   List,
@@ -24,7 +23,6 @@ import {
 } from "@mui/material";
 import {
   Menu as MenuIcon,
-
   ExpandMore,
   Search as SearchIcon,
   Person,
@@ -33,13 +31,12 @@ import {
   MenuOpen,
   ExpandLess,
   Close,
-
 } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
+
 import { navigationItems } from "@/components/Sidebar/DrawerItem";
-
-
+import { UserRole } from "@/types/common";
 const DRAWER_WIDTH = 310;
 const COLLAPSED_DRAWER_WIDTH = 75;
 
@@ -50,22 +47,39 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+
+
+  
+
+const getUserInfo = async () => {
+  return {
+    role: "admin",
+    id: "123",
+    email: "admin@example.com",
+  };
+};
 
   const theme = createTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await getUserInfo();
+      setUserRole(userInfo?.role as UserRole || null);
+    };
+    fetchUserInfo();
+  }, []);
 
   const toggleDrawer = () => setOpen(!open);
   const toggleMobileDrawer = () => setMobileOpen(!mobileOpen);
 
   const toggleNestedList = (title: string) => {
     setOpenItems((prev) => {
-      // Close all other menus first
       const newState = Object.keys(prev).reduce((acc, key) => {
         acc[key] = false;
         return acc;
       }, {} as Record<string, boolean>);
-
-      // Toggle the current menu
       newState[title] = !prev[title];
       return newState;
     });
@@ -96,41 +110,21 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             cursor: "pointer",
             backgroundColor: pathname === item.path ? "rgba(0, 0, 0, 0.08)" : "inherit",
             minHeight: "48px",
-            '&:hover': {
-              backgroundColor: "rgba(0, 0, 0, 0.04)",
-            },
+            '&:hover': { backgroundColor: "rgba(0, 0, 0, 0.04)" },
           }}
         >
-          <ListItemIcon sx={{
-            minWidth: "auto",
-            marginRight: (isMobile || open) ? 2 : 0,
-          }}>
+          <ListItemIcon sx={{ minWidth: "auto", marginRight: (isMobile || open) ? 2 : 0 }}>
             {item.icon}
           </ListItemIcon>
           {(isMobile || open) && (
-            <ListItemText
-              primary={item.title}
-              sx={{
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-              }}
-            />
+            <ListItemText primary={item.title} sx={{ overflow: "hidden", whiteSpace: "nowrap" }} />
           )}
           {item.children && (isMobile || open) && (
-            openItems[item.title] ?
-              <ExpandLess sx={{ transition: 'transform 0.3s' }} /> :
-              <ExpandMore sx={{ transition: 'transform 0.3s' }} />
+            openItems[item.title] ? <ExpandLess /> : <ExpandMore />
           )}
         </ListItem>
         {item.children && (
-          <Collapse
-            in={openItems[item.title]}
-            timeout="auto"
-            unmountOnExit
-            sx={{
-              transition: 'all 0.3s ease-in-out',
-            }}
-          >
+          <Collapse in={openItems[item.title]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {renderNavigationItems(item.children, true)}
             </List>
@@ -139,61 +133,43 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </React.Fragment>
     ));
 
-  return (
-    <Box sx={{ display: "flex", }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor:"#4F0187" }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            onClick={isMobile ? toggleMobileDrawer : toggleDrawer}
-            sx={{ mr: 2, zIndex: 1301 }}
-          >
-            {isMobile ? (
-              mobileOpen ? <Close /> : <MenuIcon />
-            ) : (
-              open ? <MenuOpen /> : <MenuIcon />
-            )}
-          </IconButton>
+  // Filter navigation items based on userRole
+  const roleBasedItems = userRole
+    ? navigationItems.filter((item) =>
+        item.roles ? item.roles.includes(userRole) : true
+      )
+    : [];
 
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{
-              mr: 2,
-              fontWeight: 'bold',
-            }}
-          >
+  return (
+    <Box sx={{ display: "flex" }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "#4F0187" }}>
+        <Toolbar>
+          <IconButton color="inherit" onClick={isMobile ? toggleMobileDrawer : toggleDrawer} sx={{ mr: 2 }}>
+            {isMobile ? (mobileOpen ? <Close /> : <MenuIcon />) : (open ? <MenuOpen /> : <MenuIcon />)}
+          </IconButton>
+          <Typography variant="h6" noWrap sx={{ mr: 2, fontWeight: 'bold' }}>
             Craft International Institute
           </Typography>
-
-          <Box sx={{
-            flexGrow: 1,
-            display: { xs: 'none', sm: 'flex' },
-            justifyContent: "center",
-          }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, justifyContent: "center" }}>
             <Box sx={{
-              padding: .5,
+              padding: 0.5,
               position: "relative",
               borderRadius: 5,
               bgcolor: "white",
-              // '&:hover': { bgcolor: "rgba(255,255,255,0.25)" },
               width: "100%",
               maxWidth: "300px"
-
             }}>
               <Box sx={{
                 position: "absolute",
-                padding: .5,
+                padding: 0.5,
                 pointerEvents: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-              
               }}>
-                <SearchIcon sx={{color: "black",}}/>
+                <SearchIcon sx={{ color: "black" }} />
               </Box>
-              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "black", }} placeholder="Search…" />
+              <InputBase sx={{ width: "100%", paddingLeft: 4, color: "black" }} placeholder="Search…" />
             </Box>
           </Box>
           <IconButton onClick={handleProfileMenuOpen} color="inherit"><Avatar /></IconButton>
@@ -207,7 +183,6 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <MenuItem onClick={handleProfileMenuClose}><Logout /> Logout</MenuItem>
       </Menu>
 
-      {/* Sidebar Drawer for Desktop and Mobile */}
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
         open={isMobile ? mobileOpen : open}
@@ -223,13 +198,13 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         }}
       >
         <Toolbar />
-        <List sx={{ padding: '8px' }}>{renderNavigationItems(navigationItems)}</List>
+        <List sx={{ padding: '8px' }}>{renderNavigationItems(roleBasedItems)}</List>
       </Drawer>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "64px" }}>{children}</Box>
     </Box>
   );
-}
+};
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const theme = createTheme();

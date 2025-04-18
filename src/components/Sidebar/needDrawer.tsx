@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dashboard,
   School,
@@ -103,15 +104,17 @@ import {
   Summarize,
   Storage,
   Folder,
-  Image as Photos,
-  Logout,
+   Image as Photos,
+   Logout,
 } from "@mui/icons-material"
-import { ColorfulIcon } from "./ColorfulIcon"
-import { NavigationItem } from "@/types/common"
 
+// Colorful icon wrapper component
+const ColorfulIcon = ({ children, color }: any) => {
+  return <div style={{ color: color, display: "flex", alignItems: "center", justifyContent: "center" }}>{children}</div>
+}
 
-
-export const navigationItems: NavigationItem[] = [
+// Update the navigationItems array with appropriate icons for submenus
+export const navigationItems = [
   {
     title: "Dashboard",
     icon: (
@@ -120,7 +123,6 @@ export const navigationItems: NavigationItem[] = [
       </ColorfulIcon>
     ),
     path: "/dashboard",
-    roles: ["admin", "teacher", "student", "super_admin"],
   },
   {
     title: "Classes",
@@ -129,7 +131,6 @@ export const navigationItems: NavigationItem[] = [
         <School />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         title: "Session ",
@@ -139,7 +140,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/session",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Sections",
@@ -149,7 +149,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/section/list",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Classes",
@@ -159,7 +158,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/class",
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         title: "Batches",
@@ -169,7 +167,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/batches",
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         title: "Curriculum",
@@ -179,7 +176,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/curriculum",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Assign Teachers ",
@@ -189,7 +185,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/assign-teacher",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Assign Subjects ",
@@ -199,7 +194,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/assign-subjects",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Assign Routines ",
@@ -209,7 +203,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/assign-routines",
-        roles: ["super_admin", "admin"],
       },
       {
         title: "Class Report List ",
@@ -219,7 +212,6 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/report",
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         title: "New Report ",
@@ -229,8 +221,8 @@ export const navigationItems: NavigationItem[] = [
           </ColorfulIcon>
         ),
         path: "/dashboard/super_admin/classes/report/new",
-        roles: ["super_admin", "admin", "teacher"],
       },
+      
     ],
   },
   {
@@ -240,7 +232,6 @@ export const navigationItems: NavigationItem[] = [
         <Person />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/student/list",
@@ -250,7 +241,6 @@ export const navigationItems: NavigationItem[] = [
             <Group />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/shop/list",
@@ -260,8 +250,8 @@ export const navigationItems: NavigationItem[] = [
             <CloudUpload />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
+      
       {
         path: "/dashboard/super_admin/student-migrate",
         title: "Migrate Student",
@@ -270,7 +260,6 @@ export const navigationItems: NavigationItem[] = [
             <CompareArrows />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/student-status-migrate",
@@ -280,7 +269,6 @@ export const navigationItems: NavigationItem[] = [
             <SwapHoriz />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/shop/list",
@@ -290,7 +278,6 @@ export const navigationItems: NavigationItem[] = [
             <CompareArrows />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -301,7 +288,6 @@ export const navigationItems: NavigationItem[] = [
         <RestaurantMenu />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/daily-meal-report",
@@ -311,7 +297,6 @@ export const navigationItems: NavigationItem[] = [
             <ListAlt />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/daily-meal-report/add",
@@ -321,7 +306,6 @@ export const navigationItems: NavigationItem[] = [
             <AddCircle />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -332,7 +316,6 @@ export const navigationItems: NavigationItem[] = [
         <AssessmentOutlined />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/daily-student-report/add",
@@ -342,7 +325,6 @@ export const navigationItems: NavigationItem[] = [
             <PostAdd />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/daily-student-report",
@@ -352,7 +334,6 @@ export const navigationItems: NavigationItem[] = [
             <ListAlt />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
     ],
   },
@@ -363,7 +344,6 @@ export const navigationItems: NavigationItem[] = [
         <StickyNote2 />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/daily-class-report/add",
@@ -373,7 +353,6 @@ export const navigationItems: NavigationItem[] = [
             <NoteAdd />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/daily-class-report",
@@ -383,7 +362,6 @@ export const navigationItems: NavigationItem[] = [
             <Summarize />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
     ],
   },
@@ -395,7 +373,6 @@ export const navigationItems: NavigationItem[] = [
         <Payments />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/fine-type/list",
@@ -405,7 +382,6 @@ export const navigationItems: NavigationItem[] = [
             <AttachMoney />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/fee-type/list",
@@ -415,7 +391,6 @@ export const navigationItems: NavigationItem[] = [
             <Category />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/discount-type/list",
@@ -425,7 +400,6 @@ export const navigationItems: NavigationItem[] = [
             <LocalOffer />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/fee-type/list",
@@ -435,7 +409,6 @@ export const navigationItems: NavigationItem[] = [
             <Payments />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/assign-discount/list",
@@ -445,7 +418,6 @@ export const navigationItems: NavigationItem[] = [
             <MoneyOff />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/assign-fine/list",
@@ -455,7 +427,6 @@ export const navigationItems: NavigationItem[] = [
             <AttachMoney />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/collect-fee-setting",
@@ -465,7 +436,6 @@ export const navigationItems: NavigationItem[] = [
             <Settings />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/collect-fee/list",
@@ -475,7 +445,6 @@ export const navigationItems: NavigationItem[] = [
             <Receipt />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/collect-fee-statement",
@@ -485,7 +454,6 @@ export const navigationItems: NavigationItem[] = [
             <ReceiptLong />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/all-sms-history",
@@ -495,7 +463,6 @@ export const navigationItems: NavigationItem[] = [
             <NotificationsActive />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/contact/list",
@@ -505,7 +472,6 @@ export const navigationItems: NavigationItem[] = [
             <Delete />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -517,7 +483,6 @@ export const navigationItems: NavigationItem[] = [
         <Print />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/blog/add",
@@ -527,7 +492,6 @@ export const navigationItems: NavigationItem[] = [
             <Badge />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -537,7 +501,6 @@ export const navigationItems: NavigationItem[] = [
             <CardMembership />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -547,7 +510,6 @@ export const navigationItems: NavigationItem[] = [
             <ConfirmationNumber />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -557,7 +519,6 @@ export const navigationItems: NavigationItem[] = [
             <CardMembership />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -567,7 +528,6 @@ export const navigationItems: NavigationItem[] = [
             <Score />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -577,7 +537,6 @@ export const navigationItems: NavigationItem[] = [
             <TableChart />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -587,7 +546,6 @@ export const navigationItems: NavigationItem[] = [
             <MonetizationOn />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -597,7 +555,6 @@ export const navigationItems: NavigationItem[] = [
             <PieChart />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/student",
@@ -607,7 +564,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -617,7 +573,6 @@ export const navigationItems: NavigationItem[] = [
             <RequestPage />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -627,7 +582,6 @@ export const navigationItems: NavigationItem[] = [
             <Paid />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -637,7 +591,6 @@ export const navigationItems: NavigationItem[] = [
             <FactCheck />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/blog/list",
@@ -647,7 +600,6 @@ export const navigationItems: NavigationItem[] = [
             <Description />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -658,7 +610,6 @@ export const navigationItems: NavigationItem[] = [
         <Description />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/topbar/list",
@@ -668,7 +619,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -680,7 +630,6 @@ export const navigationItems: NavigationItem[] = [
         <Favorite />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/review/add",
@@ -690,7 +639,6 @@ export const navigationItems: NavigationItem[] = [
             <AccountBox />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -700,7 +648,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -710,7 +657,6 @@ export const navigationItems: NavigationItem[] = [
             <Favorite />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -720,7 +666,6 @@ export const navigationItems: NavigationItem[] = [
             <Category />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -730,7 +675,6 @@ export const navigationItems: NavigationItem[] = [
             <People />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -740,7 +684,6 @@ export const navigationItems: NavigationItem[] = [
             <Receipt />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/review/list",
@@ -750,7 +693,6 @@ export const navigationItems: NavigationItem[] = [
             <FolderSpecial />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -761,7 +703,6 @@ export const navigationItems: NavigationItem[] = [
         <AccountBalance />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -771,7 +712,6 @@ export const navigationItems: NavigationItem[] = [
             <Settings />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/folder",
@@ -781,7 +721,6 @@ export const navigationItems: NavigationItem[] = [
             <MonetizationOn />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -792,7 +731,6 @@ export const navigationItems: NavigationItem[] = [
         <Assignment />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/home-work",
@@ -802,7 +740,6 @@ export const navigationItems: NavigationItem[] = [
             <HomeWork />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
     ],
   },
@@ -813,7 +750,6 @@ export const navigationItems: NavigationItem[] = [
         <EventNote />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -823,7 +759,6 @@ export const navigationItems: NavigationItem[] = [
             <Settings />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/folder",
@@ -833,7 +768,6 @@ export const navigationItems: NavigationItem[] = [
             <Assessment />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/folder",
@@ -843,7 +777,6 @@ export const navigationItems: NavigationItem[] = [
             <EventNote />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
     ],
   },
@@ -854,7 +787,6 @@ export const navigationItems: NavigationItem[] = [
         <CalendarViewDay />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -864,7 +796,6 @@ export const navigationItems: NavigationItem[] = [
             <MeetingRoom />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -874,7 +805,6 @@ export const navigationItems: NavigationItem[] = [
             <Timer />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -884,7 +814,6 @@ export const navigationItems: NavigationItem[] = [
             <EventSeat />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -894,7 +823,6 @@ export const navigationItems: NavigationItem[] = [
             <Download />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -905,7 +833,6 @@ export const navigationItems: NavigationItem[] = [
         <AssignmentTurnedIn />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher"],
     children: [
       {
         path: "/dashboard/super_admin/grading/list",
@@ -915,7 +842,6 @@ export const navigationItems: NavigationItem[] = [
             <Grade />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/exam/exam-categories",
@@ -925,7 +851,6 @@ export const navigationItems: NavigationItem[] = [
             <ExamCategory />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -935,7 +860,6 @@ export const navigationItems: NavigationItem[] = [
             <Layers />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -945,7 +869,6 @@ export const navigationItems: NavigationItem[] = [
             <AssignmentTurnedIn />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -955,7 +878,6 @@ export const navigationItems: NavigationItem[] = [
             <Event />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
     ],
   },
@@ -966,7 +888,6 @@ export const navigationItems: NavigationItem[] = [
         <Grading />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher", "student"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -976,7 +897,6 @@ export const navigationItems: NavigationItem[] = [
             <Score />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -986,7 +906,6 @@ export const navigationItems: NavigationItem[] = [
             <TableRows />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -996,7 +915,6 @@ export const navigationItems: NavigationItem[] = [
             <CloudUpload />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1006,7 +924,6 @@ export const navigationItems: NavigationItem[] = [
             <Subject />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1016,7 +933,6 @@ export const navigationItems: NavigationItem[] = [
             <TableChart />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1026,7 +942,6 @@ export const navigationItems: NavigationItem[] = [
             <Download />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1036,7 +951,6 @@ export const navigationItems: NavigationItem[] = [
             <Message />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1047,7 +961,6 @@ export const navigationItems: NavigationItem[] = [
         <Sms />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1057,7 +970,6 @@ export const navigationItems: NavigationItem[] = [
             <Message />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1067,7 +979,6 @@ export const navigationItems: NavigationItem[] = [
             <Balance />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1077,7 +988,6 @@ export const navigationItems: NavigationItem[] = [
             <Email />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1087,7 +997,6 @@ export const navigationItems: NavigationItem[] = [
             <Sms />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1097,7 +1006,6 @@ export const navigationItems: NavigationItem[] = [
             <NotificationsActive />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1107,7 +1015,6 @@ export const navigationItems: NavigationItem[] = [
             <Report />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1118,7 +1025,6 @@ export const navigationItems: NavigationItem[] = [
         <SupervisorAccount />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "//dashboard/super_admin/teacher/",
@@ -1128,7 +1034,6 @@ export const navigationItems: NavigationItem[] = [
             <People />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1138,7 +1043,6 @@ export const navigationItems: NavigationItem[] = [
             <ReceiptLong />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1149,7 +1053,6 @@ export const navigationItems: NavigationItem[] = [
         <FileCopy />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1159,7 +1062,6 @@ export const navigationItems: NavigationItem[] = [
             <Category />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1169,7 +1071,6 @@ export const navigationItems: NavigationItem[] = [
             <Description />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1180,7 +1081,6 @@ export const navigationItems: NavigationItem[] = [
         <Business />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1190,7 +1090,6 @@ export const navigationItems: NavigationItem[] = [
             <Info />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1200,7 +1099,6 @@ export const navigationItems: NavigationItem[] = [
             <ContactPhone />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1210,7 +1108,6 @@ export const navigationItems: NavigationItem[] = [
             <EmojiTransportation />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1220,7 +1117,6 @@ export const navigationItems: NavigationItem[] = [
             <GoverningBody />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1230,7 +1126,6 @@ export const navigationItems: NavigationItem[] = [
             <Work />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1241,7 +1136,6 @@ export const navigationItems: NavigationItem[] = [
         <MenuBook />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1251,7 +1145,6 @@ export const navigationItems: NavigationItem[] = [
             <Announcement />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1261,7 +1154,6 @@ export const navigationItems: NavigationItem[] = [
             <Celebration />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1271,7 +1163,6 @@ export const navigationItems: NavigationItem[] = [
             <PhotoAlbum />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1281,7 +1172,6 @@ export const navigationItems: NavigationItem[] = [
             <Author />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1291,7 +1181,6 @@ export const navigationItems: NavigationItem[] = [
             <BlogCategory />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1301,7 +1190,6 @@ export const navigationItems: NavigationItem[] = [
             <Article />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1311,7 +1199,6 @@ export const navigationItems: NavigationItem[] = [
             <Menu />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1321,7 +1208,6 @@ export const navigationItems: NavigationItem[] = [
             <Pages />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1332,7 +1218,6 @@ export const navigationItems: NavigationItem[] = [
         <HowToReg />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1342,7 +1227,6 @@ export const navigationItems: NavigationItem[] = [
             <Info />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1352,7 +1236,6 @@ export const navigationItems: NavigationItem[] = [
             <Description />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1363,7 +1246,6 @@ export const navigationItems: NavigationItem[] = [
         <Groups />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1373,7 +1255,6 @@ export const navigationItems: NavigationItem[] = [
             <Faculty />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1383,7 +1264,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1393,7 +1273,6 @@ export const navigationItems: NavigationItem[] = [
             <Domain />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1403,7 +1282,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1414,7 +1292,6 @@ export const navigationItems: NavigationItem[] = [
         <PhotoLibrary />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1424,7 +1301,6 @@ export const navigationItems: NavigationItem[] = [
             <PhotoLibrary />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1434,7 +1310,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1444,7 +1319,6 @@ export const navigationItems: NavigationItem[] = [
             <VideoLibrary />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1454,7 +1328,6 @@ export const navigationItems: NavigationItem[] = [
             <FormatListNumbered />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1465,7 +1338,6 @@ export const navigationItems: NavigationItem[] = [
         <AdminPanelSettings />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1475,7 +1347,6 @@ export const navigationItems: NavigationItem[] = [
             <AdminPanelSettings />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1485,7 +1356,6 @@ export const navigationItems: NavigationItem[] = [
             <SupervisorAccount />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1495,7 +1365,6 @@ export const navigationItems: NavigationItem[] = [
             <Person />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1506,7 +1375,6 @@ export const navigationItems: NavigationItem[] = [
         <Settings />
       </ColorfulIcon>
     ),
-    roles: ["super_admin", "admin"],
     children: [
       {
         path: "/dashboard/super_admin/stock/allimg",
@@ -1516,7 +1384,6 @@ export const navigationItems: NavigationItem[] = [
             <Tune />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin"],
       },
     ],
   },
@@ -1527,7 +1394,6 @@ export const navigationItems: NavigationItem[] = [
         <Help />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher", "student"],
     children: [
       {
         path: "/dashboard/super_admin/stock/help",
@@ -1537,7 +1403,6 @@ export const navigationItems: NavigationItem[] = [
             <LiveHelp />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
       {
         path: "/dashboard/super_admin/stock/help",
@@ -1547,7 +1412,6 @@ export const navigationItems: NavigationItem[] = [
             <VideoSettings />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
     ],
   },
@@ -1558,7 +1422,6 @@ export const navigationItems: NavigationItem[] = [
         <PhotoLibrary />
       </ColorfulIcon>
     ),
-    roles: ["admin", "super_admin", "teacher", "student"],
     children: [
       {
         path: "/dashboard/super_admin/folder",
@@ -1568,7 +1431,6 @@ export const navigationItems: NavigationItem[] = [
             <Photos />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
       {
         path: "/dashboard/super_admin/photos",
@@ -1578,10 +1440,9 @@ export const navigationItems: NavigationItem[] = [
             <Folder />
           </ColorfulIcon>
         ),
-        roles: ["super_admin", "admin", "teacher", "student"],
       },
     ],
-  },
+  },  
   {
     title: "User Management",
     path: "/dashboard/super_admin/user-management",
@@ -1589,8 +1450,7 @@ export const navigationItems: NavigationItem[] = [
       <ColorfulIcon color="#F4B400">
         <Group />
       </ColorfulIcon>
-    ),
-    roles: ["super_admin", "admin"],
+    ),    
   },
   {
     title: "Database Backup",
@@ -1599,8 +1459,7 @@ export const navigationItems: NavigationItem[] = [
       <ColorfulIcon color="#4285F4">
         <Storage />
       </ColorfulIcon>
-    ),
-    roles: ["super_admin"],
+    ),    
   },
   {
     title: "Log Out",
@@ -1609,7 +1468,6 @@ export const navigationItems: NavigationItem[] = [
       <ColorfulIcon color="#DB4437">
         <Logout />
       </ColorfulIcon>
-    ),
-    roles: ["admin", "teacher", "student", "super_admin"],
+    ),    
   },
 ]

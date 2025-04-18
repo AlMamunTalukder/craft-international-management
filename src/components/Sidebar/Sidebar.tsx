@@ -11,13 +11,7 @@ import {
   Collapse
 } from '@mui/material';
 import {
-  Dashboard,
-  Info,
-  ShoppingCart,
-  ContactPage,
-  NoteAlt,
-  Reviews,
-  PhotoLibrary,
+
   ExpandMore,
   ChevronRight
 } from '@mui/icons-material';

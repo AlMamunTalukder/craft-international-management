@@ -378,30 +378,13 @@ export default function ClassesListPage() {
                               label="শিক্ষকের নাম"
                               placeholder="শিক্ষকের নাম লিখুন"
                               options={teacherName}
+                              
                             />
 
                           </Grid>
 
                           <Grid item xs={12} md={2}>
-                            <CraftForm onSubmit={handleSubmit}>
-                              <Grid item xs={12} md={2}>
-                                <CraftForm onSubmit={handleSubmit}>
-                                  <CraftIntAutoComplete
-                                    name="class"
-                                    label="শ্রেণীর নাম লিখুন"
-                                    fullWidth
-                                    freeSolo
-                                    multiple={false}
-                                    options={className.map(option => ({
-                                      value: option.value,
-                                      label: option.label
-                                    }))}
-                                    onInputChange={(event, newValue) => { }}
-                                    onChange={handleClassName}
-                                  />
-                                </CraftForm>
-                              </Grid>
-                              {/* <CraftIntAutoComplete
+                              <CraftIntAutoComplete
                                 name="class"
                                 label="শ্রেণীর নাম লিখুন"
                                 fullWidth
@@ -410,9 +393,8 @@ export default function ClassesListPage() {
                                 options={className.map((option) => option.label)}
                                 onInputChange={(event, newValue) => { }}
                                 onChange={handleClassName}
-                              /> */}
-                            </CraftForm>
-                          </Grid>
+                              />
+                              </Grid>
                           <Grid item xs={12} md={3}>
                             <CraftForm onSubmit={handleSubmit}>
                               <CraftIntAutoComplete
