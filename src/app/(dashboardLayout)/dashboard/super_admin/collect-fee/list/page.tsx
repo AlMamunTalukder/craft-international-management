@@ -862,7 +862,7 @@ export default function FeeCollectionListPage() {
                   <Button
                     variant="contained"
                     startIcon={<AddIcon />}
-                    href="/fees/collect"
+                    href="/dashboard/super_admin/collect-fee/new"
                     sx={{ mb: { xs: 1, md: 0 } }}
                   >
                     New Collection

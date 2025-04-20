@@ -14,7 +14,7 @@ interface JwtPayload {
 export const getUserInfo = async (): Promise<JwtPayload | null> => {
   try {
     const cookieStore = cookies();
-    const token = (await cookieStore).get('token')?.value;
+    const token = (await cookieStore).get('craft-token')?.value;
 
     if (!token) return null;
 

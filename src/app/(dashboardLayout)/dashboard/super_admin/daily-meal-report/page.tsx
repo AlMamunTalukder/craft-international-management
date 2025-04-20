@@ -1,6 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-
-import type React from "react"
 import { useState } from "react"
 import {
   Paper,
@@ -24,6 +23,7 @@ import {
   TextField,
   Stack,
   Avatar,
+  Tooltip,
 } from "@mui/material"
 import {
   CalendarMonth,
@@ -36,8 +36,13 @@ import {
   Restaurant,
   NavigateBefore,
   NavigateNext,
+  AddCircleOutline,
+  FreeBreakfast,
+  Fastfood,
+  DinnerDining,
 } from "@mui/icons-material"
 import type { SelectChangeEvent } from "@mui/material/Select"
+import Link from "next/link"
 // Generate days of month
 const getDaysInMonth = (month: number, year: number) => {
   return new Array(new Date(year, month, 0).getDate()).fill(null).map((_, i) => i + 1)
@@ -58,35 +63,55 @@ const students = [
 ]
 
 // Generate random meal data
-const generateMealData = () => {
-  const mealData: Record<number, Record<number, boolean>> = {}
+// const generateMealData = () => {
+//   const mealData: Record<number, Record<number, boolean>> = {}
 
-  students.forEach((student) => {
-    mealData[student.id] = {}
-    getDaysInMonth(4, 2025).forEach((day) => {
-      mealData[student.id][day] = Math.random() > 0.3
-    })
-  })
+//   students.forEach((student) => {
+//     mealData[student.id] = {}
+//     getDaysInMonth(4, 2025).forEach((day) => {
+//       mealData[student.id][day] = Math.random() > 0.3
+//     })
+//   })
 
-  return mealData
-}
+//   return mealData
+// }
 
 export default function MealReport() {
   const [month, setMonth] = useState<number>(4) // April
   const [year, setYear] = useState<number>(2025)
-  const [mealData, setMealData] = useState(generateMealData())
+  const [mealData, setMealData] = useState(() => {
+    const data: Record<number, Record<number, { eaten: boolean; type: string[] }>> = {}
+
+    students.forEach((student) => {
+      data[student.id] = {}
+      getDaysInMonth(4, 2025).forEach((day) => {
+        const eaten = Math.random() > 0.3
+        const types = []
+        if (eaten) {
+          if (Math.random() > 0.3) types.push("breakfast")
+          if (Math.random() > 0.3) types.push("lunch")
+          if (Math.random() > 0.3) types.push("dinner")
+          // Ensure at least one meal type if eaten is true
+          if (types.length === 0) types.push(["breakfast", "lunch", "dinner"][Math.floor(Math.random() * 3)])
+        }
+        data[student.id][day] = { eaten, type: types }
+      })
+    })
+
+    return data
+  })
 
   const days = getDaysInMonth(month, year)
   const totalDays = days.length
 
   // Calculate total meals for each student
   const calculateTotalMeals = (studentId: number) => {
-    return days.reduce((total, day) => total + (mealData[studentId][day] ? 1 : 0), 0)
+    return days.reduce((total, day) => total + (mealData[studentId][day].eaten ? 1 : 0), 0)
   }
 
   // Calculate total meals for each day
   const calculateDailyTotal = (day: number) => {
-    return students.reduce((total, student) => total + (mealData[student.id][day] ? 1 : 0), 0)
+    return students.reduce((total, student) => total + (mealData[student.id][day].eaten ? 1 : 0), 0)
   }
 
   // Calculate grand total of all meals
@@ -100,9 +125,71 @@ export default function MealReport() {
       ...prev,
       [studentId]: {
         ...prev[studentId],
-        [day]: !prev[studentId][day],
+        [day]: {
+          ...prev[studentId][day],
+          eaten: !prev[studentId][day].eaten,
+          type: prev[studentId][day].eaten ? [] : ["breakfast"],
+        },
       },
     }))
+  }
+
+  // Add this new function to toggle meal types:
+  const toggleMealType = (studentId: number, day: number, mealType: string) => {
+    setMealData((prev) => {
+      const currentTypes = [...prev[studentId][day].type]
+      const typeIndex = currentTypes.indexOf(mealType)
+
+      if (typeIndex >= 0) {
+        currentTypes.splice(typeIndex, 1)
+      } else {
+        currentTypes.push(mealType)
+      }
+
+      // If no meal types, mark as not eaten
+      const eaten = currentTypes.length > 0
+
+      return {
+        ...prev,
+        [studentId]: {
+          ...prev[studentId],
+          [day]: {
+            eaten,
+            type: currentTypes,
+          },
+        },
+      }
+    })
+  }
+
+  // Add this function to render meal type indicators:
+  const renderMealTypeIndicator = (studentId: number, day: number) => {
+    const mealInfo = mealData[studentId][day]
+
+    if (!mealInfo.eaten) {
+      return <Cancel sx={{ color: "#f44336", fontSize: 18 }} />
+    }
+
+    return (
+      <Tooltip
+        title={
+          <div>
+            {mealInfo.type.includes("breakfast") && <div>Breakfast</div>}
+            {mealInfo.type.includes("lunch") && <div>Lunch</div>}
+            {mealInfo.type.includes("dinner") && <div>Dinner</div>}
+          </div>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <CheckCircle sx={{ color: "#4caf50", fontSize: 18 }} />
+          {mealInfo.type.length > 0 && (
+            <Typography variant="caption" sx={{ fontSize: "0.6rem" }}>
+              {mealInfo.type.length}
+            </Typography>
+          )}
+        </div>
+      </Tooltip>
+    )
   }
 
   // Handle month change
@@ -151,7 +238,7 @@ export default function MealReport() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h4" fontWeight="bold">
-              Residential Meal Sheet
+                Residential Meal Sheet
               </Typography>
               {/* <Typography variant="subtitle1">Residential Meal Sheet</Typography> */}
             </Grid>
@@ -254,7 +341,7 @@ export default function MealReport() {
       </Card>
 
       {/* Search and Filter */}
-      <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between" }}>
+      <Box component={Link} href='/dashboard/super_admin/daily-meal-report/add' sx={{ mb: 3, display: "flex", justifyContent: "space-between" }}>
         <TextField
           placeholder="Search by name..."
           variant="outlined"
@@ -264,21 +351,34 @@ export default function MealReport() {
           }}
           sx={{ width: 300 }}
         />
-        <Button variant="outlined" startIcon={<FilterList />}>
-          Filter
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button variant="outlined" startIcon={<FilterList />}>
+            Filter
+          </Button>
+          <Button variant="contained" color="primary" startIcon={<AddCircleOutline />} sx={{ bgcolor: "#3f51b5" }}>
+            Add Meal Report
+          </Button>
+        </Stack>
       </Box>
 
       {/* Meal Table */}
       <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 1, overflow: "auto" }}>
-
-  <Table stickyHeader >
-
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 5, padding: '0px 4px'}}>SL</TableCell>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 127, padding: '2px 3px'}}>Name</TableCell>
-              <TableCell sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 50, padding: '2px 0px'}}>
+              <TableCell
+                sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 5, padding: "0px 4px" }}
+              >
+                SL
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 127, padding: "2px 3px" }}
+              >
+                Name
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: "#3f51b5", color: "white", fontWeight: "bold", minWidth: 50, padding: "2px 0px" }}
+              >
                 Designation
               </TableCell>
               {days.map((day) => (
@@ -289,7 +389,7 @@ export default function MealReport() {
                     bgcolor: "#3f51b5",
                     color: "white",
                     fontWeight: "bold",
-                    padding: '2px 3px' ,
+                    padding: "2px 3px",
                     position: "relative",
                   }}
                 >
@@ -314,18 +414,21 @@ export default function MealReport() {
           </TableHead>
           <TableBody>
             {students.map((student, index) => (
-              <TableRow key={student.id} sx={{ "&:nth-of-type(odd)": { bgcolor: "rgba(63, 81, 181, 0.05)" },  padding: 1  }}>
-                <TableCell sx={{padding: '2px 5px'}}>{index + 1}</TableCell>
-                <TableCell sx={{padding: '2px 3px'}}>
-                {student.name}
+              <TableRow
+                key={student.id}
+                sx={{ "&:nth-of-type(odd)": { bgcolor: "rgba(63, 81, 181, 0.05)" }, padding: 1 }}
+              >
+                <TableCell sx={{ padding: "2px 5px" }}>{index + 1}</TableCell>
+                <TableCell sx={{ padding: "2px 3px" }}>
+                  {student.name}
                   {/* <Stack direction="row" spacing={1} alignItems="center"> */}
-                    {/* <Avatar src={student.avatar} sx={{ width: 30, height: 30 }} /> */}
-                    {/* <Typography variant="body2" fontWeight="medium">
+                  {/* <Avatar src={student.avatar} sx={{ width: 30, height: 30 }} /> */}
+                  {/* <Typography variant="body2" fontWeight="medium">
                       {student.name}
                     </Typography> */}
                   {/* </Stack> */}
                 </TableCell>
-                <TableCell sx={{padding: '2px 0px'}}>
+                <TableCell sx={{ padding: "2px 0px" }}>
                   <Chip
                     label={student.designation}
                     size="small"
@@ -351,17 +454,13 @@ export default function MealReport() {
                     align="center"
                     onClick={() => toggleMeal(student.id, day)}
                     sx={{
-                   padding: '2px 0px',
+                      padding: "2px 0px",
                       cursor: "pointer",
                       "&:hover": { bgcolor: "rgba(63, 81, 181, 0.1)" },
                       transition: "background-color 0.2s",
                     }}
                   >
-                    {mealData[student.id][day] ? (
-                      <CheckCircle sx={{ color: "#4caf50", fontSize: 18 }} />
-                    ) : (
-                      <Cancel sx={{ color: "#f44336", fontSize: 18 }} />
-                    )}
+                    {renderMealTypeIndicator(student.id, day)}
                   </TableCell>
                 ))}
                 <TableCell align="center">
@@ -396,6 +495,18 @@ export default function MealReport() {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Cancel sx={{ color: "#f44336" }} />
           <Typography variant="body2">Absent</Typography>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <FreeBreakfast sx={{ color: "#ff9800" }} />
+          <Typography variant="body2">Breakfast</Typography>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Fastfood sx={{ color: "#2196f3" }} />
+          <Typography variant="body2">Lunch</Typography>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <DinnerDining sx={{ color: "#9c27b0" }} />
+          <Typography variant="body2">Dinner</Typography>
         </Box>
       </Box>
 

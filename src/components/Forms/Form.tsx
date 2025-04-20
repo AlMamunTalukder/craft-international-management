@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from "react";
 import {
   FieldValues,
@@ -33,7 +33,7 @@ const CraftForm = ({
     formConfig["defaultValues"] = defaultValues;
   }
   const methods = useForm(formConfig);
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const submit: SubmitHandler<FieldValues> = (data: FieldValues) => {
     onSubmit(data);

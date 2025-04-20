@@ -198,7 +198,7 @@ export const navigationItems: NavigationItem[] = [
             <Subject />
           </ColorfulIcon>
         ),
-        path: "//dashboard/super_admin/classes/assign-subjects/list",
+        path: "/dashboard/super_admin/classes/assign-subjects/list",
         roles: ["super_admin", "admin"],
       },
       {
@@ -208,7 +208,7 @@ export const navigationItems: NavigationItem[] = [
             <Schedule />
           </ColorfulIcon>
         ),
-        path: "/dashboard/super_admin/classes/assign-routines",
+        path: "/dashboard/super_admin/classes/assign-routines/list",
         roles: ["super_admin", "admin"],
       },
       {
@@ -498,7 +498,7 @@ export const navigationItems: NavigationItem[] = [
         roles: ["super_admin", "admin"],
       },
       {
-        path: "/dashboard/super_admin/contact/list",
+        path: "/dashboard/super_admin/deleted-fee",
         title: "Deleted Fees ",
         icon: (
           <ColorfulIcon color="#F4B400">
@@ -1121,7 +1121,7 @@ export const navigationItems: NavigationItem[] = [
     roles: ["admin", "super_admin"],
     children: [
       {
-        path: "//dashboard/super_admin/teacher/",
+        path: "/dashboard/super_admin/teacher/list",
         title: "Teachers",
         icon: (
           <ColorfulIcon color="#DB4437">

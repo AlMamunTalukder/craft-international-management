@@ -142,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
         },
       }}
     >
-     
+
     </Drawer>
   );
 };

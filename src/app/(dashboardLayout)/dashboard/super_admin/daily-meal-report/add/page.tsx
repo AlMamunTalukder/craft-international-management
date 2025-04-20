@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import {
   Paper,
@@ -23,6 +25,15 @@ import {
   Alert,
   CircularProgress,
   Switch,
+  Checkbox,
+  OutlinedInput,
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Tooltip,
 } from "@mui/material"
 import {
   CalendarMonth,
@@ -34,6 +45,11 @@ import {
   Search,
   FilterList,
   AccessTime,
+  FreeBreakfast,
+  LunchDining,
+  DinnerDining,
+  Close,
+  Edit,
 } from "@mui/icons-material"
 
 // Sample data based on the provided meal sheet
@@ -53,25 +69,51 @@ const students = [
 // Meal types
 const mealTypes = ["Breakfast", "Lunch", "Dinner"]
 
+// Meal time mapping
+const mealTimeMap = {
+  Breakfast: "7:30 AM",
+  Lunch: "1:00 PM",
+  Dinner: "8:00 PM",
+}
+
+// Meal icon mapping
+const mealIconMap = {
+  Breakfast: <FreeBreakfast sx={{ fontSize: 20 }} />,
+  Lunch: <LunchDining sx={{ fontSize: 20 }} />,
+  Dinner: <DinnerDining sx={{ fontSize: 20 }} />,
+}
+
 export default function MealReportAdd() {
   const [date, setDate] = useState<Date | null>(new Date())
-  const [mealType, setMealType] = useState("Lunch")
+  const [selectedMealTypes, setSelectedMealTypes] = useState<string[]>(mealTypes) // All meal types selected by default
   const [selectedStudents, setSelectedStudents] = useState<Record<number, boolean>>({})
+  // Track individual meal selections for each student
+  const [studentMeals, setStudentMeals] = useState<Record<number, string[]>>({})
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectAll, setSelectAll] = useState(false)
+  const [selectAll, setSelectAll] = useState(true) // Select all by default
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [filteredStudents, setFilteredStudents] = useState(students)
   const [filterDesignation, setFilterDesignation] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
-  // Initialize selected students
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [currentStudent, setCurrentStudent] = useState<number | null>(null)
+  const [tempSelectedMeals, setTempSelectedMeals] = useState<string[]>([])
+
+  // Initialize selected students - all selected by default with all meals
   useEffect(() => {
     const initialSelection: Record<number, boolean> = {}
+    const initialMeals: Record<number, string[]> = {}
+
     students.forEach((student) => {
-      initialSelection[student.id] = false
+      initialSelection[student.id] = true // All selected by default
+      initialMeals[student.id] = [...mealTypes] // All meals selected by default
     })
+
     setSelectedStudents(initialSelection)
+    setStudentMeals(initialMeals)
   }, [])
 
   // Handle search and filtering
@@ -93,10 +135,74 @@ export default function MealReportAdd() {
 
   // Toggle individual student selection
   const toggleStudent = (studentId: number) => {
-    setSelectedStudents((prev) => ({
-      ...prev,
-      [studentId]: !prev[studentId],
-    }))
+    setSelectedStudents((prev) => {
+      const newState = {
+        ...prev,
+        [studentId]: !prev[studentId],
+      }
+
+      // If toggling to selected and no meals are selected, select all meals
+      if (newState[studentId] && (!studentMeals[studentId] || studentMeals[studentId].length === 0)) {
+        setStudentMeals((prevMeals) => ({
+          ...prevMeals,
+          [studentId]: [...selectedMealTypes],
+        }))
+      }
+
+      return newState
+    })
+  }
+
+  // Open meal selection dialog for a student
+  const openMealDialog = (studentId: number, event: React.MouseEvent) => {
+    event.stopPropagation() // Prevent toggling the student selection
+    setCurrentStudent(studentId)
+    setTempSelectedMeals(studentMeals[studentId] || [])
+    setDialogOpen(true)
+  }
+
+  // Close meal selection dialog
+  const closeMealDialog = () => {
+    setDialogOpen(false)
+    setCurrentStudent(null)
+  }
+
+  // Save meal selections from dialog
+  const saveMealSelections = () => {
+    if (currentStudent !== null) {
+      // Update student meals
+      setStudentMeals((prev) => ({
+        ...prev,
+        [currentStudent]: tempSelectedMeals,
+      }))
+
+      // If no meals selected, deselect the student
+      if (tempSelectedMeals.length === 0) {
+        setSelectedStudents((prev) => ({
+          ...prev,
+          [currentStudent]: false,
+        }))
+      } else {
+        // Otherwise ensure the student is selected
+        setSelectedStudents((prev) => ({
+          ...prev,
+          [currentStudent]: true,
+        }))
+      }
+
+      closeMealDialog()
+    }
+  }
+
+  // Toggle meal type in dialog
+  const toggleMealType = (mealType: string) => {
+    setTempSelectedMeals((prev) => {
+      if (prev.includes(mealType)) {
+        return prev.filter((type) => type !== mealType)
+      } else {
+        return [...prev, mealType]
+      }
+    })
   }
 
   // Handle select all toggle
@@ -105,16 +211,51 @@ export default function MealReportAdd() {
     setSelectAll(newSelectAll)
 
     const updatedSelection = { ...selectedStudents }
+    const updatedMeals = { ...studentMeals }
+
     filteredStudents.forEach((student) => {
       updatedSelection[student.id] = newSelectAll
+      if (newSelectAll) {
+        updatedMeals[student.id] = [...selectedMealTypes]
+      } else {
+        updatedMeals[student.id] = []
+      }
     })
 
     setSelectedStudents(updatedSelection)
+    setStudentMeals(updatedMeals)
+  }
+
+  // Handle meal type selection for all students
+  const handleMealTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const value = event.target.value as string[]
+    setSelectedMealTypes(value)
+
+    // Update all selected students to have these meal types
+    const updatedMeals = { ...studentMeals }
+    Object.keys(selectedStudents).forEach((studentId) => {
+      if (selectedStudents[Number(studentId)]) {
+        updatedMeals[Number(studentId)] = [...value]
+      }
+    })
+
+    setStudentMeals(updatedMeals)
   }
 
   // Count selected students
   const countSelected = () => {
     return Object.values(selectedStudents).filter(Boolean).length
+  }
+
+  // Count total meals
+  const countTotalMeals = () => {
+    let total = 0
+    Object.keys(studentMeals).forEach((studentId) => {
+      if (selectedStudents[Number(studentId)]) {
+        total += studentMeals[Number(studentId)].length
+      }
+    })
+    return total
   }
 
   // Handle save
@@ -147,6 +288,21 @@ export default function MealReportAdd() {
 
   // Get unique designations for filter
   const designations = Array.from(new Set(students.map((s) => s.designation)))
+
+  // Render meal icons for a student
+  const renderStudentMealIcons = (studentId: number) => {
+    const meals = studentMeals[studentId] || []
+
+    return (
+      <Stack direction="row" spacing={0.5} sx={{ mt: 0.5 }}>
+        {meals.map((meal) => (
+          <Tooltip key={meal} title={meal}>
+            {mealIconMap[meal as keyof typeof mealIconMap]}
+          </Tooltip>
+        ))}
+      </Stack>
+    )
+  }
 
   return (
     <Box sx={{ p: 3, maxWidth: "100%" }}>
@@ -201,16 +357,30 @@ export default function MealReportAdd() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormControl fullWidth variant="outlined">
-                <InputLabel>Meal Type</InputLabel>
+                <InputLabel>Default Meal Types</InputLabel>
                 <Select
-                  value={mealType}
-                  onChange={(e) => setMealType(e.target.value)}
-                  label="Meal Type"
+                  multiple
+                  value={selectedMealTypes}
+                  onChange={(e) => handleMealTypeChange(e as any)}
+                  input={<OutlinedInput label="Default Meal Types" />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {(selected as string[]).map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          size="small"
+                          icon={mealIconMap[value as keyof typeof mealIconMap]}
+                        />
+                      ))}
+                    </Box>
+                  )}
                   startAdornment={<RestaurantMenu sx={{ mr: 1, color: "text.secondary" }} />}
                 >
                   {mealTypes.map((type) => (
                     <MenuItem key={type} value={type}>
-                      {type}
+                      <Checkbox checked={selectedMealTypes.indexOf(type) > -1} />
+                      <ListItemText primary={type} />
                     </MenuItem>
                   ))}
                 </Select>
@@ -226,8 +396,11 @@ export default function MealReportAdd() {
                     <Typography variant="body2" color="textSecondary">
                       Students Selected
                     </Typography>
-                    <Typography variant="h4" fontWeight="bold">
+                    <Typography variant="h5" fontWeight="bold">
                       {countSelected()} / {students.length}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+                      Total Meals: {countTotalMeals()}
                     </Typography>
                   </Box>
                 </Stack>
@@ -240,23 +413,37 @@ export default function MealReportAdd() {
       {/* Date and Meal Summary */}
       <Card elevation={2} sx={{ mb: 4, borderRadius: 2, bgcolor: "#e8eaf6" }}>
         <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <CalendarMonth sx={{ fontSize: 24, color: "#3f51b5" }} />
                 <Typography variant="h6">{formatDate(date)}</Typography>
               </Stack>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <RestaurantMenu sx={{ fontSize: 24, color: "#3f51b5" }} />
-                <Typography variant="h6">{mealType}</Typography>
-                <Chip
-                  label={`${mealType === "Breakfast" ? "7:30 AM" : mealType === "Lunch" ? "1:00 PM" : "8:00 PM"}`}
-                  size="small"
-                  icon={<AccessTime sx={{ fontSize: 16 }} />}
-                  sx={{ bgcolor: "#fff" }}
-                />
+            <Grid item xs={12} md={8}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                Default Meal Types:
+              </Typography>
+              <Stack direction="row" spacing={2} flexWrap="wrap">
+                {selectedMealTypes.map((type) => (
+                  <Chip
+                    key={type}
+                    label={type}
+                    icon={mealIconMap[type as keyof typeof mealIconMap]}
+                    sx={{ bgcolor: "#fff", mb: 1 }}
+                  />
+                ))}
+              </Stack>
+              <Stack direction="row" spacing={2} flexWrap="wrap" sx={{ mt: 1 }}>
+                {selectedMealTypes.map((type) => (
+                  <Chip
+                    key={`time-${type}`}
+                    label={`${type}: ${mealTimeMap[type as keyof typeof mealTimeMap]}`}
+                    size="small"
+                    icon={<AccessTime sx={{ fontSize: 16 }} />}
+                    sx={{ bgcolor: "#fff", mb: 1 }}
+                  />
+                ))}
               </Stack>
             </Grid>
           </Grid>
@@ -323,7 +510,7 @@ export default function MealReportAdd() {
           <Typography variant="h6">
             Student Selection
             <Typography component="span" variant="body2" sx={{ ml: 2 }}>
-              (Click on a student to toggle selection)
+              (Click on a student to toggle selection, click edit icon to customize meals)
             </Typography>
           </Typography>
         </Box>
@@ -346,9 +533,25 @@ export default function MealReportAdd() {
                         boxShadow: 3,
                         bgcolor: "rgba(63, 81, 181, 0.05)",
                       },
+                      position: "relative",
                     }}
                     onClick={() => toggleStudent(student.id)}
                   >
+                    {/* Edit button for meal customization */}
+                    <IconButton
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        bgcolor: "rgba(255,255,255,0.8)",
+                        "&:hover": { bgcolor: "rgba(255,255,255,1)" },
+                      }}
+                      onClick={(e) => openMealDialog(student.id, e)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Avatar src={student.avatar} sx={{ width: 50, height: 50 }} />
                       <Box sx={{ flexGrow: 1 }}>
@@ -373,6 +576,14 @@ export default function MealReportAdd() {
                                   : "#e65100",
                           }}
                         />
+                        {selectedStudents[student.id] && (
+                          <Box sx={{ mt: 1 }}>
+                            {renderStudentMealIcons(student.id)}
+                            <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
+                              {(studentMeals[student.id] || []).length} meals
+                            </Typography>
+                          </Box>
+                        )}
                       </Box>
                       {selectedStudents[student.id] ? (
                         <CheckCircle sx={{ color: "#4caf50", fontSize: 24 }} />
@@ -412,15 +623,18 @@ export default function MealReportAdd() {
           variant="outlined"
           color="inherit"
           onClick={() => {
-            // Reset form
+            // Reset form to default values (all selected)
             setDate(new Date())
-            setMealType("Lunch")
+            setSelectedMealTypes(mealTypes)
             const resetSelection: Record<number, boolean> = {}
+            const resetMeals: Record<number, string[]> = {}
             students.forEach((student) => {
-              resetSelection[student.id] = false
+              resetSelection[student.id] = true
+              resetMeals[student.id] = [...mealTypes]
             })
             setSelectedStudents(resetSelection)
-            setSelectAll(false)
+            setStudentMeals(resetMeals)
+            setSelectAll(true)
           }}
         >
           Reset
@@ -444,7 +658,7 @@ export default function MealReportAdd() {
       </Box>
 
       {/* Legend */}
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 3 }}>
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 3, flexWrap: "wrap" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <CheckCircle sx={{ color: "#4caf50" }} />
           <Typography variant="body2">Selected</Typography>
@@ -452,6 +666,16 @@ export default function MealReportAdd() {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Cancel sx={{ color: "#f44336" }} />
           <Typography variant="body2">Not Selected</Typography>
+        </Box>
+        {mealTypes.map((type) => (
+          <Box key={type} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {mealIconMap[type as keyof typeof mealIconMap]}
+            <Typography variant="body2">{type}</Typography>
+          </Box>
+        ))}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Edit fontSize="small" />
+          <Typography variant="body2">Edit Meals</Typography>
         </Box>
       </Box>
 
@@ -468,6 +692,71 @@ export default function MealReportAdd() {
           Meal report successfully saved!
         </Alert>
       </Snackbar>
+
+      {/* Meal Selection Dialog */}
+      <Dialog open={dialogOpen} onClose={closeMealDialog} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6">Edit Meals</Typography>
+          <IconButton onClick={closeMealDialog} size="small">
+            <Close fontSize="small" />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {currentStudent !== null && (
+            <>
+              <Typography variant="subtitle1" gutterBottom>
+                {students.find((s) => s.id === currentStudent)?.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" gutterBottom>
+                Select which meals this person will eat:
+              </Typography>
+
+              <Box sx={{ mt: 2 }}>
+                {mealTypes.map((type) => (
+                  <FormControlLabel
+                    key={type}
+                    control={
+                      <Checkbox
+                        checked={tempSelectedMeals.includes(type)}
+                        onChange={() => toggleMealType(type)}
+                        icon={<Box sx={{ opacity: 0.5 }}>{mealIconMap[type as keyof typeof mealIconMap]}</Box>}
+                        checkedIcon={mealIconMap[type as keyof typeof mealIconMap]}
+                      />
+                    }
+                    label={
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography>{type}</Typography>
+                        <Typography variant="caption" color="textSecondary" sx={{ ml: 1 }}>
+                          ({mealTimeMap[type as keyof typeof mealTimeMap]})
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                ))}
+              </Box>
+
+              <Box sx={{ mt: 2, p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
+                <Typography variant="body2">
+                  Selected meals: <strong>{tempSelectedMeals.length}</strong>
+                </Typography>
+                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                  {tempSelectedMeals.map((meal) => (
+                    <Chip key={meal} label={meal} size="small" icon={mealIconMap[meal as keyof typeof mealIconMap]} />
+                  ))}
+                </Stack>
+              </Box>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeMealDialog} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={saveMealSelections} variant="contained" color="primary" disabled={currentStudent === null}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

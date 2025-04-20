@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
-
+import Providers from "@/lib/Providers";
+import { Toaster } from 'react-hot-toast';
 const siliguri = Hind_Siliguri({
   weight: "400",
   subsets: ["latin"],
@@ -36,7 +37,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${siliguri.className} antialiased`}
       >
-        {children}
+           <Toaster position="top-right" reverseOrder={false} />
+       <Providers>
+       {children}
+       </Providers>
       </body>
     </html>
   );
