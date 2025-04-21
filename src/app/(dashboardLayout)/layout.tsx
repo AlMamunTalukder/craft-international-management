@@ -37,6 +37,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 import { navigationItems } from "@/components/Sidebar/DrawerItem";
 import { UserRole } from "@/types/common";
+import { getUserInfo } from "@/services/acttion";
 const DRAWER_WIDTH = 310;
 const COLLAPSED_DRAWER_WIDTH = 75;
 
@@ -49,27 +50,21 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await getUserInfo();
+console.log('role this is ',userInfo)
+      setUserRole(userInfo?.role || null);
+    };
 
-  
+    fetchUserInfo();
+  }, []);
 
-const getUserInfo = async () => {
-  return {
-    role: "admin",
-    id: "123",
-    email: "admin@example.com",
-  };
-};
+
 
   const theme = createTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfo = await getUserInfo();
-      setUserRole(userInfo?.role as UserRole || null);
-    };
-    fetchUserInfo();
-  }, []);
 
   const toggleDrawer = () => setOpen(!open);
   const toggleMobileDrawer = () => setMobileOpen(!mobileOpen);

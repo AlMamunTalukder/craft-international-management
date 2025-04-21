@@ -17,7 +17,7 @@ type TInputProps = {
   rows?: number;
   disabled?: boolean;
   value?: string;
-  autoFocus?: boolean;  
+  autoFocus?: boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -36,7 +36,7 @@ const CraftInput = ({
   margin = "normal",
   multiline = false,
   rows = 4,
-  autoFocus = false,  // Default autoFocus to false
+  autoFocus = false,
   onChange,
   value,
 }: TInputProps) => {
@@ -67,7 +67,7 @@ const CraftInput = ({
           multiline={multiline}
           rows={rows}
           value={value || fieldValue}
-          autoFocus={autoFocus} // Use autoFocus to automatically focus the field
+          autoFocus={autoFocus}
           disabled={disabled}
         />
       )}

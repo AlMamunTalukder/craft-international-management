@@ -14,6 +14,7 @@ interface IDatePicker {
   sx?: SxProps;
   margin?: "none" | "normal" | "dense";
   disablePast?: boolean;
+  InputProps?: object; 
 }
 
 const CraftDatePicker = ({
@@ -24,6 +25,7 @@ const CraftDatePicker = ({
   fullWidth = true,
   margin = "normal",
   // disablePast = true,
+  InputProps, 
   sx,
 }: IDatePicker) => {
   const { control } = useFormContext();
@@ -40,9 +42,9 @@ const CraftDatePicker = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               label={label}
-       
+              InputProps={InputProps} 
               {...field}
-              onChange={(date) => onChange(date ? date.toISOString() : null)} // Ensure value is in ISO string format
+              onChange={(date) => onChange(date ? date.toISOString() : null)} 
               value={dateValue}
               slotProps={{
                 textField: {

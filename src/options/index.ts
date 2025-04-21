@@ -108,3 +108,17 @@ export const teacherName = [
   ];
   
   export const classHour = ["১ম", "২য়", "৩য়", "৪র্থ", "৫ম", "৬ষ্ঠ", "৭ম", "৮ম"]
+  export const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+  export const districts = ["District 1", "District 2", "District 3"];
+  export const thanas = ["Thana 1", "Thana 2", "Thana 3"];
+
+  export const classes = ["Class 1", "Class 2", "Class 3"];
+  
+  export const sections = ["Section A", "Section B", "Section C"];
+  export const activeSections = ["2023", "2024", "2025"]
+  export const status =["Active", "Inactive", "Graduated"]
+  export const studentType = ["Residential", "Day"]
+  
+  export const batches = ["Batch 1", "Batch 2", "Batch 3"];
+  
+  

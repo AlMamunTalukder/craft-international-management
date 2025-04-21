@@ -1,5 +1,5 @@
 export const tagTypesList = [
-  "programm",
+  "student",
 ] as const;
 
 export type TagType = typeof tagTypesList[number];
