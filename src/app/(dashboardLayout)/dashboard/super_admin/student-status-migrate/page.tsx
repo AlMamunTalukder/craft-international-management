@@ -213,12 +213,6 @@ const StudentStatusMigration = () => {
       setSnackbarOpen(true)
       return
     }
-
-    // In a real application, you would send this data to your API
-    console.log("Migrating status for students:", selectedStudents)
-    console.log("New status and data:", formData)
-
-    // Update the status of selected students in our local state
     const updatedStudents = students.map((student) =>
       student.selected ? { ...student, status: formData.status, selected: false } : student,
     )

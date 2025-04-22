@@ -53,7 +53,6 @@ const CustomSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   useEffect(() => {
     const fetchUserInfo = async () => {
       const userInfo = await getUserInfo();
-console.log('role this is ',userInfo)
       setUserRole(userInfo?.role || null);
     };
 

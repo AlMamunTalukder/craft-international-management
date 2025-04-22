@@ -1,11 +1,11 @@
-const url = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`;
+const url = `https://api.cloudinary.com/v1_1/dohbowmz0/auto/upload`;
 
 
 
 const uploadFile = async(file)=>{
     const formData = new FormData()
     formData.append('file',file)
-    formData.append("upload_preset","craft")
+    formData.append("upload_preset","craftbd")
 
     const response = await fetch(url,{
         method : 'post',

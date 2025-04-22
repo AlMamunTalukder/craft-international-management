@@ -14,7 +14,7 @@ export type TProps = {
 
 const TodayLesson = ({ open, setOpen }: TProps) => {
     const handleSubmit = () => {
-        console.log();
+
     }
     return (
         <CraftModal

@@ -15,6 +15,7 @@ interface ITextField {
   margin?: "none" | "normal" | "dense";
   onChange?: (value: any) => void;
   adornment?: React.ReactNode;
+  disabled?: boolean
 }
 
 const CraftSelectWithIcon = ({
@@ -28,7 +29,8 @@ const CraftSelectWithIcon = ({
   sx,
   onChange,
   adornment,
-  placeholder
+  placeholder,
+  disabled
 }: ITextField) => {
   const { control, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
@@ -45,6 +47,7 @@ const CraftSelectWithIcon = ({
           size={size}
           select
           label={label}
+          disabled={disabled}
           placeholder={placeholder}
           required={required}
           fullWidth={fullWidth}

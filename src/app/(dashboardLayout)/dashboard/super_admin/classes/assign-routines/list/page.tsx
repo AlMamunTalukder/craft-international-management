@@ -282,8 +282,6 @@ export default function ClassRoutineList() {
   }
 
   const confirmDelete = () => {
-    // In a real app, you would call an API to delete the routine
-    console.log(`Deleting routine with ID: ${routineToDelete}`)
     setIsDeleteDialogOpen(false)
     setRoutineToDelete(null)
   }

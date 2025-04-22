@@ -34,6 +34,7 @@ const loginSchema = z.object({
     })
     .min(6, "Password must be at least 6 characters long"),
 });
+
 interface LoginResponse {
   data: {
     accessToken: string;
@@ -50,10 +51,10 @@ const LoginDashboard = () => {
   const [login, { error, isLoading, isSuccess }] = useLoginMutation() as any;
   const router = useRouter()
   const handleSubmit = async (data: FieldValues) => {
-    console.log('raw data', data)
+
     try {
       const res = await login(data).unwrap() as LoginResponse;
-      console.log(res)
+   
       storeUserInfo({ accessToken: res?.data?.accessToken });
       setCookie('craft-token', res?.data?.accessToken, { expires: 7 });
 

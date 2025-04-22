@@ -89,15 +89,7 @@ export default function NewSession() {
 
 
   const handleSave = () => {
-    // Here you would typically save the data to your backend
-    console.log({
-      sessionName,
-      isCurrent,
-      startDate,
-      endDate,
-      workingDays,
-      holidays,
-    })
+
 
     setShowSuccess(true)
     setTimeout(() => setShowSuccess(false), 3000)

@@ -137,7 +137,6 @@ export default function ClassAddPage() {
       }
     })
 
-    console.log("Saving classes:", updatedClasses)
   }
 
   return (

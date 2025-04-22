@@ -6,15 +6,15 @@ export const studentApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/student",
         method: "POST",
-        data
+        data,
       }),
       invalidatesTags: ["student"],
     }),
     getAllStudents: build.query({
-      query: ({ page, limit }) => ({
+      query: ({ limit, page, searchTerm }) => ({
         url: "/student",
         method: "GET",
-        params: { page, limit },
+        params: { page, limit, searchTerm },
       }),
       providesTags: ["student"],
     }),
@@ -28,9 +28,9 @@ export const studentApi = baseApi.injectEndpoints({
     }),
 
     updateStudent: build.mutation({
-      query: ({ id, data }) => ({
-        url: `/students/${id}`,
-        method: "PUT",
+      query: ({ id, ...data }) => ({
+        url: `/student/${id}`,
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["student"],
@@ -38,7 +38,7 @@ export const studentApi = baseApi.injectEndpoints({
 
     deleteStudent: build.mutation({
       query: (id) => ({
-        url: `/students/${id}`,
+        url: `/student/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["student"],
@@ -47,7 +47,7 @@ export const studentApi = baseApi.injectEndpoints({
 });
 
 export const {
-    useCreateStudentsMutation,
+  useCreateStudentsMutation,
   useGetAllStudentsQuery,
   useGetSingleStudentQuery,
   useUpdateStudentMutation,

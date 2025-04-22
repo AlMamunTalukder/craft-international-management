@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import {
   Box,
@@ -29,6 +31,13 @@ import {
   Tooltip,
   useTheme,
   alpha,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  Snackbar,
+  Alert,
 } from "@mui/material"
 import {
   Search as SearchIcon,
@@ -50,6 +59,10 @@ import {
   ArrowDownward as ArrowDownwardIcon,
   Sort as SortIcon,
   Refresh as RefreshIcon,
+  Visibility,
+  Edit,
+  Delete,
+  Close as CloseIcon,
 } from "@mui/icons-material"
 import { styled } from "@mui/material/styles"
 import { motion } from "framer-motion"
@@ -269,6 +282,66 @@ export default function TeachersDashboard() {
   const [selectedTeachers, setSelectedTeachers] = useState<Teacher[]>([])
   const [filterDepartment, setFilterDepartment] = useState("all")
 
+  const [teacherMenuAnchorEl, setTeacherMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+
+  const handleTeacherMenuOpen = (event: React.MouseEvent<HTMLElement>, teacher: Teacher) => {
+    setTeacherMenuAnchorEl(event.currentTarget)
+    setSelectedTeacher(teacher)
+  }
+
+  const handleTeacherMenuClose = () => {
+    setTeacherMenuAnchorEl(null)
+  }
+
+  const handleViewTeacher = (teacher: Teacher) => {
+    setSelectedTeacher(teacher)
+    setViewDialogOpen(true)
+    handleTeacherMenuClose()
+  }
+
+  const handleEditTeacher = (teacher: Teacher) => {
+    setSelectedTeacher(teacher)
+    setEditDialogOpen(true)
+    handleTeacherMenuClose()
+  }
+
+  const handleDeleteConfirm = (teacher: Teacher) => {
+    setSelectedTeacher(teacher)
+    setDeleteConfirmOpen(true)
+    handleTeacherMenuClose()
+  }
+
+  const handleDeleteTeacher = () => {
+    if (selectedTeacher) {
+      // Filter out the deleted teacher
+      setTeachers(teachers.filter((t) => t.id !== selectedTeacher.id))
+      setSnackbar({
+        open: true,
+        message: `${selectedTeacher.name} has been removed`,
+        severity: "success",
+      })
+    }
+    setDeleteConfirmOpen(false)
+  }
+
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean
+    message: string
+    severity: "success" | "error" | "info" | "warning"
+  }>({
+    open: false,
+    message: "",
+    severity: "success",
+  })
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false })
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setTeachers(generateTeachers(24))
@@ -300,19 +373,20 @@ export default function TeachersDashboard() {
   }
 
   const filteredTeachers = teachers
-    .filter((teacher) =>
-      (searchQuery === "" ||
-        teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.department.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (filterDepartment === "all" || teacher.department === filterDepartment)
+    .filter(
+      (teacher) =>
+        (searchQuery === "" ||
+          teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          teacher.department.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (filterDepartment === "all" || teacher.department === filterDepartment),
     )
     .sort((a, b) => {
       let comparison = 0
       if (sortBy === "name") comparison = a.name.localeCompare(b.name)
       else if (sortBy === "department") comparison = a.department.localeCompare(b.department)
       else if (sortBy === "experience") comparison = a.experience - b.experience
-      else if (sortBy === "rating") comparison = parseFloat(a.rating) - parseFloat(b.rating)
+      else if (sortBy === "rating") comparison = Number.parseFloat(a.rating) - Number.parseFloat(b.rating)
       else if (sortBy === "performance") comparison = a.performance - b.performance
       return sortDirection === "asc" ? comparison : -comparison
     })
@@ -727,6 +801,7 @@ export default function TeachersDashboard() {
                               bgcolor: "rgba(255, 255, 255, 0.9)",
                               "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
                             }}
+                            onClick={(event) => handleTeacherMenuOpen(event, teacher)}
                           >
                             <MoreVertIcon fontSize="small" />
                           </IconButton>
@@ -752,7 +827,7 @@ export default function TeachersDashboard() {
                     <Box
                       sx={{
                         display: "grid",
-                        gridTemplateColumns: "50px 250px 150px 150px 100px 100px 100px 100px",
+                        gridTemplateColumns: "50px 250px 150px 150px 100px 100px 100px 100px 100px",
                         bgcolor: alpha(theme.palette.primary.main, 0.05),
                         p: 2,
                       }}
@@ -781,6 +856,9 @@ export default function TeachersDashboard() {
                       <Typography variant="subtitle2" fontWeight={600}>
                         Status
                       </Typography>
+                      <Typography variant="subtitle2" fontWeight={600} textAlign="center">
+                        Actions
+                      </Typography>
                     </Box>
                     <Divider />
                     {filteredTeachers.map((teacher, index) => (
@@ -793,7 +871,7 @@ export default function TeachersDashboard() {
                         <Box
                           sx={{
                             display: "grid",
-                            gridTemplateColumns: "50px 250px 150px 150px 100px 100px 100px 100px",
+                            gridTemplateColumns: "50px 250px 150px 150px 100px 100px 100px 100px 100px",
                             p: 2,
                             alignItems: "center",
                             "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.02) },
@@ -814,6 +892,12 @@ export default function TeachersDashboard() {
                               <Avatar src={teacher.avatar} sx={{ width: 40, height: 40 }} />
                             )}
                             <Box>
+                              <Typography variant="body1" fontWeight={500}>
+                                {teacher.name}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                {teacher.email}
+                              </Typography>
                               <Typography variant="body1" fontWeight={500}>
                                 {teacher.name}
                               </Typography>
@@ -860,6 +944,23 @@ export default function TeachersDashboard() {
                             </Typography>
                           </Box>
                           <StatusChip label={teacher.status} size="small" status={teacher.status} />
+                          <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                            <Tooltip title="View Profile">
+                              <IconButton size="small" color="primary" onClick={() => handleViewTeacher(teacher)}>
+                                <Visibility fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Edit">
+                              <IconButton size="small" color="info" onClick={() => handleEditTeacher(teacher)}>
+                                <Edit fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete">
+                              <IconButton size="small" color="error" onClick={() => handleDeleteConfirm(teacher)}>
+                                <Delete fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
                         </Box>
                       </motion.div>
                     ))}
@@ -890,12 +991,10 @@ export default function TeachersDashboard() {
                         }}
                       >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        
-
                           <StatusChip
                             label={status.charAt(0).toUpperCase() + status.slice(1)}
                             size="small"
-                            status={status as TeacherStatus} 
+                            status={status as TeacherStatus}
                           />
                           <Typography variant="body2" color="text.secondary">
                             {filteredTeachers.filter((t) => t.status === status).length} teachers
@@ -977,6 +1076,23 @@ export default function TeachersDashboard() {
                                     {teacher.experience} years
                                   </Typography>
                                 </Box>
+                                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                                  <Tooltip title="View Profile">
+                                    <IconButton size="small" color="primary" onClick={() => handleViewTeacher(teacher)}>
+                                      <Visibility fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Edit">
+                                    <IconButton size="small" color="info" onClick={() => handleEditTeacher(teacher)}>
+                                      <Edit fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Delete">
+                                    <IconButton size="small" color="error" onClick={() => handleDeleteConfirm(teacher)}>
+                                      <Delete fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </Box>
                               </Paper>
                             </motion.div>
                           ))}
@@ -989,6 +1105,389 @@ export default function TeachersDashboard() {
           )}
         </Grid>
       </Container>
+      {/* Teacher Action Menu */}
+      <Menu anchorEl={teacherMenuAnchorEl} open={Boolean(teacherMenuAnchorEl)} onClose={handleTeacherMenuClose}>
+        <MenuItem onClick={() => selectedTeacher && handleViewTeacher(selectedTeacher)}>
+          <Visibility fontSize="small" sx={{ mr: 1 }} />
+          View Profile
+        </MenuItem>
+        <MenuItem onClick={() => selectedTeacher && handleEditTeacher(selectedTeacher)}>
+          <Edit fontSize="small" sx={{ mr: 1 }} />
+          Edit
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => selectedTeacher && handleDeleteConfirm(selectedTeacher)}
+          sx={{ color: theme.palette.error.main }}
+        >
+          <Delete fontSize="small" sx={{ mr: 1 }} />
+          Delete
+        </MenuItem>
+      </Menu>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete {selectedTeacher?.name}? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteTeacher} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* View Teacher Profile Dialog */}
+      <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6">Teacher Profile</Typography>
+          <IconButton onClick={() => setViewDialogOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedTeacher && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Avatar
+                  src={selectedTeacher.avatar}
+                  sx={{
+                    width: 150,
+                    height: 150,
+                    mb: 2,
+                    border: `4px solid ${departmentColors[selectedTeacher.department]}`,
+                  }}
+                />
+                <Typography variant="h5" fontWeight={600} gutterBottom>
+                  {selectedTeacher.name}
+                </Typography>
+                <DepartmentChip
+                  label={selectedTeacher.department}
+                  sx={{
+                    backgroundColor: alpha(departmentColors[selectedTeacher.department], 0.1),
+                    color: departmentColors[selectedTeacher.department],
+                    mb: 1,
+                  }}
+                />
+                <StatusChip label={selectedTeacher.status} status={selectedTeacher.status} sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Rating value={Number.parseFloat(selectedTeacher.rating)} precision={0.5} readOnly />
+                  <Typography variant="body2" sx={{ ml: 1 }}>
+                    {selectedTeacher.rating}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <Typography variant="h6" gutterBottom>
+                  Personal Information
+                </Typography>
+                <Grid container spacing={2} sx={{ mb: 3 }}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Email
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.email}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Phone
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.phone}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Join Date
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.joinDate}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Experience
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.experience} years</Typography>
+                  </Grid>
+                </Grid>
+
+                <Typography variant="h6" gutterBottom>
+                  Academic Information
+                </Typography>
+                <Grid container spacing={2} sx={{ mb: 3 }}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Qualifications
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.qualifications}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Students
+                    </Typography>
+                    <Typography variant="body1">{selectedTeacher.students}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      Subjects
+                    </Typography>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                      {selectedTeacher.subjects.map((subject) => (
+                        <Chip
+                          key={subject}
+                          label={subject}
+                          size="small"
+                          sx={{
+                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                            color: theme.palette.primary.main,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      Classes
+                    </Typography>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                      {selectedTeacher.classes.map((cls) => (
+                        <Chip
+                          key={cls}
+                          label={cls}
+                          size="small"
+                          sx={{
+                            bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </Grid>
+                </Grid>
+
+                <Typography variant="h6" gutterBottom>
+                  Performance
+                </Typography>
+                <Box sx={{ mb: 1 }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                    <Typography variant="body2">Overall Performance</Typography>
+                    <Typography variant="body2" fontWeight={600}>
+                      {selectedTeacher.performance}%
+                    </Typography>
+                  </Box>
+                  <PerformanceIndicator value={selectedTeacher.performance} />
+                </Box>
+              </Grid>
+            </Grid>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewDialogOpen(false)}>Close</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setViewDialogOpen(false)
+              if (selectedTeacher) handleEditTeacher(selectedTeacher)
+            }}
+          >
+            Edit Profile
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Teacher Dialog */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6">Edit Teacher</Typography>
+          <IconButton onClick={() => setEditDialogOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedTeacher && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Avatar
+                  src={selectedTeacher.avatar}
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    mb: 2,
+                    border: `4px solid ${departmentColors[selectedTeacher.department]}`,
+                  }}
+                />
+                <Button variant="outlined" size="small" sx={{ mb: 2 }}>
+                  Change Photo
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Full Name"
+                      defaultValue={selectedTeacher.name}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Department"
+                      defaultValue={selectedTeacher.department}
+                      variant="outlined"
+                      size="small"
+                    >
+                      {Object.keys(departmentColors).map((dept) => (
+                        <MenuItem key={dept} value={dept}>
+                          {dept}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Email"
+                      defaultValue={selectedTeacher.email}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Phone"
+                      defaultValue={selectedTeacher.phone}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Status"
+                      defaultValue={selectedTeacher.status}
+                      variant="outlined"
+                      size="small"
+                    >
+                      <MenuItem value="active">Active</MenuItem>
+                      <MenuItem value="on leave">On Leave</MenuItem>
+                      <MenuItem value="inactive">Inactive</MenuItem>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Experience (years)"
+                      type="number"
+                      defaultValue={selectedTeacher.experience}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Qualifications"
+                      defaultValue={selectedTeacher.qualifications}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Students Count"
+                      type="number"
+                      defaultValue={selectedTeacher.students}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Subjects"
+                      defaultValue={selectedTeacher.subjects[0] || ""}
+                      variant="outlined"
+                      size="small"
+                      SelectProps={{
+                        multiple: true,
+                        renderValue: (selected) => (
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                            {(selected as string[]).map((value) => (
+                              <Chip key={value} label={value} size="small" />
+                            ))}
+                          </Box>
+                        ),
+                      }}
+                    >
+                      {[
+                        "Algebra",
+                        "Calculus",
+                        "Biology",
+                        "Chemistry",
+                        "Literature",
+                        "Grammar",
+                        "World History",
+                        "Programming",
+                        "Physical Training",
+                        "Drawing",
+                        "Music Theory",
+                      ].map((subject) => (
+                        <MenuItem key={subject} value={subject}>
+                          {subject}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              if (selectedTeacher) {
+                // In a real app, you would update the teacher data here
+                setSnackbar({
+                  open: true,
+                  message: `${selectedTeacher.name}'s profile has been updated`,
+                  severity: "success",
+                })
+                setEditDialogOpen(false)
+              }
+            }}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

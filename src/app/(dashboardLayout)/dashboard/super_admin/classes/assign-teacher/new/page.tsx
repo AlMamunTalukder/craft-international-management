@@ -221,13 +221,10 @@ export default function AssignClassTeacher() {
     e.preventDefault()
     setSaving(true)
 
-    // Simulate API call
+
     setTimeout(() => {
-      console.log("Submitting assignment:", assignmentData)
       setSaving(false)
       setSnackbarOpen(true)
-      // Redirect to list page after successful submission
-      // router.push('/teachers/assign/list')
     }, 2000)
   }
 

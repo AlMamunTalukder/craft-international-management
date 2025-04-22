@@ -157,8 +157,6 @@ const [selectedReports, setSelectedReports] = useState<number[]>([])
 
   // Handle save changes
   const handleSaveChanges = () => {
-    console.log("Saving changes for reports:", selectedReports)
-    // Implement save logic here
   }
 
   return (

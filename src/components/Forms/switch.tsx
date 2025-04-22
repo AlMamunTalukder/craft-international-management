@@ -1,4 +1,5 @@
-import { Controller, useFormContext } from "react-hook-form";
+// CraftSwitch.tsx (Controlled version, without react-hook-form)
+
 import { FormControlLabel, Switch } from "@mui/material";
 import { ChangeEvent } from "react";
 
@@ -6,39 +7,28 @@ interface CraftSwitchProps {
   name: string;
   label: string;
   color?: "primary" | "secondary" | "default";
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  checked: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CraftSwitch = ({
   name,
   label,
   color = "primary",
-  onChange: customOnChange,
+  checked,
+  onChange,
 }: CraftSwitchProps) => {
-  const { control } = useFormContext();
-
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue={false}
-      render={({ field: { onChange, value } }) => (
-        <FormControlLabel
-          control={
-            <Switch
-              checked={value}
-              onChange={(e) => {
-                onChange(e.target.checked); 
-                if (customOnChange) {
-                  customOnChange(e); 
-                }
-              }}
-              color={color}
-            />
-          }
-          label={label}
+    <FormControlLabel
+      control={
+        <Switch
+          name={name}
+          checked={checked}
+          onChange={onChange}
+          color={color}
         />
-      )}
+      }
+      label={label}
     />
   );
 };

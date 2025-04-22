@@ -562,12 +562,6 @@ export default function DailyStudentReportAdd() {
         message: "Daily student report added successfully!",
         severity: "success",
       })
-
-      // Reset form or redirect
-      console.log("Form submitted:", formData)
-
-      // In a real app, you would redirect to the report view page
-      // or reset the form for a new entry
     } catch (err) {
       setSnackbar({
         open: true,

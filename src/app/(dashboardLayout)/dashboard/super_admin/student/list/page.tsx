@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState, useEffect } from "react"
+import type React from "react"
+
+import { useState } from "react"
 import {
   Box,
   Button,
@@ -9,7 +11,6 @@ import {
   CardContent,
   Chip,
   Container,
-  Divider,
   FormControl,
   Grid,
   IconButton,
@@ -29,6 +30,7 @@ import {
   Tooltip,
   Typography,
   useTheme,
+  alpha,
 } from "@mui/material"
 import {
   Add,
@@ -42,205 +44,69 @@ import {
   Refresh,
   School,
   Person,
+  CurrencyExchange,
+  Phone,
+  Email,
+  Badge,
 } from "@mui/icons-material"
 import Link from "next/link"
-
-// Mock data for students
-const mockStudents = [
-  {
-    id: "STD001",
-    name: "John Smith",
-    class: "Class 3",
-    section: "Section A",
-    roll: "101",
-    gender: "Male",
-    mobile: "1234567890",
-    guardianName: "Robert Smith",
-    guardianMobile: "9876543210",
-    status: "Active",
-    admissionDate: "2023-01-15",
-    image: null,
-  },
-  {
-    id: "STD002",
-    name: "Emily Johnson",
-    class: "Class 2",
-    section: "Section B",
-    roll: "102",
-    gender: "Female",
-    mobile: "2345678901",
-    guardianName: "Michael Johnson",
-    guardianMobile: "8765432109",
-    status: "Active",
-    admissionDate: "2023-02-10",
-    image: null,
-  },
-  {
-    id: "STD003",
-    name: "David Williams",
-    class: "Class 1",
-    section: "Section A",
-    roll: "103",
-    gender: "Male",
-    mobile: "3456789012",
-    guardianName: "James Williams",
-    guardianMobile: "7654321098",
-    status: "Inactive",
-    admissionDate: "2023-03-05",
-    image: null,
-  },
-  {
-    id: "STD004",
-    name: "Sarah Brown",
-    class: "Class 3",
-    section: "Section C",
-    roll: "104",
-    gender: "Female",
-    mobile: "4567890123",
-    guardianName: "Jennifer Brown",
-    guardianMobile: "6543210987",
-    status: "Active",
-    admissionDate: "2023-01-20",
-    image: null,
-  },
-  {
-    id: "STD005",
-    name: "Michael Davis",
-    class: "Class 2",
-    section: "Section A",
-    roll: "105",
-    gender: "Male",
-    mobile: "5678901234",
-    guardianName: "Christopher Davis",
-    guardianMobile: "5432109876",
-    status: "Active",
-    admissionDate: "2023-02-15",
-    image: null,
-  },
-  {
-    id: "STD006",
-    name: "Jessica Miller",
-    class: "Class 1",
-    section: "Section B",
-    roll: "106",
-    gender: "Female",
-    mobile: "6789012345",
-    guardianName: "Daniel Miller",
-    guardianMobile: "4321098765",
-    status: "Graduated",
-    admissionDate: "2023-03-10",
-    image: null,
-  },
-  {
-    id: "STD007",
-    name: "Andrew Wilson",
-    class: "Class 3",
-    section: "Section B",
-    roll: "107",
-    gender: "Male",
-    mobile: "7890123456",
-    guardianName: "Thomas Wilson",
-    guardianMobile: "3210987654",
-    status: "Active",
-    admissionDate: "2023-01-25",
-    image: null,
-  },
-  {
-    id: "STD008",
-    name: "Olivia Moore",
-    class: "Class 2",
-    section: "Section C",
-    roll: "108",
-    gender: "Female",
-    mobile: "8901234567",
-    guardianName: "William Moore",
-    guardianMobile: "2109876543",
-    status: "Active",
-    admissionDate: "2023-02-20",
-    image: null,
-  },
-  {
-    id: "STD009",
-    name: "Ethan Taylor",
-    class: "Class 1",
-    section: "Section A",
-    roll: "109",
-    gender: "Male",
-    mobile: "9012345678",
-    guardianName: "Joseph Taylor",
-    guardianMobile: "1098765432",
-    status: "Inactive",
-    admissionDate: "2023-03-15",
-    image: null,
-  },
-  {
-    id: "STD010",
-    name: "Sophia Anderson",
-    class: "Class 3",
-    section: "Section A",
-    roll: "110",
-    gender: "Female",
-    mobile: "0123456789",
-    guardianName: "Richard Anderson",
-    guardianMobile: "0987654321",
-    status: "Active",
-    admissionDate: "2023-01-30",
-    image: null,
-  },
-]
+import { useDeleteStudentMutation, useGetAllStudentsQuery } from "@/redux/api/studentApi"
+import toast from "react-hot-toast"
 
 const StudentList = () => {
   const theme = useTheme()
-  const [students, setStudents] = useState(mockStudents)
-  const [filteredStudents, setFilteredStudents] = useState(mockStudents)
+
+  const customColors = {
+    primary: "#6a1b9a",
+    secondary: "#00838f",
+    success: "#2e7d32",
+    error: "#c62828",
+    warning: "#ff8f00",
+    info: "#0277bd",
+    accent1: "#ad1457",
+    accent2: "#6a1b9a",
+    accent3: "#283593",
+    accent4: "#00695c",
+    background: "#f5f5f5",
+  }
+
+  // State for pagination and filtering
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchTerm, setSearchTerm] = useState("")
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
-    class: "",
+    className: "",
     section: "",
     status: "",
     gender: "",
+    studentType: "",
   })
 
+  // Fetch real data from backend
+  const {
+    data: studentData,
+    isLoading,
+    refetch,
+  } = useGetAllStudentsQuery({
+    limit: rowsPerPage,
+    page: page + 1,
+    searchTerm: searchTerm,
+  })
+  const [deleteStudent] = useDeleteStudentMutation()
+
+  // Extract students from the response
+  const students = studentData?.data || []
+  const totalStudents = studentData?.meta?.total || 0
+
   // Handle search
-  useEffect(() => {
-    const results = students.filter(
-      (student) =>
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.guardianName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.mobile.includes(searchTerm) ||
-        student.guardianMobile.includes(searchTerm),
-    )
-    setFilteredStudents(results)
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value)
     setPage(0)
-  }, [searchTerm, students])
-
-  // Handle filters
-  useEffect(() => {
-    let results = [...students]
-
-    if (filters.class) {
-      results = results.filter((student) => student.class === filters.class)
-    }
-    if (filters.section) {
-      results = results.filter((student) => student.section === filters.section)
-    }
-    if (filters.status) {
-      results = results.filter((student) => student.status === filters.status)
-    }
-    if (filters.gender) {
-      results = results.filter((student) => student.gender === filters.gender)
-    }
-
-    setFilteredStudents(results)
-    setPage(0)
-  }, [filters, students])
+  }
 
   // Handle filter change
-  const handleFilterChange = (e:any) => {
+  const handleFilterChange = (e: any) => {
     const { name, value } = e.target
     setFilters({
       ...filters,
@@ -251,33 +117,29 @@ const StudentList = () => {
   // Reset filters
   const resetFilters = () => {
     setFilters({
-      class: "",
+      className: "",
       section: "",
       status: "",
       gender: "",
+      studentType: "",
     })
     setSearchTerm("")
+    refetch()
   }
 
   // Handle page change
-  const handleChangePage = (newPage:any) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
   }
 
   // Handle rows per page change
-  const handleChangeRowsPerPage = (event:any) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(Number.parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  // Delete student
-  const handleDeleteStudent = (id:any) => {
-    const updatedStudents = students.filter((student) => student.id !== id)
-    setStudents(updatedStudents)
-  }
-
   // Get status chip color
-  const getStatusColor = (status:any) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "Active":
         return "success"
@@ -290,133 +152,286 @@ const StudentList = () => {
     }
   }
 
+  // Get student type color
+  const getStudentTypeColor = (type: string) => {
+    switch (type) {
+      case "Residential":
+        return customColors.accent1
+      case "Non-Residential":
+        return customColors.accent3
+      default:
+        return customColors.accent4
+    }
+  }
+
+  // Handle student deletion
+  const handleDelete = async (id: string) => {
+    const res = await deleteStudent(id).unwrap()
+    if(res.success){
+      toast.success(res.message || 'Studetn delete successfully!')
+    }else{
+      toast.error('Failed to delete student.')
+    }
+    
+  }
+
+  // Apply filters to students
+  const filteredStudents = students.filter((student: any) => {
+    let match = true
+
+    if (filters.className && student.className !== filters.className) match = false
+    if (filters.section && student.section !== filters.section) match = false
+    if (filters.status && student.status !== filters.status) match = false
+    if (filters.gender && student.gender !== filters.gender) match = false
+    if (filters.studentType && student.studentType !== filters.studentType) match = false
+
+    return match
+  })
+
+  // Calculate statistics
+  const activeStudents = students.filter((s: any) => s.status === "Active").length
+  const inactiveStudents = students.filter((s: any) => s.status !== "Active").length
+  const maleStudents = students.filter((s: any) => s.gender === "Male").length
+  const femaleStudents = students.filter((s: any) => s.gender === "Female").length
+
+  // Get unique classes and sections for statistics
+  const classes: string[] = [...new Set(students.map((s: any) => s.className as string))] as string[]
+  const sections = [...new Set(students.map((s: any) => s.section))]
+
   return (
     <Container maxWidth="xl">
-      <Paper elevation={0} sx={{ mb: 3, bgcolor: theme.palette.primary.main, color: "white", py: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          mb: 3,
+          background: `linear-gradient(135deg, ${customColors.primary} 0%, ${customColors.accent3} 100%)`,
+          color: "white",
+          py: 3,
+          borderRadius: 2,
+          boxShadow: `0 8px 32px 0 ${alpha(customColors.primary, 0.3)}`,
+        }}
+      >
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <School sx={{ mr: 1 }} />
-          <Typography variant="h5" component="h1">
-            Student List
+          <School sx={{ mr: 1, fontSize: 40 }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
+            Student Management System
           </Typography>
         </Box>
+        <Typography variant="subtitle1" align="center" sx={{ mt: 1, opacity: 0.9 }}>
+          Comprehensive view of all students with advanced filtering and management options
+        </Typography>
       </Paper>
 
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+      <Card
+        sx={{
+          mb: 3,
+          borderRadius: 2,
+          overflow: "hidden",
+          boxShadow: `0 4px 20px 0 ${alpha(theme.palette.grey[500], 0.2)}`,
+        }}
+      >
+        <Box
+          sx={{
+            p: 2,
+            background: `linear-gradient(90deg, ${alpha(customColors.secondary, 0.1)} 0%, ${alpha(customColors.accent2, 0.05)} 100%)`,
+            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          }}
+        >
+          <Typography variant="h6" sx={{ color: customColors.secondary, fontWeight: "bold", mb: 2 }}>
+            Student Directory
+          </Typography>
+
+          <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                placeholder="Search by name, ID, guardian, or mobile..."
+                placeholder="Search by name, ID, email, or mobile..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearch}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Search />
+                      <Search color="primary" />
                     </InputAdornment>
                   ),
+                  sx: { borderRadius: 2 },
                 }}
+                variant="outlined"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: "flex", justifyContent: { xs: "flex-start", md: "flex-end" }, gap: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: { xs: "flex-start", md: "flex-end" }, gap: 1, flexWrap: "wrap" }}
+              >
                 <Button
                   variant="outlined"
                   startIcon={<FilterList />}
                   onClick={() => setShowFilters(!showFilters)}
                   color={showFilters ? "primary" : "inherit"}
+                  sx={{ borderRadius: 6 }}
                 >
                   Filters
                 </Button>
-                <Button variant="outlined" startIcon={<Print />}>
+                <Button variant="outlined" startIcon={<Print />} sx={{ borderRadius: 6 }}>
                   Print
                 </Button>
-                <Button variant="outlined" startIcon={<FileDownload />}>
+                <Button variant="outlined" startIcon={<FileDownload />} sx={{ borderRadius: 6 }}>
                   Export
                 </Button>
-                <Button variant="outlined" startIcon={<Refresh />} onClick={resetFilters}>
+                <Button variant="outlined" startIcon={<Refresh />} onClick={resetFilters} sx={{ borderRadius: 6 }}>
                   Reset
                 </Button>
-                <Button component={Link} href='/dashboard/super_admin/student/create' variant="contained" startIcon={<Add />} color="primary">
+                <Button
+                  component={Link}
+                  href="/dashboard/super_admin/student/create"
+                  variant="contained"
+                  startIcon={<Add />}
+                  sx={{
+                    borderRadius: 6,
+                    background: `linear-gradient(45deg, ${customColors.primary} 30%, ${customColors.accent3} 90%)`,
+                    boxShadow: `0 3px 5px 2px ${alpha(customColors.primary, 0.3)}`,
+                  }}
+                >
                   Add Student
                 </Button>
               </Box>
             </Grid>
           </Grid>
+        </Box>
 
-          {showFilters && (
-            <Box sx={{ mb: 3, p: 2, bgcolor: "background.paper", borderRadius: 1, border: "1px solid #e0e0e0" }}>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                Advanced Filters
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Class</InputLabel>
-                    <Select name="class" value={filters.class} label="Class" onChange={handleFilterChange}>
-                      <MenuItem value="">All Classes</MenuItem>
-                      <MenuItem value="Class 1">Class 1</MenuItem>
-                      <MenuItem value="Class 2">Class 2</MenuItem>
-                      <MenuItem value="Class 3">Class 3</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Section</InputLabel>
-                    <Select name="section" value={filters.section} label="Section" onChange={handleFilterChange}>
-                      <MenuItem value="">All Sections</MenuItem>
-                      <MenuItem value="Section A">Section A</MenuItem>
-                      <MenuItem value="Section B">Section B</MenuItem>
-                      <MenuItem value="Section C">Section C</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Status</InputLabel>
-                    <Select name="status" value={filters.status} label="Status" onChange={handleFilterChange}>
-                      <MenuItem value="">All Status</MenuItem>
-                      <MenuItem value="Active">Active</MenuItem>
-                      <MenuItem value="Inactive">Inactive</MenuItem>
-                      <MenuItem value="Graduated">Graduated</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Gender</InputLabel>
-                    <Select name="gender" value={filters.gender} label="Gender" onChange={handleFilterChange}>
-                      <MenuItem value="">All Genders</MenuItem>
-                      <MenuItem value="Male">Male</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+        {showFilters && (
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: alpha(theme.palette.background.paper, 0.7),
+              borderRadius: 1,
+              mx: 2,
+              my: 2,
+              border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+              boxShadow: `inset 0 2px 4px 0 ${alpha(theme.palette.common.black, 0.05)}`,
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ mb: 2, color: customColors.secondary, fontWeight: "medium" }}>
+              Advanced Filters
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Class</InputLabel>
+                  <Select name="className" value={filters.className} label="Class" onChange={handleFilterChange}>
+                    <MenuItem value="">All Classes</MenuItem>
+                    {classes.map((cls: string) => (
+                      <MenuItem key={cls} value={cls}>
+                        {cls}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-            </Box>
-          )}
+              <Grid item xs={12} sm={6} md={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Section</InputLabel>
+                  <Select name="section" value={filters.section} label="Section" onChange={handleFilterChange}>
+                    <MenuItem value="">All Sections</MenuItem>
+                    {sections.map((section: any) => (
+                      <MenuItem key={section} value={section}>
+                        {section}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} md={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Status</InputLabel>
+                  <Select name="status" value={filters.status} label="Status" onChange={handleFilterChange}>
+                    <MenuItem value="">All Status</MenuItem>
+                    <MenuItem value="Active">Active</MenuItem>
+                    <MenuItem value="Inactive">Inactive</MenuItem>
+                    <MenuItem value="Graduated">Graduated</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} md={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Gender</InputLabel>
+                  <Select name="gender" value={filters.gender} label="Gender" onChange={handleFilterChange}>
+                    <MenuItem value="">All Genders</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} md={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Student Type</InputLabel>
+                  <Select
+                    name="studentType"
+                    value={filters.studentType}
+                    label="Student Type"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">All Types</MenuItem>
+                    <MenuItem value="Residential">Residential</MenuItem>
+                    <MenuItem value="Non-Residential">Non-Residential</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
 
+        <CardContent sx={{ p: 0 }}>
           <TableContainer>
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
-                <TableRow sx={{ bgcolor: theme.palette.action.hover }}>
-                  <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Student</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Class</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Roll</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Guardian</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Mobile</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
+                <TableRow
+                  sx={{
+                    background: `linear-gradient(90deg, ${alpha(customColors.primary, 0.05)} 0%, ${alpha(customColors.accent3, 0.1)} 100%)`,
+                  }}
+                >
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Student</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Class</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Roll</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Guardian</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Contact</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Type</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", color: customColors.primary }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredStudents.length > 0 ? (
-                  filteredStudents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((student) => (
-                    <TableRow key={student.id} hover>
-                      <TableCell>{student.id}</TableCell>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={9} align="center" sx={{ py: 3 }}>
+                      <Typography variant="body1">Loading students...</Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredStudents.length > 0 ? (
+                  filteredStudents.map((student: any) => (
+                    <TableRow
+                      key={student._id}
+                      hover
+                      sx={{
+                        "&:hover": {
+                          bgcolor: alpha(customColors.accent2, 0.05),
+                          transition: "all 0.2s",
+                        },
+                      }}
+                    >
+                      <TableCell>
+                        <Chip
+                          label={student.studentId}
+                          size="small"
+                          sx={{
+                            bgcolor: alpha(customColors.accent3, 0.1),
+                            color: customColors.accent3,
+                            fontWeight: "medium",
+                          }}
+                        />
+                      </TableCell>
                       <TableCell>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Box
@@ -424,55 +439,125 @@ const StudentList = () => {
                               width: 40,
                               height: 40,
                               borderRadius: "50%",
-                              bgcolor: theme.palette.primary.light,
+                              background: `linear-gradient(135deg, ${customColors.primary} 0%, ${customColors.accent3} 100%)`,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
                               color: "white",
-                              mr: 1,
+                              mr: 1.5,
+                              boxShadow: `0 2px 10px 0 ${alpha(customColors.primary, 0.3)}`,
                             }}
                           >
                             <Person />
                           </Box>
                           <Box>
-                            <Typography variant="body1">{student.name}</Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              {student.gender}
+                            <Typography variant="body1" sx={{ fontWeight: "medium", color: customColors.primary }}>
+                              {student.name}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Email fontSize="small" sx={{ mr: 0.5, fontSize: 12 }} />
+                              {student.email}
                             </Typography>
                           </Box>
                         </Box>
                       </TableCell>
                       <TableCell>
-                        {student.class}
+                        <Typography variant="body2" sx={{ fontWeight: "medium" }}>
+                          {student.className}
+                        </Typography>
                         <Typography variant="caption" color="text.secondary" display="block">
                           {student.section}
                         </Typography>
                       </TableCell>
-                      <TableCell>{student.roll}</TableCell>
-                      <TableCell>{student.guardianName}</TableCell>
                       <TableCell>
-                        {student.mobile}
+                        <Chip
+                          label={student.studentClassRoll}
+                          size="small"
+                          sx={{
+                            bgcolor: alpha(customColors.secondary, 0.1),
+                            color: customColors.secondary,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{student.guardianName}</Typography>
                         <Typography variant="caption" color="text.secondary" display="block">
+                          {student.relation}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                          <Phone fontSize="small" sx={{ mr: 0.5, fontSize: 14 }} />
+                          {student.mobile || "N/A"}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Phone fontSize="small" sx={{ mr: 0.5, fontSize: 12 }} />
                           {student.guardianMobile}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip label={student.status} size="small" color={getStatusColor(student.status)} />
+                        <Chip
+                          label={student.studentType}
+                          size="small"
+                          sx={{
+                            bgcolor: alpha(getStudentTypeColor(student.studentType), 0.1),
+                            color: getStudentTypeColor(student.studentType),
+                            fontWeight: "medium",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={student.status}
+                          size="small"
+                          color={getStatusColor(student.status)}
+                          sx={{ fontWeight: "medium" }}
+                        />
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: "flex" }}>
-                          <Tooltip title="View">
-                            <IconButton size="small" color="info">
+                          <Tooltip title="View Details">
+                            <IconButton
+                              size="small"
+                              sx={{
+                                color: customColors.info,
+                                "&:hover": { bgcolor: alpha(customColors.info, 0.1) },
+                              }}
+                            >
                               <Visibility fontSize="small" />
                             </IconButton>
                           </Tooltip>
-                          <Tooltip title="Edit">
-                            <IconButton size="small" color="primary">
+                          <Tooltip title="Edit Student">
+                            <IconButton
+                            component={Link}
+                            href={`/dashboard/super_admin/student/update?id=${student._id}`}
+                              size="small"
+                              sx={{
+                                color: customColors.primary,
+                                "&:hover": { bgcolor: alpha(customColors.primary, 0.1) },
+                              }}
+                            >
                               <Edit fontSize="small" />
                             </IconButton>
                           </Tooltip>
-                          <Tooltip title="Delete">
-                            <IconButton size="small" color="error" onClick={() => handleDeleteStudent(student.id)}>
+                          <Tooltip title="Delete Student">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDelete(student._id)}
+                              sx={{
+                                color: customColors.error,
+                                "&:hover": { bgcolor: alpha(customColors.error, 0.1) },
+                              }}
+                            >
                               <Delete fontSize="small" />
                             </IconButton>
                           </Tooltip>
@@ -482,7 +567,7 @@ const StudentList = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
+                    <TableCell colSpan={9} align="center" sx={{ py: 3 }}>
                       <Typography variant="body1">No students found</Typography>
                       <Typography variant="body2" color="text.secondary">
                         Try adjusting your search or filter criteria
@@ -494,112 +579,219 @@ const StudentList = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 50]}
             component="div"
-            count={filteredStudents.length}
+            count={totalStudents}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{
+              ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+                color: customColors.primary,
+              },
+            }}
           />
         </CardContent>
       </Card>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Card sx={{ width: "48%" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 3, mb: 3 }}>
+        <Card
+          sx={{
+            width: { xs: "100%", md: "48%" },
+            borderRadius: 2,
+            overflow: "hidden",
+            boxShadow: `0 4px 20px 0 ${alpha(theme.palette.grey[500], 0.2)}`,
+          }}
+        >
+          <Box
+            sx={{
+              p: 2,
+              background: `linear-gradient(90deg, ${alpha(customColors.primary, 0.1)} 0%, ${alpha(customColors.accent2, 0.05)} 100%)`,
+              borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            }}
+          >
+            <Typography variant="h6" sx={{ color: customColors.primary, fontWeight: "bold" }}>
               Student Statistics
             </Typography>
-            <Divider sx={{ mb: 2 }} />
+          </Box>
+          <CardContent>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.success.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.success} 0%, ${alpha(customColors.success, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.success, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.status === "Active").length}</Typography>
-                  <Typography variant="body2">Active Students</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: theme.palette.error.light, color: "white", borderRadius: 2 }}>
-                  <Typography variant="h4">{students.filter((s) => s.status === "Inactive").length}</Typography>
-                  <Typography variant="body2">Inactive Students</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: theme.palette.info.light, color: "white", borderRadius: 2 }}>
-                  <Typography variant="h4">{students.filter((s) => s.gender === "Male").length}</Typography>
-                  <Typography variant="body2">Male Students</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {activeStudents}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <Badge sx={{ mr: 0.5 }} /> Active Students
+                  </Typography>
                 </Paper>
               </Grid>
               <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.warning.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.error} 0%, ${alpha(customColors.error, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.error, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.gender === "Female").length}</Typography>
-                  <Typography variant="body2">Female Students</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {inactiveStudents}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <Badge sx={{ mr: 0.5 }} /> Inactive Students
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.accent3} 0%, ${alpha(customColors.accent3, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.accent3, 0.3)}`,
+                  }}
+                >
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {maleStudents}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <Person sx={{ mr: 0.5 }} /> Male Students
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.accent1} 0%, ${alpha(customColors.accent1, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.accent1, 0.3)}`,
+                  }}
+                >
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {femaleStudents}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <Person sx={{ mr: 0.5 }} /> Female Students
+                  </Typography>
                 </Paper>
               </Grid>
             </Grid>
           </CardContent>
         </Card>
 
-        <Card sx={{ width: "48%" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Class Distribution
+        <Card
+          sx={{
+            width: { xs: "100%", md: "48%" },
+            borderRadius: 2,
+            overflow: "hidden",
+            boxShadow: `0 4px 20px 0 ${alpha(theme.palette.grey[500], 0.2)}`,
+          }}
+        >
+          <Box
+            sx={{
+              p: 2,
+              background: `linear-gradient(90deg, ${alpha(customColors.secondary, 0.1)} 0%, ${alpha(customColors.accent4, 0.05)} 100%)`,
+              borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            }}
+          >
+            <Typography variant="h6" sx={{ color: customColors.secondary, fontWeight: "bold" }}>
+              Financial Overview
             </Typography>
-            <Divider sx={{ mb: 2 }} />
+          </Box>
+          <CardContent>
             <Grid container spacing={2}>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.primary.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.accent4} 0%, ${alpha(customColors.accent4, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.accent4, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.class === "Class 1").length}</Typography>
-                  <Typography variant="body2">Class 1</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {students.reduce((sum: number, student: any) => sum + (student.monthlyFee || 0), 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <CurrencyExchange sx={{ mr: 0.5 }} /> Monthly Fees
+                  </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.secondary.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.info} 0%, ${alpha(customColors.info, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.info, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.class === "Class 2").length}</Typography>
-                  <Typography variant="body2">Class 2</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {students.reduce((sum: number, student: any) => sum + (student.admissionFee || 0), 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <CurrencyExchange sx={{ mr: 0.5 }} /> Admission Fees
+                  </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.success.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.warning} 0%, ${alpha(customColors.warning, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.warning, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.class === "Class 3").length}</Typography>
-                  <Typography variant="body2">Class 3</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {students.reduce((sum: number, student: any) => sum + (student.previousDues || 0), 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <CurrencyExchange sx={{ mr: 0.5 }} /> Previous Dues
+                  </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={4}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: theme.palette.info.light, color: "white", borderRadius: 2 }}>
-                  <Typography variant="h4">{students.filter((s) => s.section === "Section A").length}</Typography>
-                  <Typography variant="body2">Section A</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Paper
                   elevation={0}
-                  sx={{ p: 2, bgcolor: theme.palette.warning.light, color: "white", borderRadius: 2 }}
+                  sx={{
+                    p: 2,
+                    background: `linear-gradient(135deg, ${customColors.accent2} 0%, ${alpha(customColors.accent2, 0.8)} 100%)`,
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: `0 4px 12px 0 ${alpha(customColors.accent2, 0.3)}`,
+                  }}
                 >
-                  <Typography variant="h4">{students.filter((s) => s.section === "Section B").length}</Typography>
-                  <Typography variant="body2">Section B</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: theme.palette.error.light, color: "white", borderRadius: 2 }}>
-                  <Typography variant="h4">{students.filter((s) => s.section === "Section C").length}</Typography>
-                  <Typography variant="body2">Section C</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                    {students.reduce((sum: number, student: any) => sum + (student.sessionFee || 0), 0)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                    <CurrencyExchange sx={{ mr: 0.5 }} /> Session Fees
+                  </Typography>
                 </Paper>
               </Grid>
             </Grid>

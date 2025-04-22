@@ -646,21 +646,14 @@ export default function FineTypeList() {
     percentage: fineTypesData.filter((ft) => ft.isPercentage).length,
     fixed: fineTypesData.filter((ft) => !ft.isPercentage).length,
     important: fineTypesData.filter((ft) => ft.isImportant).length,
-    totalCollected: 125850, // Sample data for demonstration
+    totalCollected: 125850,
   }
-
-  // Toggle important status
   const handleToggleImportant = (id: number) => {
-    // In a real application, this would update the database
-    console.log(`Toggling important status for fine type ${id}`)
     setSuccessMessage("Fine type importance status updated")
     setSuccess(true)
   }
 
-  // Toggle active status
   const handleToggleActive = (id: number) => {
-    // In a real application, this would update the database
-    console.log(`Toggling active status for fine type ${id}`)
     setSuccessMessage("Fine type active status updated")
     setSuccess(true)
   }

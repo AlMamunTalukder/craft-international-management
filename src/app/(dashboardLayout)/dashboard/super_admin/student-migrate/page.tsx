@@ -211,9 +211,6 @@ const StudentMigration = () => {
   const handleMigrate = () => {
     // In a real application, you would send this data to your API
     const selectedStudents = students.filter((student) => student.selected)
-    console.log("Migrating students:", selectedStudents)
-    console.log("Current filters:", currentFilters)
-    console.log("Migrate to filters:", migrateToFilters)
 
     // Show success message or redirect
     alert(`Successfully migrated ${selectedStudents.length} students`)

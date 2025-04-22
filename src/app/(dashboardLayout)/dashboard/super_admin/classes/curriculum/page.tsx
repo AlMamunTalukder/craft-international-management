@@ -288,8 +288,6 @@ const handleTabChange = (event: TabChangeEvent, newValue: number): void => {
   }
 
   const handleDeleteConfirm = () => {
-    // Delete logic would go here
-    console.log(`Deleting curriculum with ID: ${currentCurriculumId}`)
     setCurriculums(curriculums.filter((c) => c.id !== currentCurriculumId))
     setDeleteDialogOpen(false)
   }

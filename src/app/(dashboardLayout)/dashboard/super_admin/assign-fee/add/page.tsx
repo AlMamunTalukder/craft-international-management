@@ -165,10 +165,9 @@ export default function AssignFeePage() {
   const [isPercent, setIsPercent] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Filter fees based on search term
   const filteredFees = feeTypes.filter((fee) => fee.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
-  // Handle fee selection
+
   const handleFeeSelection = (feeId: number) => {
     if (selectedFees.includes(feeId)) {
       setSelectedFees(selectedFees.filter((id) => id !== feeId))
@@ -177,40 +176,25 @@ export default function AssignFeePage() {
     }
   }
 
-  // Handle next step
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
   }
 
-  // Handle back step
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
-  // Handle form submission
+
   const handleSubmit = () => {
-    // Process form submission
-    console.log({
-      selectedFees,
-      selectedClass,
-      selectedSession,
-      startDate,
-      endDate,
-      sendNotification,
-      applyDiscount,
-      discountAmount,
-      isPercent,
-    })
-    // Move to confirmation step
     setActiveStep(3)
   }
 
-  // Calculate total fee amount
+
   const calculateTotalFee = () => {
     return feeTypes.filter((fee) => selectedFees.includes(fee.id)).reduce((total, fee) => total + fee.amount, 0)
   }
-
-  // Calculate discounted amount
   const calculateDiscountedAmount = () => {
     const totalFee = calculateTotalFee()
     if (!applyDiscount || !discountAmount) return totalFee

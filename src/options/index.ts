@@ -122,3 +122,69 @@ export const teacherName = [
   export const batches = ["Batch 1", "Batch 2", "Batch 3"];
   
   
+  // Gender options
+ export  const genders = ["Male", "Female", "Other", "Prefer not to say"]
+  
+  // Staff types
+  export const staffTypes = ["Full-time", "Part-time", "Contract", "Visiting"]
+  
+  // Residence types
+  export const residenceTypes = ["Residential", "Non-residential"]
+  
+  // Languages
+ export  const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Hindi", "Bengali", "Other"]
+  
+  // Subjects
+  export const subjects = [
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Computer Science",
+    "English",
+    "History",
+    "Geography",
+    "Economics",
+    "Business Studies",
+    "Physical Education",
+    "Art",
+    "Music",
+    "Foreign Languages",
+    "Social Studies",
+    "Religious Studies",
+    "Other",
+  ]
+  
+  // Departments
+  export const departments = [
+    "Science",
+    "Mathematics",
+    "Languages",
+    "Humanities",
+    "Arts",
+    "Physical Education",
+    "Computer Science",
+    "Administration",
+    "Support Staff",
+  ]
+  
+  // Designations
+  export const designations = [
+    "Principal",
+    "Vice Principal",
+    "Head of Department",
+    "Senior Teacher",
+    "Teacher",
+    "Assistant Teacher",
+    "Lab Assistant",
+    "Librarian",
+    "Counselor",
+    "Administrative Staff",
+  ]
+  
+  // Marital status options
+  export const maritalStatuses = ["Single", "Married", "Divorced", "Widowed", "Other"]
+  
+  // Status options
+  export const statusOptions = ["Active", "On Leave", "Suspended", "Terminated"]
+  

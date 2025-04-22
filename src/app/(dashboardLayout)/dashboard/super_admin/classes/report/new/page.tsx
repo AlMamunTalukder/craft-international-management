@@ -236,7 +236,6 @@ export default function ClassesListPage() {
   }, [refreshKey])
 
   const handleSubmit = () => {
-    console.log("Form submitted")
   }
 
   const handleMenuClose = () => {

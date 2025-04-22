@@ -223,7 +223,6 @@ export default function NewCurriculum() {
 
         // Simulate API call
         setTimeout(() => {
-            console.log("Submitting curriculum:", curriculumData)
             setSaving(false)
             setSnackbarOpen(true)
             // Redirect to list page after successful submission

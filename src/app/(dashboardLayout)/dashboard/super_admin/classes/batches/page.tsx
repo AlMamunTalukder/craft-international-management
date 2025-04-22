@@ -327,8 +327,6 @@ export default function BatchListPage() {
   }
 
   const handleDeleteConfirm = () => {
-    // Here you would delete the batch
-    console.log("Deleting batch:", batchToDelete)
     setDeleteDialogOpen(false)
     setBatchToDelete(null)
   }

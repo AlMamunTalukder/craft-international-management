@@ -121,8 +121,6 @@ export default function DiscountPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    console.log({ discountName, isPercent, discountAmount, description, discountType })
   }
 
   return (

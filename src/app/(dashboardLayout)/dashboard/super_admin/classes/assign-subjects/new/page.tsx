@@ -485,7 +485,6 @@ export default function AssignSubject() {
 
     // Simulate API call
     setTimeout(() => {
-      console.log("Submitting assignment:", formData)
       setSaving(false)
       setSnackbar({
         open: true,

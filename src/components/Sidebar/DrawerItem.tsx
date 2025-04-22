@@ -123,6 +123,37 @@ export const navigationItems: NavigationItem[] = [
     roles: ["admin", "teacher", "student", "super_admin"],
   },
   {
+    title: "Teacher",
+    icon: (
+      <ColorfulIcon color="#DB4437">
+        <SupervisorAccount />
+      </ColorfulIcon>
+    ),
+    roles: ["admin", "super_admin", 'teacher'],
+    children: [
+      {
+        path: "/dashboard/super_admin/teacher/list",
+        title: "Teachers",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <People />
+          </ColorfulIcon>
+        ),
+        roles: ["super_admin", "admin", 'teacher', 'student'],
+      },
+      {
+        path: "/dashboard/super_admin/stock/allimg",
+        title: "Salary Report",
+        icon: (
+          <ColorfulIcon color="#DB4437">
+            <ReceiptLong />
+          </ColorfulIcon>
+        ),
+        roles: ["super_admin", "admin"],
+      },
+    ],
+  },
+  {
     title: "Classes",
     icon: (
       <ColorfulIcon color="#0F9D58">
@@ -252,16 +283,7 @@ export const navigationItems: NavigationItem[] = [
         ),
         roles: ["super_admin", "admin", "teacher"],
       },
-      {
-        path: "/dashboard/super_admin/shop/list",
-        title: "Upload Student",
-        icon: (
-          <ColorfulIcon color="#DB4437">
-            <CloudUpload />
-          </ColorfulIcon>
-        ),
-        roles: ["super_admin", "admin"],
-      },
+
       {
         path: "/dashboard/super_admin/student-migrate",
         title: "Migrate Student",
@@ -1111,37 +1133,7 @@ export const navigationItems: NavigationItem[] = [
       },
     ],
   },
-  {
-    title: "Teacher",
-    icon: (
-      <ColorfulIcon color="#DB4437">
-        <SupervisorAccount />
-      </ColorfulIcon>
-    ),
-    roles: ["admin", "super_admin"],
-    children: [
-      {
-        path: "/dashboard/super_admin/teacher/list",
-        title: "Teachers",
-        icon: (
-          <ColorfulIcon color="#DB4437">
-            <People />
-          </ColorfulIcon>
-        ),
-        roles: ["super_admin", "admin"],
-      },
-      {
-        path: "/dashboard/super_admin/stock/allimg",
-        title: "Salary Report",
-        icon: (
-          <ColorfulIcon color="#DB4437">
-            <ReceiptLong />
-          </ColorfulIcon>
-        ),
-        roles: ["super_admin", "admin"],
-      },
-    ],
-  },
+
   {
     title: "Documents",
     icon: (

@@ -606,16 +606,12 @@ export default function FeeTypeList() {
 
   // Toggle starred status
   const handleToggleStarred = (id: number) => {
-    // In a real application, this would update the database
-    console.log(`Toggling starred status for fee type ${id}`)
     setSuccessMessage("Fee type starred status updated")
     setSuccess(true)
   }
 
   // Toggle active status
   const handleToggleActive = (id: number) => {
-    // In a real application, this would update the database
-    console.log(`Toggling active status for fee type ${id}`)
     setSuccessMessage("Fee type active status updated")
     setSuccess(true)
   }

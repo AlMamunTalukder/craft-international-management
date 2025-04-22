@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState } from "react"
@@ -100,9 +101,6 @@ export default function CollectFeeStatementPage() {
   const [showPreview, setShowPreview] = useState(false)
 
   const handleDownload = (format: string) => {
-    // Handle downloading the statement in different formats
-    console.log(`Downloading statement from ${fromDate} to ${toDate} in ${format} format`)
-    // You would typically call your API here to generate the statement
   }
 
   const handleGeneratePreview = () => {

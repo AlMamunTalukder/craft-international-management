@@ -41,7 +41,7 @@ const Page = () => {
   
 
   const handleSubmit = (data: any) => {
-    console.log(data);
+
   };
 
   return (

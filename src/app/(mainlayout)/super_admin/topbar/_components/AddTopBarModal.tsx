@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useCallback } from "react";
@@ -77,7 +78,7 @@ const AddTopBarModal = ({ open, setOpen }: TProps) => {
   };
 
   const handleSubmit = (data: any) => {
-    console.log(data);
+
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

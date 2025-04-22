@@ -343,16 +343,12 @@ export default function SectionAddPage() {
       return
     }
 
-    // Simulate API call
+
     setLoading(true)
     setError(null)
 
     try {
-      // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Simulate successful response
-      console.log("Form submitted:", formData)
       setSuccess(true)
       setSnackbarMessage("Section created successfully!")
       setSnackbarSeverity("success")
