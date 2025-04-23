@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -37,6 +39,7 @@ import {
   ListItemText,
   OutlinedInput,
   InputAdornment,
+  SelectChangeEvent,
 } from "@mui/material"
 import {
   Save as SaveIcon,
@@ -57,8 +60,61 @@ import {
 } from "@mui/icons-material"
 import Link from "next/link"
 
+// Type definitions for data structures
+interface Teacher {
+  id: number
+  name: string
+  avatar: string
+  department: string
+  qualification: string
+  experience: string
+  specialization: string
+  rating: number
+  contact: string
+  availability: string
+}
+
+interface Class {
+  id: number
+  name: string
+  section: string
+  students: number
+  schedule: string
+}
+
+interface Subject {
+  id: number
+  name: string
+  department: string
+  hoursPerWeek: number
+  type: string
+}
+
+interface Schedule {
+  id: number
+  day: string
+  slots: string[]
+}
+
+interface AssignmentData {
+  teacher: Teacher | null
+  class: Class | null
+  subjects: Subject[]
+  schedules: Schedule[]
+  isClassTeacher: boolean
+  startDate: string
+  endDate: string
+  notes: string
+}
+
+interface Step {
+  label: string
+  icon: React.ReactNode
+  description: string
+}
+
 // Sample data for demonstration
-const sampleTeachers = [
+const sampleTeachers: Teacher[] = [
   {
     id: 1,
     name: "Dr. Sarah Johnson",
@@ -121,7 +177,7 @@ const sampleTeachers = [
   },
 ]
 
-const sampleClasses = [
+const sampleClasses: Class[] = [
   { id: 1, name: "Grade 10-A", section: "A", students: 28, schedule: "Morning" },
   { id: 2, name: "Grade 10-B", section: "B", students: 26, schedule: "Morning" },
   { id: 3, name: "Grade 11-A", section: "A", students: 24, schedule: "Morning" },
@@ -130,7 +186,7 @@ const sampleClasses = [
   { id: 6, name: "Grade 12-B", section: "B", students: 23, schedule: "Afternoon" },
 ]
 
-const sampleSubjects = [
+const sampleSubjects: Subject[] = [
   { id: 1, name: "Physics", department: "Science", hoursPerWeek: 6, type: "Core" },
   { id: 2, name: "Chemistry", department: "Science", hoursPerWeek: 5, type: "Core" },
   { id: 3, name: "Biology", department: "Science", hoursPerWeek: 5, type: "Core" },
@@ -143,7 +199,7 @@ const sampleSubjects = [
   { id: 10, name: "Physical Education", department: "Sports", hoursPerWeek: 4, type: "Compulsory" },
 ]
 
-const sampleSchedules = [
+const sampleSchedules: Schedule[] = [
   { id: 1, day: "Monday", slots: ["8:00 AM - 9:30 AM", "9:45 AM - 11:15 AM", "11:30 AM - 1:00 PM"] },
   { id: 2, day: "Tuesday", slots: ["8:00 AM - 9:30 AM", "9:45 AM - 11:15 AM", "11:30 AM - 1:00 PM"] },
   { id: 3, day: "Wednesday", slots: ["8:00 AM - 9:30 AM", "9:45 AM - 11:15 AM", "11:30 AM - 1:00 PM"] },
@@ -154,12 +210,12 @@ const sampleSchedules = [
 export default function AssignClassTeacher() {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-  const [activeStep, setActiveStep] = useState(0)
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [showTips, setShowTips] = useState(true)
-  const [progress, setProgress] = useState(0)
-  const [assignmentData, setAssignmentData] = useState({
+  const [activeStep, setActiveStep] = useState<number>(0)
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false)
+  const [saving, setSaving] = useState<boolean>(false)
+  const [showTips, setShowTips] = useState<boolean>(true)
+  const [progress, setProgress] = useState<number>(0)
+  const [assignmentData, setAssignmentData] = useState<AssignmentData>({
     teacher: null,
     class: null,
     subjects: [],
@@ -172,7 +228,7 @@ export default function AssignClassTeacher() {
 
   // Filter subjects based on teacher's department
   const filteredSubjects = assignmentData.teacher
-    ? sampleSubjects.filter((subject) => subject.department === assignmentData.teacher.department)
+    ? sampleSubjects.filter((subject) => subject.department === assignmentData.teacher?.department)
     : sampleSubjects
 
   useEffect(() => {
@@ -185,7 +241,10 @@ export default function AssignClassTeacher() {
       const requiredFields = ["teacher", "class", "subjects"]
       requiredFields.forEach((field) => {
         totalFields++
-        if (assignmentData[field] && (field !== "subjects" ? true : assignmentData[field].length > 0)) {
+        if (
+          assignmentData[field as keyof AssignmentData] &&
+          (field !== "subjects" ? true : (assignmentData[field as keyof AssignmentData] as Subject[]).length > 0)
+        ) {
           filledFields++
         }
       })
@@ -193,7 +252,10 @@ export default function AssignClassTeacher() {
       // Optional fields
       const optionalFields = ["schedules", "startDate", "endDate", "notes"]
       optionalFields.forEach((field) => {
-        if (assignmentData[field] && (field !== "schedules" ? true : assignmentData[field].length > 0)) {
+        if (
+          assignmentData[field as keyof AssignmentData] &&
+          (field !== "schedules" ? true : (assignmentData[field as keyof AssignmentData] as Schedule[]).length > 0)
+        ) {
           filledFields += 0.5
           totalFields += 0.5
         } else {
@@ -217,10 +279,9 @@ export default function AssignClassTeacher() {
     window.scrollTo(0, 0)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-
 
     setTimeout(() => {
       setSaving(false)
@@ -228,7 +289,7 @@ export default function AssignClassTeacher() {
     }, 2000)
   }
 
-  const steps = [
+  const steps: Step[] = [
     {
       label: "Select Teacher",
       icon: <PersonIcon />,
@@ -251,7 +312,7 @@ export default function AssignClassTeacher() {
     },
   ]
 
-  const renderStepIcon = (index) => {
+  const renderStepIcon = (index: number) => {
     return (
       <Avatar
         sx={{
@@ -269,7 +330,7 @@ export default function AssignClassTeacher() {
     )
   }
 
-  const renderTeacherRating = (rating) => {
+  const renderTeacherRating = (rating: number) => {
     return (
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {[1, 2, 3, 4, 5].map((star) => (
@@ -844,14 +905,14 @@ export default function AssignClassTeacher() {
                         id="subjects-select"
                         multiple
                         value={assignmentData.subjects}
-                        onChange={(e) =>
+                        onChange={(e: SelectChangeEvent<Subject[]>) => {
                           setAssignmentData({
                             ...assignmentData,
-                            subjects: e.target.value,
-                          })
-                        }
+                            subjects: e.target.value as Subject[],
+                          });
+                        }}
                         input={<OutlinedInput label="Select Subjects" sx={{ borderRadius: 2 }} />}
-                        renderValue={(selected) => (
+                        renderValue={(selected: Subject[]) => (
                           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                             {selected.map((value) => (
                               <Chip key={value.id} label={value.name} size="small" sx={{ borderRadius: 1 }} />
@@ -860,8 +921,11 @@ export default function AssignClassTeacher() {
                         )}
                       >
                         {filteredSubjects.map((subject) => (
-                          <MenuItem key={subject.id} value={subject}>
-                            <Checkbox checked={assignmentData.subjects.indexOf(subject) > -1} />
+                          <MenuItem
+                            key={subject.id}
+                            value={subject as any} // Type assertion here
+                          >
+                            <Checkbox checked={assignmentData.subjects.some(s => s.id === subject.id)} />
                             <ListItemText
                               primary={subject.name}
                               secondary={`${subject.department} • ${subject.hoursPerWeek} hrs/week • ${subject.type}`}
@@ -1032,33 +1096,43 @@ export default function AssignClassTeacher() {
                   <Grid item xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="schedule-label">Preferred Schedule</InputLabel>
+
+
                       <Select
-                        labelId="schedule-label"
-                        id="schedule-select"
+                        labelId="subjects-label"
+                        id="subjects-select"
                         multiple
-                        value={assignmentData.schedules}
-                        onChange={(e) =>
+                        value={assignmentData.subjects}
+                        
+                        onChange={(e: SelectChangeEvent<Subject[]>) => {
                           setAssignmentData({
                             ...assignmentData,
-                            schedules: e.target.value,
-                          })
-                        }
-                        input={<OutlinedInput label="Preferred Schedule" sx={{ borderRadius: 2 }} />}
-                        renderValue={(selected) => (
+                            subjects: e.target.value as Subject[],
+                          });
+                        }}
+                        input={<OutlinedInput label="Select Subjects" sx={{ borderRadius: 2 }} />}
+                        renderValue={(selected: Subject[]) => (
                           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                             {selected.map((value) => (
-                              <Chip key={value.id} label={`${value.day}`} size="small" sx={{ borderRadius: 1 }} />
+                              <Chip key={value.id} label={value.name} size="small" sx={{ borderRadius: 1 }} />
                             ))}
                           </Box>
                         )}
                       >
-                        {sampleSchedules.map((schedule) => (
-                          <MenuItem key={schedule.id} value={schedule}>
-                            <Checkbox checked={assignmentData.schedules.indexOf(schedule) > -1} />
-                            <ListItemText primary={schedule.day} secondary={schedule.slots.join(", ")} />
+                        {filteredSubjects.map((subject) => (
+                          <MenuItem
+                            key={subject.id}
+                            value={subject as any} // Type assertion here
+                          >
+                            <Checkbox checked={assignmentData.subjects.some(s => s.id === subject.id)} />
+                            <ListItemText
+                              primary={subject.name}
+                              secondary={`${subject.department} • ${subject.hoursPerWeek} hrs/week • ${subject.type}`}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
+                      
                       <FormHelperText>Select preferred teaching days and time slots</FormHelperText>
                     </FormControl>
                   </Grid>
