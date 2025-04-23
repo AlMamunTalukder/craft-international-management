@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -62,6 +63,61 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+
+interface Subject {
+  id: number;
+  name: string;
+  code: string;
+  department: string;
+  credits: number;
+  hoursPerWeek: number;
+  type: string;
+  description: string;
+  prerequisites: string[];
+  gradeLevel: string;
+}
+
+interface Class {
+  id: number;
+  name: string;
+  section: string;
+  students: number;
+  schedule: string;
+}
+
+interface Student {
+  id: number;
+  name: string;
+  rollNumber: string;
+  class: string;
+  avatar: string;
+  gender: string;
+  performance: string;
+}
+
+interface Teacher {
+  id: number;
+  name: string;
+  avatar: string;
+  department: string;
+  qualification: string;
+  experience: string;
+  specialization: string;
+  rating: number;
+}
+
+interface FormData {
+  subject: Subject | null;
+  class: Class | null;
+  teacher: Teacher | null;
+  isOptional: boolean;
+  isExtraSubject: boolean;
+  includeInGPA: boolean;
+  startDate: string;
+  endDate: string;
+  description: string;
+  selectedStudents: Student[];
+}
 // Sample data for demonstration
 const sampleSubjects = [
   {
@@ -393,7 +449,7 @@ export default function AssignSubject() {
   const isTablet = useMediaQuery(theme.breakpoints.down("lg"))
 
   // State for form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     subject: null,
     class: null,
     teacher: null,
@@ -404,7 +460,7 @@ export default function AssignSubject() {
     endDate: "",
     description: "",
     selectedStudents: [],
-  })
+  });
 
   // State for UI
   const [loading, setLoading] = useState(false)
@@ -422,8 +478,9 @@ export default function AssignSubject() {
 
   // Filter students based on selected class
   const filteredStudents = formData.class
-    ? sampleStudents.filter((student) => student.class === formData.class.name)
-    : []
+  ? sampleStudents.filter((student) => student.class === formData.class?.name)
+  : []
+ 
 
   // Filter available students (not already selected)
   const availableStudents = filteredStudents.filter(
@@ -441,48 +498,49 @@ export default function AssignSubject() {
   )
 
   // Calculate progress
-  useEffect(() => {
-    const calculateProgress = () => {
-      let filledFields = 0
-      let totalFields = 0
+  // Calculate progress
+useEffect(() => {
+  const calculateProgress = () => {
+    let filledFields = 0
+    let totalFields = 0
 
-      // Required fields
-      const requiredFields = ["subject", "class", "teacher"]
-      requiredFields.forEach((field) => {
-        totalFields++
-        if (formData[field]) {
-          filledFields++
-        }
-      })
-
-      // Optional fields
-      const optionalFields = ["startDate", "endDate", "description"]
-      optionalFields.forEach((field) => {
-        if (formData[field]) {
-          filledFields += 0.5
-          totalFields += 0.5
-        } else {
-          totalFields += 0.5
-        }
-      })
-
-      // Students selection
-      if (formData.selectedStudents.length > 0) {
+    // Required fields
+    const requiredFields: (keyof FormData)[] = ["subject", "class", "teacher"]
+    requiredFields.forEach((field) => {
+      totalFields++
+      if (formData[field]) {
         filledFields++
       }
-      totalFields++
+    })
 
-      return Math.round((filledFields / totalFields) * 100)
+    // Optional fields
+    const optionalFields: (keyof FormData)[] = ["startDate", "endDate", "description"]
+    optionalFields.forEach((field) => {
+      if (formData[field]) {
+        filledFields += 0.5
+        totalFields += 0.5
+      } else {
+        totalFields += 0.5
+      }
+    })
+
+    // Students selection
+    if (formData.selectedStudents.length > 0) {
+      filledFields++
     }
+    totalFields++
 
-    setProgress(calculateProgress())
-  }, [formData])
+    return Math.round((filledFields / totalFields) * 100)
+  }
+
+  setProgress(calculateProgress())
+}, [formData])
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-
+  
     // Simulate API call
     setTimeout(() => {
       setSaving(false)
@@ -496,13 +554,28 @@ export default function AssignSubject() {
     }, 2000)
   }
 
-  // Handle adding all students
+
   const handleAddAllStudents = () => {
     setFormData({
       ...formData,
       selectedStudents: [...formData.selectedStudents, ...availableStudents],
     })
   }
+  
+  const handleAddStudent = (student: Student) => {
+    setFormData({
+      ...formData,
+      selectedStudents: [...formData.selectedStudents, student],
+    })
+  }
+  
+  const handleRemoveStudent = (studentId: number) => {
+    setFormData({
+      ...formData,
+      selectedStudents: formData.selectedStudents.filter((s) => s.id !== studentId),
+    })
+  }
+ 
 
   // Handle removing all students
   const handleRemoveAllStudents = () => {
@@ -511,27 +584,11 @@ export default function AssignSubject() {
       selectedStudents: [],
     })
   }
+ 
 
-  // Handle adding a student
-  const handleAddStudent = (student) => {
-    setFormData({
-      ...formData,
-      selectedStudents: [...formData.selectedStudents, student],
-    })
-  }
-
-  // Handle removing a student
-  const handleRemoveStudent = (studentId) => {
-    setFormData({
-      ...formData,
-      selectedStudents: formData.selectedStudents.filter((s) => s.id !== studentId),
-    })
-  }
-
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue)
-  }
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  setActiveTab(newValue)
+}
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 8 }}>
@@ -646,8 +703,7 @@ export default function AssignSubject() {
                     Tips for Assigning Subjects
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {activeTab === 0 &&
-                      "Select a subject and class to begin. You can mark subjects as optional or extra if they don't count toward GPA calculations."}
+                    {activeTab === 0 &&  "Select a subject and class to begin. You can mark subjects as optional or extra if they don't count toward GPA calculations."}
                     {activeTab === 1 &&
                       "Select students who will take this subject. You can add all students from the class or select specific students."}
                   </Typography>
