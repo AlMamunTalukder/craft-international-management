@@ -62,6 +62,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import FileUploadWithIcon from "@/components/Forms/Upload"
 
+
+
 const studentSchema = z.object({
   smartIdCard: z.string().optional(),
   name: z.string({

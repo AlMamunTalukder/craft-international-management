@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState } from "react"
@@ -209,7 +211,7 @@ export default function ClassRoutineList() {
   const [selectedSession, setSelectedSession] = useState<string>("all")
   const [selectedClass, setSelectedClass] = useState<string>("all")
   const [selectedStatus, setSelectedStatus] = useState<string>("all")
-  const [viewMode, setViewMode] = useState<number>(0) // 0: grid, 1: list, 2: calendar
+  const [viewMode, setViewMode] = useState<number>(0) 
   const [sortBy, setSortBy] = useState<string>("subject")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
